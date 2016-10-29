@@ -103,7 +103,7 @@ int main() {
     // Now check to see if the system functions work
     {
         int entCount = 0;
-        for (auto it = ecs.begin({intComp}); it != ecs.end(); ecs.next(it)) {
+        for (auto it = ecs.begin({intComp}); it != ecs.end(); it++) {
             // We only care about which entities are being selected, the component
             // values are correct (from previous tests)
             Entity e = *it;
@@ -118,7 +118,7 @@ int main() {
     // Same thing for a requiring two components
     {
         int entCount = 0;
-        for (auto it = ecs.begin({intComp, vecComp}); it != ecs.end(); ecs.next(it)) {
+        for (auto it = ecs.begin({intComp, vecComp}); it != ecs.end(); it++) {
             Entity e = *it;
             ++entCount;
 

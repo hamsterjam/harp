@@ -127,7 +127,7 @@ void ECS::removeComponent(Entity ent, Component comp) {
 //
 
 ECS::EntityIterator ECS::begin(initializer_list<Component> comps) {
-    EntityIterator ret(comps, nextEnt);
+    EntityIterator ret(comps, nextEnt, this);
 
     // Iterate through till you find an entity with the right components
     for (Entity e = 0; e < nextEnt; ++e) {
@@ -150,35 +150,8 @@ ECS::EntityIterator ECS::begin(initializer_list<Component> comps) {
     return ret;
 }
 
-ECS::EntityIterator ECS::next(ECS::EntityIterator& it) {
-    // Just iterate through to find the next one
-    // I know I'm reusing code here, but fuck it
-
-    Entity currEnt = it.ent;
-    it.ent = nextEnt;
-
-    for (Entity e = currEnt + 1; e < nextEnt; ++e) {
-
-        bool exit = true;
-
-        for (Component c: it.comps) {
-            if (!hasComp[c][e]) {
-                exit = false;
-                break;
-            }
-        }
-
-        if (exit) {
-            it.ent = e;
-            break;
-        }
-    }
-
-    return it;
-}
-
 ECS::EntityIterator ECS::end() {
-    EntityIterator ret({}, nextEnt);
+    EntityIterator ret({}, nextEnt, this);
     return ret;
 }
 
@@ -186,13 +159,47 @@ ECS::EntityIterator ECS::end() {
 // EntityIterator
 //
 
-ECS::EntityIterator::EntityIterator(initializer_list<Component> compList, Entity ent):
+ECS::EntityIterator::EntityIterator(initializer_list<Component> compList, Entity ent, ECS* par):
     comps(compList)
 {
     this->ent = ent;
+    this->par = par;
 }
 
 bool ECS::EntityIterator::operator==(EntityIterator rhs) {
     EntityIterator lhs = *this;
     return lhs.ent == rhs.ent;
+}
+
+ECS::EntityIterator ECS::EntityIterator::operator++() {
+    // Just iterate through to find the next one
+    // I know I'm reusing code here, but fuck it
+
+    Entity currEnt = this->ent;
+    this->ent = par->nextEnt;
+
+    for (Entity e = currEnt + 1; e < par->nextEnt; ++e) {
+
+        bool exit = true;
+
+        for (Component c: this->comps) {
+            if (!par->hasComp[c][e]) {
+                exit = false;
+                break;
+            }
+        }
+
+        if (exit) {
+            this->ent = e;
+            break;
+        }
+    }
+
+    return *this;
+}
+
+ECS::EntityIterator ECS::EntityIterator::operator++(int) {
+    EntityIterator ret = *this;
+    ++(*this);
+    return ret;
 }

@@ -26,10 +26,13 @@ class ECS {
 
                 std::vector<Component> comps;
                 Entity ent;
+                ECS* par;
             public:
-                EntityIterator(std::initializer_list<Component> compList, Entity ent);
+                EntityIterator(std::initializer_list<Component> compList, Entity ent, ECS* par);
                 bool operator==(EntityIterator rhs);
                 bool operator!=(EntityIterator rhs) {return !((*this)==rhs);}
+                EntityIterator operator++();    // Prefix
+                EntityIterator operator++(int); // Postfix
                 Entity operator*() {return ent;}
         };
 
@@ -46,7 +49,6 @@ class ECS {
         void  removeComponent(Entity ent, Component comp);
 
         EntityIterator begin(std::initializer_list<Component> comps);
-        EntityIterator next(EntityIterator& it);
         EntityIterator end();
 };
 
