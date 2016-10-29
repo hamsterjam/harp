@@ -2,6 +2,7 @@
 #define __GALAXY_FORT_ECS_H
 
 #include <initializer_list>
+#include <vector>
 
 typedef unsigned int Entity;
 typedef unsigned int Component;
@@ -19,6 +20,19 @@ class ECS {
         void** data;
 
     public:
+        class EntityIterator {
+            private:
+                friend class ECS;
+
+                std::vector<Component> comps;
+                Entity ent;
+            public:
+                EntityIterator(std::initializer_list<Component> compList, Entity ent);
+                bool operator==(EntityIterator rhs);
+                bool operator!=(EntityIterator rhs) {return !((*this)==rhs);}
+                Entity operator*() {return ent;}
+        };
+
         ECS(unsigned int entVecLength, unsigned int compVecLength);
         ~ECS();
 
@@ -31,9 +45,9 @@ class ECS {
         void* getComponent(Entity ent, Component comp);
         void  removeComponent(Entity ent, Component comp);
 
-        Entity begin(std::initializer_list<Component> comps);
-        Entity next(std::initializer_list<Component> comps);
-        Entity end();
+        EntityIterator begin(std::initializer_list<Component> comps);
+        EntityIterator next(EntityIterator& it);
+        EntityIterator end();
 };
 
 #endif

@@ -35,6 +35,10 @@ ECS::~ECS() {
     free(data);
 }
 
+//
+// Entity functions
+//
+
 Entity ECS::createEntity() {
     // Resize arrays if we need to
     if (nextEnt >= entVecLength) {
@@ -60,6 +64,10 @@ void ECS::destroyEntity(Entity ent) {
         hasComp[i][ent] = false;
     }
 }
+
+//
+// Component Functions
+//
 
 Component ECS::createComponent(size_t size) {
     // Resize arrays if we need to
@@ -112,4 +120,79 @@ void ECS::removeComponent(Entity ent, Component comp) {
     // Just set the hasComp to false, don't bother with the data
 
     hasComp[comp][ent] = false;
+}
+
+//
+// System functions
+//
+
+ECS::EntityIterator ECS::begin(initializer_list<Component> comps) {
+    EntityIterator ret(comps, nextEnt);
+
+    // Iterate through till you find an entity with the right components
+    for (Entity e = 0; e < nextEnt; ++e) {
+
+        bool exit = true;
+
+        for (Component c : ret.comps) {
+            if (!hasComp[c][e]) {
+                exit = false;
+                break;
+            }
+        }
+
+        if (exit) {
+            ret.ent = e;
+            break;
+        }
+    }
+
+    return ret;
+}
+
+ECS::EntityIterator ECS::next(ECS::EntityIterator& it) {
+    // Just iterate through to find the next one
+    // I know I'm reusing code here, but fuck it
+
+    Entity currEnt = it.ent;
+    it.ent = nextEnt;
+
+    for (Entity e = currEnt + 1; e < nextEnt; ++e) {
+
+        bool exit = true;
+
+        for (Component c: it.comps) {
+            if (!hasComp[c][e]) {
+                exit = false;
+                break;
+            }
+        }
+
+        if (exit) {
+            it.ent = e;
+            break;
+        }
+    }
+
+    return it;
+}
+
+ECS::EntityIterator ECS::end() {
+    EntityIterator ret({}, nextEnt);
+    return ret;
+}
+
+//
+// EntityIterator
+//
+
+ECS::EntityIterator::EntityIterator(initializer_list<Component> compList, Entity ent):
+    comps(compList)
+{
+    this->ent = ent;
+}
+
+bool ECS::EntityIterator::operator==(EntityIterator rhs) {
+    EntityIterator lhs = *this;
+    return lhs.ent == rhs.ent;
 }
