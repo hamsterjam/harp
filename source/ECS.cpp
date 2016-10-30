@@ -57,7 +57,7 @@ Entity ECS::createEntity() {
     return nextEnt++;
 }
 
-void ECS::destroyEntity(Entity ent) {
+void ECS::deleteEntity(Entity ent) {
     // Just setting it to having no components should be good enough
     // Later you want to add this ID to a list so it can be reassigned
     for (int i=0; i < nextComp; ++i) {

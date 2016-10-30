@@ -70,9 +70,9 @@ int main() {
         assert(!intOut);
     }
 
-    // Now destroy the entity
+    // Now delete the entity
     {
-        ecs.destroyEntity(ent1);
+        ecs.deleteEntity(ent1);
         void* vecOut = ecs.getComponent(ent1, vecComp);
 
         assert(!vecOut);

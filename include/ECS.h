@@ -40,7 +40,7 @@ class ECS {
         ~ECS();
 
         Entity createEntity();
-        void destroyEntity(Entity ent);
+        void deleteEntity(Entity ent);
 
         Component createComponent(std::size_t size);
 
