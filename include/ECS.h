@@ -3,6 +3,7 @@
 
 #include <initializer_list>
 #include <vector>
+#include <queue>
 
 typedef unsigned int Entity;
 typedef unsigned int Component;
@@ -14,6 +15,8 @@ class ECS {
 
         unsigned int entVecLength;
         unsigned int compVecLength;
+
+        std::queue<Entity> entRecycleQueue;
 
         std::size_t* compSize;
         bool** hasComp;
