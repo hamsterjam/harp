@@ -40,6 +40,15 @@ ECS::~ECS() {
 //
 
 Entity ECS::createEntity() {
+    // Check our recycle queue first
+    if (!entRecycleQueue.empty()) {
+        // Don't have to resize or init anything, that's all taken care of when it
+        // was originally init'd
+        Entity ret = entRecycleQueue.front();
+        entRecycleQueue.pop();
+        return ret;
+    }
+
     // Resize arrays if we need to
     if (nextEnt >= entVecLength) {
         entVecLength *= 2;
@@ -57,12 +66,14 @@ Entity ECS::createEntity() {
     return nextEnt++;
 }
 
-void ECS::destroyEntity(Entity ent) {
+void ECS::deleteEntity(Entity ent) {
     // Just setting it to having no components should be good enough
-    // Later you want to add this ID to a list so it can be reassigned
     for (int i=0; i < nextComp; ++i) {
         hasComp[i][ent] = false;
     }
+
+    // Add the entity to the recycle queue
+    entRecycleQueue.push(ent);
 }
 
 //
