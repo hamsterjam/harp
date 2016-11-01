@@ -80,7 +80,7 @@ void ECS::deleteEntity(Entity ent) {
 // Component Functions
 //
 
-Component ECS::createComponent(size_t size) {
+Component ECS::createComponentType(size_t size) {
     // Resize arrays if we need to
     if (nextComp >= compVecLength) {
         compVecLength *= 2;
