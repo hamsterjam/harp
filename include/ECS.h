@@ -51,6 +51,8 @@ class ECS {
         void* getComponent(Entity ent, Component comp);
         void  removeComponent(Entity ent, Component comp);
 
+        void  updateComponents();
+
         EntityIterator begin(std::initializer_list<Component> comps);
         EntityIterator end();
 };

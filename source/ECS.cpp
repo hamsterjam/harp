@@ -133,6 +133,10 @@ void ECS::removeComponent(Entity ent, Component comp) {
     hasComp[comp][ent] = false;
 }
 
+void ECS::updateComponents() {
+    // Placeholder
+}
+
 //
 // System functions
 //
