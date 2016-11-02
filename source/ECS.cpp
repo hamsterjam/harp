@@ -80,7 +80,7 @@ void ECS::deleteEntity(Entity ent) {
 // Component Functions
 //
 
-Component ECS::createComponent(size_t size) {
+Component ECS::createComponentType(size_t size) {
     // Resize arrays if we need to
     if (nextComp >= compVecLength) {
         compVecLength *= 2;
@@ -131,6 +131,10 @@ void ECS::removeComponent(Entity ent, Component comp) {
     // Just set the hasComp to false, don't bother with the data
 
     hasComp[comp][ent] = false;
+}
+
+void ECS::updateComponents() {
+    // Placeholder
 }
 
 //

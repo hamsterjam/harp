@@ -16,8 +16,8 @@ int main() {
     ECS ecs(1, 1);
 
     // Create some components, one with a primative, the other with a struct
-    Component intComp = ecs.createComponent(sizeof(int));
-    Component vecComp = ecs.createComponent(sizeof(vec));
+    Component intComp = ecs.createComponentType(sizeof(int));
+    Component vecComp = ecs.createComponentType(sizeof(vec));
 
     // Just make a bunch of entities
     Entity ent1 = ecs.createEntity();
