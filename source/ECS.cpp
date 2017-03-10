@@ -1,10 +1,14 @@
 #include <ECS.h>
+
 #include <cstdlib>
 #include <cstring> // for memcpy
 
+#include <DynamicPoolAllocator.h>
+
 using namespace std;
 
-ECS::ECS(unsigned int entVecLength, unsigned int compVecLength) {
+ECS::ECS(unsigned int entVecLength, unsigned int compVecLength, size_t poolSize):
+        changePool(poolSize) {
     this->entVecLength  = entVecLength;
     this->compVecLength = compVecLength;
 
@@ -107,13 +111,20 @@ Component ECS::createComponentType(size_t size) {
 }
 
 void ECS::setComponent(Entity ent, Component comp, void* val) {
-    // Make sure you set it to actually having the component
-    hasComp[comp][ent] = true;
+    // We need to allocate new memory for the data so we have ownership
 
-    // Now just memcpy it into place, easy
     size_t size = compSize[comp];
-    // Cast to char to do clean pointer arithmetic
-    memcpy(((char*) data[comp]) + size * ent, val, size);
+    void* valCopy = changePool.alloc(size);
+    memcpy((char*) valCopy, val, size);
+
+    // Create the change request and add it to the queue
+    ChangeRequest req;
+    req.ent = ent;
+    req.comp = comp;
+    req.val = valCopy;
+    req.remove = false;
+
+    changeQueue.push(req);
 }
 
 void* ECS::getComponent(Entity ent, Component comp) {
@@ -130,11 +141,50 @@ void* ECS::getComponent(Entity ent, Component comp) {
 void ECS::removeComponent(Entity ent, Component comp) {
     // Just set the hasComp to false, don't bother with the data
 
-    hasComp[comp][ent] = false;
+    ChangeRequest req;
+    req.ent = ent;
+    req.comp = comp;
+    req.remove = true;
+
+    changeQueue.push(req);
 }
 
 void ECS::updateComponents() {
-    // Placeholder
+    while(!changeQueue.empty()) {
+        ChangeRequest req = changeQueue.front();
+
+        if (req.remove) {
+            hasComp[req.comp][req.ent] = false;
+        }
+        else {
+            hasComp[req.comp][req.ent] = true;
+            size_t size = compSize[req.comp];
+            memcpy(((char*) data[req.comp]) + size * req.ent, req.val, size);
+        }
+
+        changeQueue.pop();
+    }
+
+    changePool.freeAll();
+}
+
+// Zero sized components
+
+Component ECS::createFlagComponentType() {
+    return createComponentType(0);
+}
+
+void ECS::setFlagComponent(Entity ent, Component flag, bool val) {
+    if (val) {
+        setComponent(ent, flag, NULL);
+    }
+    else {
+        removeComponent(ent, flag);
+    }
+}
+
+bool ECS::getFlagComponent(Entity ent, Component flag) {
+    return getComponent(ent, flag);
 }
 
 //

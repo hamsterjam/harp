@@ -13,7 +13,7 @@ struct vec {
 int main() {
     // First create the ECS
     // Usign entVecLength = compVecLength = 1 to test auto expansion
-    ECS ecs(1, 1);
+    ECS ecs(1, 1, 128);
 
     // Create some components, one with a primative, the other with a struct
     Component intComp = ecs.createComponentType(sizeof(int));
@@ -38,6 +38,7 @@ int main() {
     {
         int input = 1;
         ecs.setComponent(ent1, intComp, &input);
+        ecs.updateComponents();
 
         // This looks a little awkward, remember that it gives you a void* which you
         // have to cast and dereference yourself, thats all I'm doing
@@ -54,6 +55,7 @@ int main() {
         input.y = 12;
         input.z = 13;
         ecs.setComponent(ent1, vecComp, &input);
+        ecs.updateComponents();
 
         vec output = *((vec*)ecs.getComponent(ent1, vecComp));
 
@@ -65,6 +67,7 @@ int main() {
     // Now test removing components
     {
         ecs.removeComponent(ent1, intComp);
+        ecs.updateComponents();
         void* intOut = ecs.getComponent(ent1, intComp);
 
         assert(!intOut);
@@ -98,6 +101,8 @@ int main() {
         inputVec.y = 42;
         inputVec.z = 43;
         ecs.setComponent(ent4, vecComp, &inputVec);
+
+        ecs.updateComponents();
     }
 
     // Now check to see if the system functions work
@@ -125,6 +130,72 @@ int main() {
             assert(e == ent3);
         }
         assert(entCount == 1);
+    }
+
+    // Time to test the update function
+    {
+        // Going to use ent3 which has both components
+        int inputInt;
+        vec inputVec;
+
+        inputInt = 5;       // Current: 3
+
+        inputVec.x = 51;    // Current: 31
+        inputVec.y = 52;    // Current: 32
+        inputVec.z = 53;    // Current: 33
+
+        ecs.setComponent(ent3, intComp, &inputInt);
+        ecs.setComponent(ent3, vecComp, &inputVec);
+
+        // Changes should be queued, but not updated
+
+        int outputInt;
+        vec outputVec;
+
+        outputInt = *((int*) ecs.getComponent(ent3, intComp));
+        outputVec = *((vec*) ecs.getComponent(ent3, vecComp));
+
+        assert(outputInt == 3);
+        assert(outputVec.x == 31);
+        assert(outputVec.y == 32);
+        assert(outputVec.z == 33);
+
+        // Now we update and check that things have actually changed
+        ecs.updateComponents();
+
+        outputInt = *((int*) ecs.getComponent(ent3, intComp));
+        outputVec = *((vec*) ecs.getComponent(ent3, vecComp));
+
+        assert(outputInt == 5);
+        assert(outputVec.x == 51);
+        assert(outputVec.y == 52);
+        assert(outputVec.z == 53);
+
+        // Quickly check the remove works as intended as well
+        ecs.removeComponent(ent3, vecComp);
+
+        // Should still be there
+        assert(ecs.getComponent(ent3, vecComp));
+
+        ecs.updateComponents();
+
+        // Now it should be gone
+        assert(!ecs.getComponent(ent3, vecComp));
+    }
+
+    // Zero sized components
+    {
+        Component flag = ecs.createFlagComponentType();
+
+        ecs.setFlagComponent(ent1, flag, true);
+        ecs.updateComponents();
+
+        assert(ecs.getFlagComponent(ent1, flag));
+
+        ecs.setFlagComponent(ent1, flag, false);
+        ecs.updateComponents();
+
+        assert(!ecs.getFlagComponent(ent1, flag));
     }
 
     // Could probably be more exhaustive, but that's enough I think.
