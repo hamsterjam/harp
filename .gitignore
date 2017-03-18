@@ -1,3 +1,5 @@
 object/*
 galaxy-fort
 galaxy-fort_debug
+
+include/stb*
