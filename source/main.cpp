@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const unsigned int FRAME_RATE = 60;
+const unsigned int FRAME_RATE = 120;
 
 static bool shouldExit = false;
 
@@ -13,6 +13,7 @@ static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
 void update(unsigned int deltaT) {
+    cout << "Frame time: " << deltaT << endl;
 }
 
 void draw() {
@@ -37,11 +38,6 @@ int main(int argc, char** argv) {
     unsigned int prevTime = 0;
 
     while(!shouldExit) {
-
-        //
-        // Events
-        //
-
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -49,20 +45,12 @@ int main(int argc, char** argv) {
             }
         }
 
-        //
-        // Logic
-        //
-
         unsigned int currTime = SDL_GetTicks();
         if (prevTime == 0) {
             prevTime = currTime - 1000 / FRAME_RATE;
         }
 
         update(currTime - prevTime);
-
-        //
-        // Rendering
-        //
 
         draw();
 
