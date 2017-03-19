@@ -4,5 +4,6 @@ galaxy-fort_debug
 
 libraries/*
 *.swp
+*.dll
 
 include/stb*
