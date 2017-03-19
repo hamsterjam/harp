@@ -5,11 +5,6 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-#include <graphics/Texture.h>
-
 #include <iostream>
 
 using namespace std;
