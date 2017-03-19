@@ -6,18 +6,8 @@ HEADER_DIR = include
 OBJECT_DIR = object
 
 #Find all the sources (recursively)
-CPP_FILES = $(shell function getfiles { \
-                        for f in $$1/*; do \
-                           if [ -d $$f ]; then \
-                              getfiles $$f; \
-                           else \
-                              echo $$f | sed 's_./\(\.*\)_\1_'; \
-                           fi; \
-                        done; \
-                     }; \
-                     cd $(SOURCE_DIR); \
-                     getfiles .; \
-                     cd ..; )
+CPP_PATHS = $(wildcard $(SOURCE_DIR)/*.cpp) $(wildcard $(SOURCE_DIR)/**/*.cpp)
+CPP_FILES = $(CPP_PATHS:source/%=%)
 
 OBJECTS = $(filter-out main.o,$(CPP_FILES:.cpp=.o))
 
@@ -70,12 +60,10 @@ release: pre_release $(RELEASE_OBJECTS) $(SOURCE_DIR)/main.cpp
 pre_debug: pre_pre
 	@[ -d $(DEBUG_OBJECT_DIR) ] || mkdir $(DEBUG_OBJECT_DIR)
 	@[ "$(ls -A temp)" ] && cp -r temp/* $(DEBUG_OBJECT_DIR) || :
-	@rm -r temp
 
 pre_release: pre_pre
 	@[ -d $(RELEASE_OBJECT_DIR) ] || mkdir $(RELEASE_OBJECT_DIR)
 	@[ "$(ls -A temp)" ] && cp -r temp/* $(DEBUG_OBJECT_DIR) || :
-	@rm -r temp
 
 %-test: test/%.cpp pre_debug $(DEBUG_OBJECTS)
 	@echo 'Compiling test build...'
@@ -83,18 +71,8 @@ pre_release: pre_pre
 
 pre_pre:
 	@[ -d $(OBJECT_DIR) ] || mkdir $(OBJECT_DIR)
-	@mkdir temp; \
-	copystructure() { \
-	   for f in $$1/*; do \
-	      if [ -d $$f ]; then \
-	         [ -d ../temp/$$f ] || mkdir ../temp/$$f; \
-	         copystructure $$f; \
-	      fi; \
-	   done \
-	}; \
-	cd $(SOURCE_DIR); \
-	copystructure . \
-	cd ..;
+	@cd $(SOURCE_DIR)
+	@find -type d -links 2 -exec mkdir -p "../$(OBJECT_DIR)" \;
 
 $(DEBUG_OBJECT_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	@echo 'Compiling '$@'...'
