@@ -59,11 +59,13 @@ release: pre_release $(RELEASE_OBJECTS) $(SOURCE_DIR)/main.cpp
 
 pre_debug: pre_pre
 	@[ -d $(DEBUG_OBJECT_DIR) ] || mkdir $(DEBUG_OBJECT_DIR)
-	@[ "$(ls -A temp)" ] && cp -r temp/* $(DEBUG_OBJECT_DIR) || :
+	@cp -r temp/* $(DEBUG_OBJECT_DIR) 2>>/dev/null
+	@rm -r temp
 
 pre_release: pre_pre
 	@[ -d $(RELEASE_OBJECT_DIR) ] || mkdir $(RELEASE_OBJECT_DIR)
-	@[ "$(ls -A temp)" ] && cp -r temp/* $(DEBUG_OBJECT_DIR) || :
+	@cp -r temp/* $(DEBUG_OBJECT_DIR) 2>>/dev/null
+	@rm -r temp
 
 %-test: test/%.cpp pre_debug $(DEBUG_OBJECTS)
 	@echo 'Compiling test build...'
@@ -71,8 +73,9 @@ pre_release: pre_pre
 
 pre_pre:
 	@[ -d $(OBJECT_DIR) ] || mkdir $(OBJECT_DIR)
-	@cd $(SOURCE_DIR)
-	@find -type d -links 2 -exec mkdir -p "../$(OBJECT_DIR)" \;
+	@[ -d temp ] || mkdir temp
+	@cd $(SOURCE_DIR); \
+	find . -type d -exec mkdir -p ../temp/{} \;
 
 $(DEBUG_OBJECT_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	@echo 'Compiling '$@'...'
