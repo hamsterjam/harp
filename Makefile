@@ -59,12 +59,12 @@ release: pre_release $(RELEASE_OBJECTS) $(SOURCE_DIR)/main.cpp
 
 pre_debug: pre_pre
 	@[ -d $(DEBUG_OBJECT_DIR) ] || mkdir $(DEBUG_OBJECT_DIR)
-	@cp -r temp/* $(DEBUG_OBJECT_DIR) 2>>/dev/null
+	@find temp -not -empty -exec cp -r temp/* $(DEBUG_OBJECT_DIR) \;
 	@rm -r temp
 
 pre_release: pre_pre
 	@[ -d $(RELEASE_OBJECT_DIR) ] || mkdir $(RELEASE_OBJECT_DIR)
-	@cp -r temp/* $(DEBUG_OBJECT_DIR) 2>>/dev/null
+	@find temp -not -empty -exec cp -r temp/* $(RELEASE_OBJECT_DIR) \;
 	@rm -r temp
 
 %-test: test/%.cpp pre_debug $(DEBUG_OBJECTS)
