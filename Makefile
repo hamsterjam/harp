@@ -26,7 +26,7 @@ CXX = g++
 CFLAGS = -std=gnu++11
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-	LFLAGS = -I$(HEADER_DIR) -I/usr/include/SDL2 `pkg-config --libs sdl2 gl`
+	LFLAGS = -I$(HEADER_DIR) -I/usr/include/SDL2 `pkg-config --libs sdl2 gl glew`
 else
 	LFLAGS = -Ilibraries/SDL2/include -Llibraries/SDL2/lib/x64 -lSDL2 -lGL
 endif
@@ -61,7 +61,7 @@ clean_release:
 
 debug: pre_debug $(DEBUG_OBJECTS) $(SOURCE_DIR)/main.cpp
 	@echo 'Compiling debug build...'
-	$(CXX) $(DEBUG_CFLAGS) $(DEBUG_OBJECTS) $(SOURCE_DIR)/main.cpp -o $(DEBUG_TARGET) $(DEBUG_LFLAGS)
+	@$(CXX) $(DEBUG_CFLAGS) $(DEBUG_OBJECTS) $(SOURCE_DIR)/main.cpp -o $(DEBUG_TARGET) $(DEBUG_LFLAGS)
 
 release: pre_release $(RELEASE_OBJECTS) $(SOURCE_DIR)/main.cpp
 	@echo 'Compiling release build...'
@@ -82,7 +82,6 @@ pre_release: pre_pre
 	@$(CXX) $(DEBUG_CFLAGS) $(DEBUG_OBJECTS) $< -o $@ $(DEBUG_LFLAGS)
 
 pre_pre:
-	echo $(UNAME)
 	@[ -d $(OBJECT_DIR) ] || mkdir $(OBJECT_DIR)
 	@mkdir temp; \
 	copystructure() { \
