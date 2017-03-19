@@ -7,7 +7,7 @@ OBJECT_DIR = object
 
 #Find all the sources (recursively)
 CPP_PATHS = $(wildcard $(SOURCE_DIR)/*.cpp) $(wildcard $(SOURCE_DIR)/**/*.cpp)
-CPP_FILES = $(CPP_PATHS:source/%=%)
+CPP_FILES = $(CPP_PATHS:$(SOURCE_DIR)/%=%)
 
 OBJECTS = $(filter-out main.o,$(CPP_FILES:.cpp=.o))
 
