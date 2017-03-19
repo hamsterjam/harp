@@ -1,5 +1,7 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <GL/glew.h>
+
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -39,6 +41,12 @@ int main(int argc, char** argv) {
     window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
 
     gl_context = SDL_GL_CreateContext(window);
+
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        cerr << "Failed to initialize glew: " << glewGetErrorString(err) << endl;
+        return 1;
+    }
 
     unsigned int prevTime = 0;
 
