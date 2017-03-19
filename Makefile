@@ -12,24 +12,33 @@ CPP_FILES = $(CPP_PATHS:$(SOURCE_DIR)/%=%)
 OBJECTS = $(filter-out main.o,$(CPP_FILES:.cpp=.o))
 
 #Globals
-CXX = g++
 CFLAGS = -std=gnu++11
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
+	CXX = g++
 	LFLAGS = -I$(HEADER_DIR) -I/usr/include/SDL2 `pkg-config --libs sdl2 gl glew`
 else
-	LFLAGS = -Ilibraries/SDL2/include -Llibraries/SDL2/lib/x64 -lSDL2 -lGL
+	CXX = mingw32-g++
+	LFLAGS = -Ilibraries/SDL2/include -Ilibraries/glew/include -Llibraries/SDL2/lib/x86 -Llibraries/OpenGL -Llibraries/glew/lib/Release/Win32 -lmingw32 -lSDL2main -lSDL2 -lglew32 -lglu32 -lgdi32 -lopengl32
 endif
 
 #Debug Varibales
-DEBUG_TARGET = $(NAME)_debug
+ifeq ($(UNAME), Linux)
+	DEBUG_TARGET = $(NAME)_debug
+else
+	DEBUG_TARGET = $(NAME)_debug.exe
+endif
 DEBUG_CFLAGS = $(CFLAGS) -g
 DEBUG_LFLAGS = $(LFLAGS)
 DEBUG_OBJECT_DIR = $(OBJECT_DIR)/debug
 DEBUG_OBJECTS = $(addprefix $(DEBUG_OBJECT_DIR)/, $(OBJECTS))
 
 #Release Variables
-RELEASE_TARGET = $(NAME)
+ifeq ($(UNAME), Linux)
+	RELEASE_TARGET = $(NAME)
+else
+	RELEASE_TARGET = $(NAME).exe
+endif
 RELEASE_CFLAGS = $(CFLAGS) -O3
 RELEASE_LFLAGS = $(LFLAGS)
 RELEASE_OBJECT_DIR = $(OBJECT_DIR)/release
