@@ -24,7 +24,12 @@ OBJECTS = $(filter-out main.o,$(CPP_FILES:.cpp=.o))
 #Globals
 CXX = g++
 CFLAGS = -std=gnu++11
-LFLAGS = -I$(HEADER_DIR) `pkg-config --libs sdl2 gl`
+UNAME = `uname`
+ifeq ($(UNAME), Linux)
+	LFLAGS = -I$(HEADER_DIR) `pkg-config --libs sdl2 gl`
+else
+	LFLAGS = -Ilibraries/SDL2/include -Llibraries/SDL2/lib/x64 -lSDL2 -lGL
+endif
 
 #Debug Varibales
 DEBUG_TARGET = $(NAME)_debug
