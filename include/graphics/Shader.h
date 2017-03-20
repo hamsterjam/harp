@@ -3,6 +3,8 @@
 
 #include <SDL_opengl.h>
 
+class Sprite;
+
 class Shader {
     private:
         char* vertSource;
@@ -10,12 +12,16 @@ class Shader {
 
         GLuint programID;
 
+        GLuint vertPosBuffer;
+        GLuint texCoordBuffer;
+
     public:
         // This will compile a default shader
         Shader();
         ~Shader();
 
-        void draw();
+        // Very temporary, this is to get something working
+        void draw(Sprite spr, int x, int y);
 };
 
 #endif

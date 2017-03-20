@@ -15,15 +15,15 @@ Sprite::Sprite(Texture* tex) {
 }
 
 Sprite::Sprite(Texture* tex, uint x, uint y, uint w, uint h) : Sprite(tex) {
-    double texWidth  = (double) tex->w;
-    double texHeight = (double) tex->h;
+    float texWidth  = (float) tex->w;
+    float texHeight = (float) tex->h;
 
     // Values outside of [0, 1] aren't errors per se, but they may behave strange
 
-    u1 = (double) x / texWidth;
-    u2 = (double) (x + w) / texWidth;
-    v1 = (double) y / texHeight;
-    v2 = (double) (y + h) / texHeight;
+    u1 = (float) x / texWidth;
+    u2 = (float) (x + w) / texWidth;
+    v1 = (float) y / texHeight;
+    v2 = (float) (y + h) / texHeight;
 
     // Again, make sure to flip the y axis
     v1 = 1.0 - v1;

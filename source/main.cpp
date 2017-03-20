@@ -9,15 +9,20 @@
 
 using namespace std;
 
-const unsigned int FRAME_RATE = 120;
+const unsigned int FRAME_RATE = 60;
+
+extern const int SCREEN_WIDTH  = 640;
+extern const int SCREEN_HEIGHT = 480;
 
 static bool shouldExit = false;
 
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
+void init() {
+}
+
 void update(unsigned int deltaT) {
-    cout << "Frame time: " << deltaT << endl;
 }
 
 void draw() {
@@ -29,21 +34,39 @@ void draw() {
     SDL_GL_SwapWindow(window);
 }
 
+void cleanup() {
+}
+
 int main(int argc, char** argv) {
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         cerr << "Failed to initialize SDL: " << SDL_GetError() << endl;
         return 1;
     }
 
-    window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 
     gl_context = SDL_GL_CreateContext(window);
 
+    if (!gl_context) {
+        cerr << "Failed to create OpenGL context :" << SDL_GetError() << endl;
+        return 1;
+    }
+
+    glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (err != GLEW_OK) {
         cerr << "Failed to initialize glew: " << glewGetErrorString(err) << endl;
         return 1;
     }
+
+    init();
 
     unsigned int prevTime = 0;
 
@@ -71,6 +94,8 @@ int main(int argc, char** argv) {
         // like this so update has an accurate deltaT
         prevTime = currTime;
     }
+
+    cleanup();
 
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
