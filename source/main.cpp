@@ -7,12 +7,11 @@
 
 #include <iostream>
 
+#include <globals.h>
+
 using namespace std;
 
 const unsigned int FRAME_RATE = 60;
-
-extern const int SCREEN_WIDTH  = 640;
-extern const int SCREEN_HEIGHT = 480;
 
 static bool shouldExit = false;
 

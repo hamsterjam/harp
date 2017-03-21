@@ -9,8 +9,7 @@
 #include <graphics/Sprite.h>
 #include <graphics/Texture.h>
 
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
+#include <globals.h>
 
 const char* defaultVertSource = R"(
 attribute vec2 aVertPos;
