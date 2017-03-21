@@ -163,24 +163,24 @@ void Shader::draw(Sprite spr, int x, int y) {
         glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &uv, GL_STATIC_DRAW);
 
         // Set the attribute
-        GLint texCoordAttrib = glGetAttribLocation(programID, spec.UVAttrib);
-        if (texCoordAttrib < 0) {
+        GLint UVAttribID = glGetAttribLocation(programID, spec.UVAttrib);
+        if (UVAttribID < 0) {
             std::cerr << "Failed to find attribute '" << spec.UVAttrib << "'" << std::endl;
             exit(1);
         }
-        glEnableVertexAttribArray(texCoordAttrib);
-        glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(UVAttribID);
+        glVertexAttribPointer(UVAttribID, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
         // Now set the texture to the uniform
-        GLint textureUniform = glGetUniformLocation(programID, spec.texUniform);
-        if (textureUniform < 0) {
+        GLint texUniformID = glGetUniformLocation(programID, spec.texUniform);
+        if (texUniformID < 0) {
             std::cerr << "Failed to find uniform '" << spec.texUniform << "'" << std::endl;
             exit(1);
         }
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, spec.tex->textureID);
-        glUniform1i(textureUniform, 0);
+        glUniform1i(texUniformID, 0);
     }
 
     // Draw
