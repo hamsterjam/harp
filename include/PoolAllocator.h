@@ -1,5 +1,5 @@
 #ifndef __HARP_POOL_ALLOCATOR_H
-#define __HAPR_POOL_ALLOCATOR_H
+#define __HARP_POOL_ALLOCATOR_H
 
 #include <cstddef>
 
