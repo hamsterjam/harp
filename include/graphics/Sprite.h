@@ -1,6 +1,8 @@
 #ifndef __GALAXY_FORT_SPRITE_H
 #define __GALAXY_FORT_SPRITE_H
 
+#include <vector>
+
 class Texture;
 class Shader;
 
@@ -11,15 +13,23 @@ class Sprite {
     private:
         friend Shader;
 
-        Texture* tex;
-        // These are the values that OpenGL expects, the main difference is
-        // they are measured from the LOWER left, you need to flip v
-        float u1, u2, v1, v2;
+        struct texSpecifier {
+            Texture* tex;
+
+            // As these are passed straight to OpenGL, flip the y
+            float u1, u2, v1, v2;
+
+            const char* texUniform;
+            const char* UVAttrib;
+        };
+
+        std::vector<texSpecifier> textures;
+
+        int w, h;
 
     public:
+        Sprite();
         Sprite(const char* filename);
-        Sprite(Texture* tex);
-        Sprite(Texture* tex, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 };
 
 #endif

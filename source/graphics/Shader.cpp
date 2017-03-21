@@ -98,22 +98,25 @@ Shader::Shader() {
     }
 
     // Make some VBO's for pos coords and texture coords
-    glGenBuffers(1, &vertPosBuffer);
-    glGenBuffers(1, &texCoordBuffer);
+    glGenBuffers(1, &vertPosVBO);
+    glGenBuffers(1, &texCoordVBO);
 }
 
 Shader::~Shader() {
     glDeleteProgram(programID);
 
-    glDeleteBuffers(1, &vertPosBuffer);
-    glDeleteBuffers(1, &texCoordBuffer);
+    glDeleteBuffers(1, &vertPosVBO);
+    glDeleteBuffers(1, &texCoordVBO);
 }
 
 void Shader::draw(Sprite spr, int x, int y) {
-    int texWidth  = spr.tex->w;
-    int texHeight = spr.tex->h;
+    // Make sure we use the shader
+    glUseProgram(programID);
 
-    // First fill our VBOs
+    // First, let's fill our vertPos VBO
+    int texWidth  = spr.w;
+    int texHeight = spr.h;
+
     float x1 = (float) x / (float) SCREEN_WIDTH;
     float y1 = (float) y / (float) SCREEN_HEIGHT;
     float x2 = (float) (x + texWidth)  / (float) SCREEN_WIDTH;
@@ -132,51 +135,53 @@ void Shader::draw(Sprite spr, int x, int y) {
         x2, y2
     };
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &pos, GL_STATIC_DRAW);
 
-    float u1 = spr.u1;
-    float v1 = spr.v1;
-    float u2 = spr.u2;
-    float v2 = spr.v2;
-
-    float texCoord[] = {
-        u1, v1,
-        u1, v2,
-        u2, v1,
-        u2, v2
-    };
-
-    glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &texCoord, GL_STATIC_DRAW);
-
-    // Don't forget this...
-    glUseProgram(programID);
-
-    // Get our attributes and uniforms
+    // And then set the attribute
     GLint aVertPos  = glGetAttribLocation( programID, "aVertPos");
-    GLint aTexCoord = glGetAttribLocation( programID, "aTexCoord");
-    GLint uTexture  = glGetUniformLocation(programID, "uTexture");
-
-    if (aVertPos < 0)  std::cerr << "Failed to find 'aVertPos'"  << std::endl;
-    if (aTexCoord < 0) std::cerr << "Failed to find 'aTexCoord'" << std::endl;
-    if (uTexture < 0)  std::cerr << "Failed to find 'uTexture'"  << std::endl;
-
-    // Activate
+    if (aVertPos < 0)  {
+        std::cerr << "Failed to find 'aVertPos'"  << std::endl;
+        exit(1);
+    }
     glEnableVertexAttribArray(aVertPos);
-    glEnableVertexAttribArray(aTexCoord);
-
-    // Bind attributes
-    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
     glVertexAttribPointer(aVertPos, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
-    glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    // Now let's load the stuff from the textures
+    for (auto it = spr.textures.begin(); it != spr.textures.end(); ++it) {
+        auto spec = *it;
 
-    // Bind the texture
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, spr.tex->textureID);
-    glUniform1i(uTexture, 1);
+        // First fill the texCoordVBO
+        float uv[] = {
+            spec.u1, spec.v1,
+            spec.u1, spec.v2,
+            spec.u2, spec.v1,
+            spec.u2, spec.v2
+        };
+
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &uv, GL_STATIC_DRAW);
+
+        // Set the attribute
+        GLint texCoordAttrib = glGetAttribLocation(programID, spec.UVAttrib);
+        if (texCoordAttrib < 0) {
+            std::cerr << "Failed to find attribute '" << spec.UVAttrib << "'" << std::endl;
+            exit(1);
+        }
+        glEnableVertexAttribArray(texCoordAttrib);
+        glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+        // Now set the texture to the uniform
+        GLint textureUniform = glGetUniformLocation(programID, spec.texUniform);
+        if (textureUniform < 0) {
+            std::cerr << "Failed to find uniform '" << spec.texUniform << "'" << std::endl;
+            exit(1);
+        }
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, spec.tex->textureID);
+        glUniform1i(textureUniform, 0);
+    }
 
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

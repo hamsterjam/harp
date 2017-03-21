@@ -12,8 +12,8 @@ class Shader {
 
         GLuint programID;
 
-        GLuint vertPosBuffer;
-        GLuint texCoordBuffer;
+        GLuint vertPosVBO;
+        GLuint texCoordVBO;
 
     public:
         // This will compile a default shader
