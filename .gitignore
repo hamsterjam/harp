@@ -1,9 +1,12 @@
 object/*
 galaxy-fort
 galaxy-fort_debug
+*-test
 
 libraries/*
 *.swp
 *.dll
 
 include/stb*
+
+res/*

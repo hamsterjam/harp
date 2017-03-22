@@ -37,12 +37,17 @@ void main(void) {
 }
 )";
 
-Shader::Shader() {
+Shader::Shader() : Shader(defaultFragSource, defaultVertSource, 1) {
+    // That's all
+}
+
+Shader::Shader(const char* fragSource, const char* vertSource, unsigned int numTextures) {
+    this->numTextures = numTextures;
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(vertShader, 1, &defaultVertSource, NULL);
-    glShaderSource(fragShader, 1, &defaultFragSource, NULL);
+    glShaderSource(vertShader, 1, &vertSource, NULL);
+    glShaderSource(fragShader, 1, &fragSource, NULL);
 
     GLint compileStatus;
 
@@ -99,14 +104,14 @@ Shader::Shader() {
 
     // Make some VBO's for pos coords and texture coords
     glGenBuffers(1, &vertPosVBO);
-    glGenBuffers(1, &texCoordVBO);
+    glGenBuffers(numTextures, texCoordVBOs);
 }
 
 Shader::~Shader() {
     glDeleteProgram(programID);
 
     glDeleteBuffers(1, &vertPosVBO);
-    glDeleteBuffers(1, &texCoordVBO);
+    glDeleteBuffers(numTextures, texCoordVBOs);
 }
 
 void Shader::draw(Sprite spr, int x, int y) {
@@ -148,7 +153,13 @@ void Shader::draw(Sprite spr, int x, int y) {
     glVertexAttribPointer(aVertPos, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Now let's load the stuff from the textures
+    unsigned int currTex = 0;
     for (auto it = spr.textures.begin(); it != spr.textures.end(); ++it) {
+        if (currTex >= numTextures) {
+            std::cerr << "Too many textures in Sprite for this Shader" << std::endl;
+            std::cerr << "Expected: " << numTextures << std::endl;
+            exit(1);
+        }
         auto spec = *it;
 
         // First fill the texCoordVBO
@@ -159,7 +170,7 @@ void Shader::draw(Sprite spr, int x, int y) {
             spec.u2, spec.v2
         };
 
-        glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordVBOs[currTex]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &uv, GL_STATIC_DRAW);
 
         // Set the attribute
@@ -178,9 +189,17 @@ void Shader::draw(Sprite spr, int x, int y) {
             exit(1);
         }
 
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0 + currTex);
         glBindTexture(GL_TEXTURE_2D, spec.tex->textureID);
-        glUniform1i(texUniformID, 0);
+        glUniform1i(texUniformID, currTex);
+
+        ++currTex;
+    }
+
+    if (currTex != numTextures) {
+        std::cerr << "Too few textures in Sprite for this Shader." << std::endl;
+        std::cerr << "Expected: " << numTextures << ", found: " << currTex << std::endl;
+        exit(1);
     }
 
     // Draw
