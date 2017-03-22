@@ -103,6 +103,7 @@ Shader::Shader(const char* fragSource, const char* vertSource, unsigned int numT
     }
 
     // Make some VBO's for pos coords and texture coords
+    texCoordVBOs = (GLuint*) malloc(sizeof(GLuint) * numTextures);
     glGenBuffers(1, &vertPosVBO);
     glGenBuffers(numTextures, texCoordVBOs);
 }
@@ -112,6 +113,8 @@ Shader::~Shader() {
 
     glDeleteBuffers(1, &vertPosVBO);
     glDeleteBuffers(numTextures, texCoordVBOs);
+
+    free(texCoordVBOs);
 }
 
 void Shader::draw(Sprite spr, int x, int y) {
