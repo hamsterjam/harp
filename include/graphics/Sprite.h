@@ -27,9 +27,15 @@ class Sprite {
 
         int w, h;
 
+        texSpecifier defaultSpec(Texture* tex);
+
     public:
         Sprite();
         Sprite(const char* filename);
+        Sprite(Texture* tex);
+
+        void addImage(const char* filename, const char* texUniform, const char* UVAttrib);
+        void addTexture(Texture* tex, const char* texUniform, const char* UVAttrib);
 };
 
 #endif
