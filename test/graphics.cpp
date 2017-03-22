@@ -21,6 +21,40 @@ static bool shouldExit = false;
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
+const char* vertSource = R"(
+attribute vec2 aVertPos;
+attribute vec2 aTexCoord;
+attribute vec2 aAuxTexCoord;
+
+varying vec2 vTexCoord;
+varying vec2 vAuxTexCoord;
+
+void main(void) {
+    vTexCoord = aTexCoord;
+    vAuxTexCoord = aAuxTexCoord;
+    gl_Position = vec4(aVertPos, 0.0, 1.0);
+}
+)";
+
+const char* fragSource = R"(
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform sampler2D uTexture;
+uniform sampler2D uTexture2;
+
+varying vec2 vTexCoord;
+varying vec2 vAuxTexCoord;
+
+void main(void) {
+    vec4 color1 = texture2D(uTexture, vTexCoord);
+    vec4 color2 = texture2D(uTexture2, vAuxTexCoord);
+
+    gl_FragColor = -color1*0.1 + color2;
+}
+)";
+
 int main(int argc, char** argv) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
@@ -52,15 +86,16 @@ int main(int argc, char** argv) {
 
     SDL_GL_MakeCurrent(window, gl_context);
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     //
     // The fun stuff starts here
     //
 
-    Shader shd;
+    Shader shd(fragSource, vertSource, 2);
     Sprite spr("res/test.png");
+    spr.addImage("res/crane.png", "uTexture2", "aAuxTexCoord");
 
     shd.draw(spr, 100, 100);
 
