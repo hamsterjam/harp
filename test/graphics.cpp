@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
     // The fun stuff starts here
     //
 
-    Shader shd(fragSource, vertSource, 2);
+    Shader shd(vertSource, fragSource, 2);
     Sprite spr("res/test.png");
     spr.addImage("res/crane.png", "uTexture2", "aAuxTexCoord");
 

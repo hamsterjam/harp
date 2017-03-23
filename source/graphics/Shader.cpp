@@ -41,7 +41,7 @@ Shader::Shader() : Shader(defaultFragSource, defaultVertSource, 1) {
     // That's all
 }
 
-Shader::Shader(const char* fragSource, const char* vertSource, unsigned int numTextures) {
+Shader::Shader(const char* vertSource, const char* fragSource, unsigned int numTextures) {
     this->numTextures = numTextures;
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -103,13 +103,13 @@ Shader::Shader(const char* fragSource, const char* vertSource, unsigned int numT
     }
 
     // Make some VBO's for pos coords and texture coords
-    glGenBuffers(1, &vertPosVBO);
+    glGenBuffers(1, &vertPosBuffer);
 }
 
 Shader::~Shader() {
     glDeleteProgram(programID);
 
-    glDeleteBuffers(1, &vertPosVBO);
+    glDeleteBuffers(1, &vertPosBuffer);
 }
 
 void Shader::draw(Sprite spr, int x, int y) {
@@ -138,7 +138,7 @@ void Shader::draw(Sprite spr, int x, int y) {
         x2, y2
     };
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertPosVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &pos, GL_STATIC_DRAW);
 
     // And then set the attribute

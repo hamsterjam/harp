@@ -14,12 +14,12 @@ class Shader {
 
         GLuint programID;
 
-        GLuint vertPosVBO;
+        GLuint vertPosBuffer;
 
     public:
         // This will compile a default shader
         Shader();
-        Shader(const char* fragSource, const char* vertSource, unsigned int numTextures);
+        Shader(const char* vertSource, const char* fragSource, unsigned int numTextures);
         ~Shader();
 
         // Very temporary, this is to get something working
