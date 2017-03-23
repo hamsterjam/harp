@@ -3,11 +3,10 @@
 
 #include <vector>
 
+#include <SDL_opengl.h>
+
 class Texture;
 class Shader;
-
-// For now, each sprite only has one texture. In the future they could have
-// normal maps, bump maps, whatever
 
 class Sprite {
     private:
@@ -21,11 +20,12 @@ class Sprite {
 
             const char* texUniform;
             const char* UVAttrib;
+
+            GLuint UVBuffer;
         };
 
-        std::vector<texSpecifier> textures;
-
         int w, h;
+        std::vector<texSpecifier> textures;
 
         texSpecifier defaultSpec(Texture* tex);
 
@@ -36,6 +36,8 @@ class Sprite {
 
         void addImage(const char* filename, const char* texUniform, const char* UVAttrib);
         void addTexture(Texture* tex, const char* texUniform, const char* UVAttrib);
+
+        void updateBuffers();
 };
 
 #endif

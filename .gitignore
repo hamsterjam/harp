@@ -4,6 +4,7 @@ galaxy-fort_debug
 *-test
 
 libraries/*
+*.vim
 *.swp
 *.dll
 

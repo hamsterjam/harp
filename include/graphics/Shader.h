@@ -16,8 +16,6 @@ class Shader {
 
         GLuint vertPosVBO;
 
-        GLuint* texCoordVBOs;
-
     public:
         // This will compile a default shader
         Shader();

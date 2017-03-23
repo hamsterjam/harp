@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+
 #include <graphics/Sprite.h>
 #include <graphics/Texture.h>
 
@@ -22,6 +25,8 @@ Sprite::texSpecifier Sprite::defaultSpec(Texture* tex) {
 
     spec.UVAttrib = DEFAULT_UV_ATTRIBUTE;
 
+    glCreateBuffers(1, &spec.UVBuffer);
+
     return spec;
 }
 
@@ -41,6 +46,8 @@ Sprite::Sprite(Texture* tex) {
 
     w = spec.tex->w;
     h = spec.tex->h;
+
+    updateBuffers();
 }
 
 void Sprite::addImage(const char* filename, const char* texUniform, const char* UVAttrib) {
@@ -53,4 +60,23 @@ void Sprite::addTexture(Texture* tex, const char* texUniform, const char* UVAttr
     spec.UVAttrib = UVAttrib;
 
     textures.push_back(spec);
+
+    updateBuffers();
+}
+
+void Sprite::updateBuffers() {
+    for (auto it = textures.begin(); it != textures.end(); ++it) {
+        auto spec = *it;
+        float data[] = {
+            spec.u1, spec.v1,
+            spec.u1, spec.v2,
+            spec.u2, spec.v1,
+            spec.u2, spec.v2
+        };
+
+        glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &data, GL_STATIC_DRAW);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

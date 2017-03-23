@@ -103,18 +103,13 @@ Shader::Shader(const char* fragSource, const char* vertSource, unsigned int numT
     }
 
     // Make some VBO's for pos coords and texture coords
-    texCoordVBOs = (GLuint*) malloc(sizeof(GLuint) * numTextures);
     glGenBuffers(1, &vertPosVBO);
-    glGenBuffers(numTextures, texCoordVBOs);
 }
 
 Shader::~Shader() {
     glDeleteProgram(programID);
 
     glDeleteBuffers(1, &vertPosVBO);
-    glDeleteBuffers(numTextures, texCoordVBOs);
-
-    free(texCoordVBOs);
 }
 
 void Shader::draw(Sprite spr, int x, int y) {
@@ -165,16 +160,8 @@ void Shader::draw(Sprite spr, int x, int y) {
         }
         auto spec = *it;
 
-        // First fill the texCoordVBO
-        float uv[] = {
-            spec.u1, spec.v1,
-            spec.u1, spec.v2,
-            spec.u2, spec.v1,
-            spec.u2, spec.v2
-        };
-
-        glBindBuffer(GL_ARRAY_BUFFER, texCoordVBOs[currTex]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &uv, GL_STATIC_DRAW);
+        // Now the UVs
+        glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
 
         // Set the attribute
         GLint UVAttribID = glGetAttribLocation(programID, spec.UVAttrib);
