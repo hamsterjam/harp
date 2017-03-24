@@ -10,6 +10,7 @@
 
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
+#include <graphics/SceneObject.h>
 #include <globals.h>
 
 using namespace std;
@@ -102,9 +103,19 @@ int main(int argc, char** argv) {
     //
 
     Shader shd(vertSource, fragSource, 2);
+
     Sprite spr("res/test.png");
     spr.addImage("res/crane.png", "uTexture2", "aAuxTexCoord");
 
+    const char* names[] = {"uMix1", "uMix2"};
+    SceneObject so("mixRatios", 2, names, shd);
+    GLfloat mix1 = 0.5;
+    GLfloat mix2 = 0.5;
+    so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
+    so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
+
+
+    shd.use(so);
     shd.draw(spr, 100, 100);
 
     //

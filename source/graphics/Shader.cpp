@@ -9,6 +9,7 @@
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/Texture.h>
+#include <graphics/SceneObject.h>
 
 #include <globals.h>
 
@@ -194,6 +195,7 @@ void Shader::draw(Sprite spr, int x, int y) {
     }
 
     // Messing around with Uniform Buffer Objects
+    /*
     GLuint blockID = glGetUniformBlockIndex(programID, "mixRatios");
 
     GLint blockSize;
@@ -223,6 +225,7 @@ void Shader::draw(Sprite spr, int x, int y) {
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     free(blockData);
+    */
 
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -230,4 +233,20 @@ void Shader::draw(Sprite spr, int x, int y) {
     // Cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Shader::use(SceneObject so) {
+    so.updateBuffer();
+
+    GLuint bufferID = so.bufferID;
+    GLuint blockID  = so.blockID;
+
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
+    glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+GLuint Shader::getProgramID() {
+    return programID;
 }

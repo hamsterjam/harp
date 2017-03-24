@@ -4,6 +4,7 @@
 #include <SDL_opengl.h>
 
 class Sprite;
+class SceneObject;
 
 class Shader {
     private:
@@ -22,8 +23,10 @@ class Shader {
         Shader(const char* vertSource, const char* fragSource, unsigned int numTextures);
         ~Shader();
 
-        // Very temporary, this is to get something working
         void draw(Sprite spr, int x, int y);
+
+        void use(SceneObject so);
+        GLuint getProgramID();
 };
 
 #endif
