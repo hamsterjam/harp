@@ -229,17 +229,8 @@ void Shader::draw(Sprite spr, int x, int y) {
     */
 
     // SceneObjects
-    for (auto it = SceneObjects.begin(); it != SceneObjects.end(); ++it) {
-        SceneObject so = *it;
-
-        so.shaderInit(*this);
-        so.updateBuffer();
-
-        GLuint blockID  = so.getBlockID();
-        GLuint bufferID = so.getBufferID();
-
-        glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
-        glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
+    for (auto so : SceneObjects) {
+        so.updateBuffer(*this);
     }
 
     // Draw

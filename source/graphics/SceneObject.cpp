@@ -74,10 +74,9 @@ void SceneObject::shaderInit(Shader shd) {
     needsShaderInit = false;
 }
 
-void SceneObject::updateBuffer() {
+void SceneObject::updateBuffer(Shader shd) {
     if (needsShaderInit) {
-        // You need to do that shader init stuff first, this really should error.
-        return;
+        shaderInit(shd);
     }
     if (!needsBufferUpdate) {
         return;
@@ -88,13 +87,14 @@ void SceneObject::updateBuffer() {
     // Zero it out so any uniforms we havn't set are defaulted to 0
     memset(bufferData, 0, bufferSize);
 
-    for (auto it = uniforms.begin(); it != uniforms.end(); ++it) {
-        UniformSpec spec = it->second;
+    for (auto item : uniforms) {
+        UniformSpec spec = item.second;
         memcpy(bufferData + spec.offset, spec.data, spec.size);
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
     glBufferData(GL_UNIFORM_BUFFER, bufferSize, bufferData, GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     free(bufferData);

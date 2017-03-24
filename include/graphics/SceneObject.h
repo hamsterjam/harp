@@ -34,7 +34,7 @@ class SceneObject {
 
         void setUniform(const char* name, std::size_t size, void* value);
         void shaderInit(Shader shd);
-        void updateBuffer();
+        void updateBuffer(Shader shd);
 
         GLuint getBlockID();
         GLuint getBufferID();
