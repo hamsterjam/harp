@@ -5,6 +5,7 @@
 #include <cstring> // memcpy
 
 #include <iostream>
+#include <vector>
 
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
@@ -227,6 +228,20 @@ void Shader::draw(Sprite spr, int x, int y) {
     free(blockData);
     */
 
+    // SceneObjects
+    for (auto it = SceneObjects.begin(); it != SceneObjects.end(); ++it) {
+        SceneObject so = *it;
+
+        so.shaderInit(*this);
+        so.updateBuffer();
+
+        GLuint blockID  = so.getBlockID();
+        GLuint bufferID = so.getBufferID();
+
+        glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
+        glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
+    }
+
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -236,15 +251,7 @@ void Shader::draw(Sprite spr, int x, int y) {
 }
 
 void Shader::use(SceneObject so) {
-    so.updateBuffer();
-
-    GLuint bufferID = so.bufferID;
-    GLuint blockID  = so.blockID;
-
-    glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
-    glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    SceneObjects.push_back(so);
 }
 
 GLuint Shader::getProgramID() {

@@ -2,32 +2,42 @@
 #define __GALAXY_FORT_SCENE_OBJECT_H
 
 #include <cstdlib>
+
+#include <map>
+
 #include <SDL_opengl.h>
 
 class Shader;
 
 class SceneObject {
     private:
-        friend Shader;
+        struct UniformSpec {
+            const char* name;
+            std::size_t size;
+            GLint offset;
+            void* data;
+        };
 
-        GLubyte* data;
-
+        const char* blockName;
         GLuint blockID;
-        GLint bufferSize;
+
         GLuint bufferID;
+        GLint bufferSize;
 
-        unsigned int numUniforms;
+        std::map<const char*, UniformSpec> uniforms;
 
-        const char** names;
-        GLuint* indices;
-        GLint* offsets;
+        bool needsShaderInit;
+        bool needsBufferUpdate;
 
     public:
-        SceneObject(const char* blockName, unsigned int numUniforms, const char** uniformNames, Shader shd);
-        ~SceneObject();
+        SceneObject(const char* blockName);
 
-        void setUniform(const char* uniformName, std::size_t size, void* value);
+        void setUniform(const char* name, std::size_t size, void* value);
+        void shaderInit(Shader shd);
         void updateBuffer();
+
+        GLuint getBlockID();
+        GLuint getBufferID();
 };
 
 #endif
