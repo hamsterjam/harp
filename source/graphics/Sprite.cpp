@@ -25,7 +25,7 @@ Sprite::texSpecifier Sprite::defaultSpec(Texture* tex) {
 
     spec.UVAttrib = DEFAULT_UV_ATTRIBUTE;
 
-    glCreateBuffers(1, &spec.UVBuffer);
+    glGenBuffers(1, &spec.UVBuffer);
 
     return spec;
 }

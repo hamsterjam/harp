@@ -22,8 +22,6 @@ class SceneObject {
         GLuint* indices;
         GLint* offsets;
 
-        GLuint programID;
-
     public:
         SceneObject(const char* blockName, unsigned int numUniforms, const char** uniformNames, Shader shd);
         ~SceneObject();

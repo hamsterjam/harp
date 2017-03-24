@@ -12,7 +12,8 @@
 SceneObject::SceneObject(const char* blockName, unsigned int numUniforms, const char** uniformNames, Shader shd) {
     this->numUniforms = numUniforms;
     names = uniformNames;
-    programID = shd.getProgramID();
+
+    GLuint programID = shd.getProgramID();
 
     blockID = glGetUniformBlockIndex(programID, blockName);
     glGetActiveUniformBlockiv(programID, blockID, GL_UNIFORM_BLOCK_DATA_SIZE, &bufferSize);
