@@ -37,12 +37,20 @@ void main(void) {
 )";
 
 const char* fragSource = R"(
+#version 130
+#extension GL_ARB_uniform_buffer_object : enable
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 uniform sampler2D uTexture;
 uniform sampler2D uTexture2;
+
+uniform mixRatios {
+    float uMix1;
+    float uMix2;
+};
 
 varying vec2 vTexCoord;
 varying vec2 vAuxTexCoord;
@@ -51,13 +59,13 @@ void main(void) {
     vec4 color1 = texture2D(uTexture, vTexCoord);
     vec4 color2 = texture2D(uTexture2, vAuxTexCoord);
 
-    gl_FragColor = (color1 + color2)/2.0;
+    gl_FragColor = uMix1 * color1 + uMix2 * color2;
 }
 )";
 
 int main(int argc, char** argv) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
