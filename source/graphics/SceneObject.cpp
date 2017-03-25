@@ -17,6 +17,7 @@ SceneObject::SceneObject(const char* blockName) {
     this->blockName = blockName;
 
     glGenBuffers(1, &bufferID);
+    blockID = 0;
     bufferSize = 0;
 
     needsShaderInit = true;
@@ -53,11 +54,10 @@ void SceneObject::setUniform(const char* name, size_t size, void* value) {
     needsBufferUpdate = true;
 }
 
-void SceneObject::shaderInit(Shader shd) {
+void SceneObject::shaderInit(GLuint programID) {
     if (!needsShaderInit) {
         return;
     }
-    GLuint programID = shd.getProgramID();
 
     blockID = glGetUniformBlockIndex(programID, blockName);
     glGetActiveUniformBlockiv(programID, blockID, GL_UNIFORM_BLOCK_DATA_SIZE, &bufferSize);
@@ -74,9 +74,9 @@ void SceneObject::shaderInit(Shader shd) {
     needsShaderInit = false;
 }
 
-void SceneObject::updateBuffer(Shader shd) {
+void SceneObject::updateBuffer(GLuint programID) {
     if (needsShaderInit) {
-        shaderInit(shd);
+        shaderInit(programID);
     }
     if (!needsBufferUpdate) {
         return;
@@ -100,12 +100,4 @@ void SceneObject::updateBuffer(Shader shd) {
     free(bufferData);
 
     needsBufferUpdate = false;
-}
-
-GLuint SceneObject::getBlockID() {
-    return blockID;
-}
-
-GLuint SceneObject::getBufferID() {
-    return bufferID;
 }

@@ -195,42 +195,9 @@ void Shader::draw(Sprite spr, int x, int y) {
         exit(1);
     }
 
-    // Messing around with Uniform Buffer Objects
-    /*
-    GLuint blockID = glGetUniformBlockIndex(programID, "mixRatios");
-
-    GLint blockSize;
-    glGetActiveUniformBlockiv(programID, blockID, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
-
-    GLubyte* blockData = (GLubyte*) malloc(blockSize);
-
-    const GLchar* names[] = {"uMix1", "uMix2"};
-
-    GLuint indices[2];
-    glGetUniformIndices(programID, 2, names, indices);
-
-    GLint offset[2];
-    glGetActiveUniformsiv(programID, 2, indices, GL_UNIFORM_OFFSET, offset);
-
-    GLfloat data[] = {0.5, 0.5};
-
-    memcpy(blockData + offset[0], &data[0], sizeof(GLfloat));
-    memcpy(blockData + offset[1], &data[1], sizeof(GLfloat));
-
-    GLuint ubo;
-    glGenBuffers(1, &ubo);
-    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-    glBufferData(GL_UNIFORM_BUFFER, blockSize, blockData, GL_STATIC_DRAW);
-
-    glBindBufferBase(GL_UNIFORM_BUFFER, blockID, ubo);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    free(blockData);
-    */
-
     // SceneObjects
     for (auto so : SceneObjects) {
-        so.updateBuffer(*this);
+        so.updateBuffer(programID);
     }
 
     // Draw

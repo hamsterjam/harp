@@ -103,8 +103,6 @@ int main(int argc, char** argv) {
     //
 
     Shader shd(vertSource, fragSource, 2);
-    // Shouldn't need this call, but I really don't know man
-    glUseProgram(shd.getProgramID());
 
     Sprite spr("res/test.png");
     spr.addImage("res/crane.png", "uTexture2", "aAuxTexCoord");
