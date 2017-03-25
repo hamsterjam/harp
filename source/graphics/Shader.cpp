@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+#include <functional>
 
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
@@ -196,8 +197,9 @@ void Shader::draw(Sprite spr, int x, int y) {
     }
 
     // SceneObjects
-    for (auto so : SceneObjects) {
-        so->updateBuffer(programID);
+    for (auto item : SceneObjects) {
+        SceneObject& so = item.get();
+        so.updateBuffer(programID);
     }
     SceneObjects.clear();
 
@@ -209,7 +211,7 @@ void Shader::draw(Sprite spr, int x, int y) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Shader::use(SceneObject* so) {
+void Shader::use(SceneObject& so) {
     SceneObjects.push_back(so);
 }
 
