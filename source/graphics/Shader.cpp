@@ -197,8 +197,9 @@ void Shader::draw(Sprite spr, int x, int y) {
 
     // SceneObjects
     for (auto so : SceneObjects) {
-        so.updateBuffer(programID);
+        so->updateBuffer(programID);
     }
+    SceneObjects.clear();
 
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -208,7 +209,7 @@ void Shader::draw(Sprite spr, int x, int y) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Shader::use(SceneObject so) {
+void Shader::use(SceneObject* so) {
     SceneObjects.push_back(so);
 }
 

@@ -11,8 +11,6 @@
 #include <graphics/Shader.h>
 #include <graphics/SceneObject.h>
 
-using namespace std;
-
 SceneObject::SceneObject(const char* blockName) {
     this->blockName = blockName;
 
@@ -20,15 +18,24 @@ SceneObject::SceneObject(const char* blockName) {
     blockID = 0;
     bufferSize = 0;
 
+    lastProgramID = 0;
+
     needsShaderInit = true;
     needsBufferUpdate = true;
 }
 
-void SceneObject::setUniform(const char* name, size_t size, void* value) {
+SceneObject::~SceneObject() {
+    glDeleteBuffers(1, &bufferID);
+    for (auto item : uniforms) {
+        UniformSpec spec = item.second;
+        free(spec.data);
+    }
+}
+
+void SceneObject::setUniform(const char* name, std::size_t size, void* value) {
     if (uniforms.count(name) == 0) {
         // New uniform
         UniformSpec spec;
-        spec.name = name;
         spec.size = size;
         spec.data = malloc(size);
         memcpy(spec.data, value, size);
@@ -65,18 +72,27 @@ void SceneObject::shaderInit(GLuint programID) {
     // Now get the uniform indices and offsets
     for (auto& item : uniforms) {
         UniformSpec spec = item.second;
+        const char* name = item.first;
         GLuint index;
-        glGetUniformIndices(programID, 1, &spec.name, &index);
+        glGetUniformIndices(programID, 1, &name, &index);
         glGetActiveUniformsiv(programID, 1, &index, GL_UNIFORM_OFFSET, &spec.offset);
         item.second = spec;
     }
 
+    lastProgramID = programID;
     needsShaderInit = false;
 }
 
 void SceneObject::updateBuffer(GLuint programID) {
     if (needsShaderInit) {
         shaderInit(programID);
+    }
+    else {
+        if (lastProgramID != programID) {
+            // We just need to get a new blockID, everything else should be compatible
+            blockID = glGetUniformBlockIndex(programID, blockName);
+            lastProgramID = programID;
+        }
     }
     if (!needsBufferUpdate) {
         return;

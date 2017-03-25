@@ -12,7 +12,6 @@ class Shader;
 class SceneObject {
     private:
         struct UniformSpec {
-            const char* name;
             std::size_t size;
             GLint offset;
             void* data;
@@ -24,6 +23,8 @@ class SceneObject {
         GLuint bufferID;
         GLint bufferSize;
 
+        GLuint lastProgramID;
+
         std::map<const char*, UniformSpec> uniforms;
 
         bool needsShaderInit;
@@ -31,6 +32,7 @@ class SceneObject {
 
     public:
         SceneObject(const char* blockName);
+        ~SceneObject();
 
         void setUniform(const char* name, std::size_t size, void* value);
         void shaderInit(GLuint programID);
