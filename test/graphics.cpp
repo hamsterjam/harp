@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include <graphics/Texture.h>
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
@@ -130,6 +131,8 @@ int main(int argc, char** argv) {
             }
         }
     }
+
+    destroyTextures();
 
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);

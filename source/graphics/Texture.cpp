@@ -10,7 +10,7 @@
 
 #include <graphics/Texture.h>
 
-static std::map<Texture*> loadedTextures;
+static std::map<const char*, Texture*> loadedTextures;
 
 Texture* createTexture(const char* filename) {
     if (loadedTextures.count(filename) != 0) {
