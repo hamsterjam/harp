@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <globals.h>
+#include <graphics/Texture.h>
 
 using namespace std;
 
@@ -34,6 +35,7 @@ void draw() {
 }
 
 void cleanup() {
+    destroyTextures();
 }
 
 int main(int argc, char** argv) {
