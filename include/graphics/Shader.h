@@ -2,7 +2,6 @@
 #define __GALAXY_FORT_SHADER_H
 
 #include <vector>
-#include <functional>
 #include <SDL_opengl.h>
 
 class Sprite;
@@ -19,7 +18,7 @@ class Shader {
         GLuint vertPosBuffer;
 
         // A list might be faster
-        std::vector<std::reference_wrapper<SceneObject>> SceneObjects;
+        std::vector<SceneObject*> SceneObjects;
 
     public:
         // This will compile a default shader
