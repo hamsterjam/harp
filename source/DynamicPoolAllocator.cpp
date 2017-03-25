@@ -145,12 +145,3 @@ void DynamicPoolAllocator::freeAll() {
     filledPools = 0;
     currentPoolAllocatedSize = 0;
 }
-
-/*
-void DynamicPoolAllocator::printDebugData() {
-    cout << "number of pools:\t" << numPools << endl;
-    cout << "pool size:\t\t" << poolSize << endl;
-    cout << "filled pools:\t\t" << filledPools << endl;
-    cout << "filled space:\t\t" << currentPoolAllocatedSize << endl << endl;
-}
-*/

@@ -1,5 +1,5 @@
-#ifndef __HARP_DYNAMIC_POOL_ALLOCATOR_H
-#define __HARP_DYNAMIC_POOL_ALLOCATOR_H
+#ifndef __GALAXY_FORT_DYNAMIC_POOL_ALLOCATOR_H
+#define __GALAXY_FORT_DYNAMIC_POOL_ALLOCATOR_H
 
 #include <cstddef>
 
@@ -25,10 +25,6 @@ class DynamicPoolAllocator {
 
         void* alloc(std::size_t size);
         void freeAll();
-
-        /*
-        void printDebugData();
-        */
 };
 
 #endif
