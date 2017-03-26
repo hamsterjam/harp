@@ -1,18 +1,16 @@
-
-#include <GL/glew.h>
-
-#define SDL_MAIN_HANDLED
-
-#include <SDL.h>
-#include <SDL_opengl.h>
-
 #include <iostream>
 
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
+
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+
+#include <globals.h>
 #include <graphics/Texture.h>
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
-#include <globals.h>
 
 using namespace std;
 

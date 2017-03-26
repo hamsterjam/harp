@@ -1,11 +1,10 @@
-#include <GL/glew.h>
+#include <iostream>
 
 #define SDL_MAIN_HANDLED
-
 #include <SDL.h>
-#include <SDL_opengl.h>
 
-#include <iostream>
+#include <GL/glew.h>
+#include <SDL_opengl.h>
 
 #include <globals.h>
 #include <graphics/Texture.h>

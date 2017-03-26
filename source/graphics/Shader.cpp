@@ -1,11 +1,11 @@
-#include <GL/glew.h>
-#include <SDL_opengl.h>
-
 #include <cstdlib>
 #include <cstring> // memcpy
 
 #include <iostream>
 #include <vector>
+
+#include <GL/glew.h>
+#include <SDL_opengl.h>
 
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
