@@ -54,8 +54,6 @@ class Sprite {
         void addSubTexture(Texture* tex, const char* texUniform, const char* UVAttrib,
                            unsigned int x, unsigned int y, int w, int h);
 
-        // Passing a pointer here because the Sprite assumes ownership of the SceneObject
-        // You should NOT free it yourself
         void useAuxData(SceneObject& auxData);
 
         void updateBuffers();
