@@ -56,7 +56,7 @@ class Sprite {
 
         // Passing a pointer here because the Sprite assumes ownership of the SceneObject
         // You should NOT free it yourself
-        void useAuxData(SceneObject* auxData);
+        void useAuxData(SceneObject& auxData);
 
         void updateBuffers();
 };

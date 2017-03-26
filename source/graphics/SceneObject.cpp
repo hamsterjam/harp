@@ -23,6 +23,31 @@ SceneObject::SceneObject(const char* blockName) {
     needsBufferUpdate = true;
 }
 
+SceneObject::SceneObject(SceneObject& clone) {
+    blockName = clone.blockName;
+
+    glGenBuffers(1, &bufferID);
+    blockID = 0;
+    bufferSize = 0;
+
+    lastProgramID = 0;
+
+    for (auto item : clone.uniforms) {
+        const char* cloneName = item.first;
+        UniformSpec cloneSpec = item.second;
+
+        UniformSpec spec;
+        spec.size = cloneSpec.size;
+        spec.data = malloc(cloneSpec.size);
+        memcpy(spec.data, cloneSpec.data, cloneSpec.size);
+
+        uniforms[cloneName] = spec;
+    }
+
+    needsShaderInit = true;
+    needsBufferUpdate = true;
+}
+
 SceneObject::~SceneObject() {
     glDeleteBuffers(1, &bufferID);
     for (auto item : uniforms) {

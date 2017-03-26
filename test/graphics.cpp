@@ -107,11 +107,11 @@ int main(int argc, char** argv) {
     spr.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 64, 64, 128, 128);
 
     // Do not free this, spr has ownership
-    SceneObject* so = new SceneObject("mixRatios");
+    SceneObject so("mixRatios");
     GLfloat mix1 = 0.5;
     GLfloat mix2 = 0.5;
-    so->setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
-    so->setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
+    so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
+    so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
 
     spr.useAuxData(so);
 

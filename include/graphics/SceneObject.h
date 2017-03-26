@@ -32,6 +32,7 @@ class SceneObject {
 
     public:
         SceneObject(const char* blockName);
+        SceneObject(SceneObject& clone);
         ~SceneObject();
 
         void setUniform(const char* name, std::size_t size, void* value);
