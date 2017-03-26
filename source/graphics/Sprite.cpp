@@ -151,6 +151,9 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
 }
 
 void Sprite::setAuxData(SceneObject& auxData) {
+    if (this->auxData) {
+        delete this->auxData;
+    }
     this->auxData = new SceneObject(auxData);
 }
 
