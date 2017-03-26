@@ -7,6 +7,12 @@
 class Sprite;
 class SceneObject;
 
+enum DrawMode {
+    GF_BOX,
+    GF_LINE,
+    GF_FILL
+};
+
 class Shader {
     private:
         char* vertSource;
@@ -16,6 +22,8 @@ class Shader {
 
         GLuint programID;
         GLuint vertPosBuffer;
+
+        DrawMode currDrawMode;
 
         // A list might be faster
         std::vector<SceneObject*> sceneObjects;
@@ -28,6 +36,8 @@ class Shader {
 
         void draw(Sprite& spr, int x, int y);
         void use(SceneObject& so);
+
+        void setDrawMode(DrawMode mode);
 
         GLuint getProgramID();
 };

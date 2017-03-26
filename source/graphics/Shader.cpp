@@ -46,6 +46,9 @@ Shader::Shader() : Shader(defaultFragSource, defaultVertSource, 1) {
 
 Shader::Shader(const char* vertSource, const char* fragSource, unsigned int numTextures) {
     this->numTextures = numTextures;
+
+    currDrawMode = GF_FILL;
+
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -214,7 +217,17 @@ void Shader::draw(Sprite& spr, int x, int y) {
     sceneObjects.clear();
 
     // Draw
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    switch (currDrawMode) {
+        case GF_BOX:
+            glDrawArrays(GL_LINE_LOOP, 1, 4);
+            break;
+        case GF_LINE:
+            glDrawArrays(GL_LINES, 0, 2);
+            break;
+        case GF_FILL:
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            break;
+    }
 
     // Cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -223,6 +236,10 @@ void Shader::draw(Sprite& spr, int x, int y) {
 
 void Shader::use(SceneObject& so) {
     sceneObjects.push_back(&so);
+}
+
+void Shader::setDrawMode(DrawMode mode) {
+    currDrawMode = mode;
 }
 
 GLuint Shader::getProgramID() {
