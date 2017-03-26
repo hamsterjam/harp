@@ -150,7 +150,7 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
     needsBufferUpdates = true;
 }
 
-void Sprite::useAuxData(SceneObject& auxData) {
+void Sprite::setAuxData(SceneObject& auxData) {
     this->auxData = new SceneObject(auxData);
 }
 

@@ -54,7 +54,7 @@ class Sprite {
         void addSubTexture(Texture* tex, const char* texUniform, const char* UVAttrib,
                            unsigned int x, unsigned int y, int w, int h);
 
-        void useAuxData(SceneObject& auxData);
+        void setAuxData(SceneObject& auxData);
 
         void updateBuffers();
 };

@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
     so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
     so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
 
-    spr.useAuxData(so);
+    spr.setAuxData(so);
 
     shd.draw(spr, 100, 100);
 
