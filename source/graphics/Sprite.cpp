@@ -162,11 +162,11 @@ void Sprite::updateBuffers() {
         auto spec = *it;
         float data[] = {
             spec.u1, spec.v1,
+            spec.u2, spec.v2,
             spec.u1, spec.v2,
-            spec.u2, spec.v2,
             spec.u1, spec.v1,
-            spec.u2, spec.v2,
-            spec.u2, spec.v1
+            spec.u2, spec.v1,
+            spec.u2, spec.v2
         };
 
         glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);

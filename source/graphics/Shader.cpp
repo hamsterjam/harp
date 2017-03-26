@@ -146,11 +146,11 @@ void Shader::draw(Sprite& spr, int x, int y) {
     // Note the order
     GLfloat pos[] = {
         x1, y1,
+        x2, y2,
         x1, y2,
-        x2, y2,
         x1, y1,
-        x2, y2,
-        x2, y1
+        x2, y1,
+        x2, y2
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
