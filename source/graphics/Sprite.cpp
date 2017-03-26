@@ -5,6 +5,7 @@
 
 #include <graphics/Sprite.h>
 #include <graphics/Texture.h>
+#include <graphics/SceneObject.h>
 
 const char* DEFAULT_TEXTURE_UNIFORM = "uTexture";
 const char* DEFAULT_UV_ATTRIBUTE    = "aTexCoord";
@@ -47,6 +48,7 @@ Sprite::Sprite(Texture* tex) {
     w = spec.tex->w;
     h = spec.tex->h;
 
+    auxData = NULL;
     needsBufferUpdates = true;
 }
 
@@ -79,7 +81,12 @@ Sprite::Sprite(Texture* tex, uint x, uint y, int w, int h) {
     this->w = w;
     this->h = h;
 
+    auxData = NULL;
     needsBufferUpdates = true;
+}
+
+Sprite::~Sprite() {
+    delete auxData;
 }
 
 void Sprite::addImage(const char* filename, const char* texUniform, const char* UVAttrib) {
@@ -141,6 +148,10 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
     textures.push_back(spec);
 
     needsBufferUpdates = true;
+}
+
+void Sprite::useAuxData(SceneObject* auxData) {
+    this->auxData = auxData;
 }
 
 void Sprite::updateBuffers() {

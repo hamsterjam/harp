@@ -115,11 +115,17 @@ Shader::~Shader() {
     glDeleteBuffers(1, &vertPosBuffer);
 }
 
-void Shader::draw(Sprite spr, int x, int y) {
+void Shader::draw(Sprite& spr, int x, int y) {
     // Update the sprite if it needs it
     if (spr.needsBufferUpdates) {
         spr.updateBuffers();
     }
+
+    // Grab the aux data if it exists
+    if (spr.auxData) {
+        sceneObjects.push_back(spr.auxData);
+    }
+
     // Make sure we use the shader
     glUseProgram(programID);
 
@@ -200,10 +206,10 @@ void Shader::draw(Sprite spr, int x, int y) {
     }
 
     // SceneObjects
-    for (auto so : SceneObjects) {
+    for (auto so : sceneObjects) {
         so->updateBuffer(programID);
     }
-    SceneObjects.clear();
+    sceneObjects.clear();
 
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -214,7 +220,7 @@ void Shader::draw(Sprite spr, int x, int y) {
 }
 
 void Shader::use(SceneObject& so) {
-    SceneObjects.push_back(&so);
+    sceneObjects.push_back(&so);
 }
 
 GLuint Shader::getProgramID() {

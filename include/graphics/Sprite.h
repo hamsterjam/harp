@@ -7,6 +7,7 @@
 
 class Texture;
 class Shader;
+class SceneObject;
 
 class Sprite {
     private:
@@ -25,9 +26,11 @@ class Sprite {
         };
 
         int w, h;
-        std::vector<texSpecifier> textures;
-
         bool needsBufferUpdates;
+
+        SceneObject* auxData;
+
+        std::vector<texSpecifier> textures;
 
         texSpecifier defaultSpec(Texture* tex);
 
@@ -39,6 +42,8 @@ class Sprite {
         Sprite(const char* filename, unsigned int x, unsigned int y, int w, int h);
         Sprite(Texture* tex, unsigned int x, unsigned int y, int w, int h);
 
+        ~Sprite();
+
         void addImage(const char* filename, const char* texUniform, const char* UVAttrib);
         void addTexture(Texture* tex, const char* texUniform, const char* UVAttrib);
 
@@ -48,6 +53,10 @@ class Sprite {
 
         void addSubTexture(Texture* tex, const char* texUniform, const char* UVAttrib,
                            unsigned int x, unsigned int y, int w, int h);
+
+        // Passing a pointer here because the Sprite assumes ownership of the SceneObject
+        // You should NOT free it yourself
+        void useAuxData(SceneObject* auxData);
 
         void updateBuffers();
 };

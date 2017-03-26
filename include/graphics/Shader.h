@@ -18,7 +18,7 @@ class Shader {
         GLuint vertPosBuffer;
 
         // A list might be faster
-        std::vector<SceneObject*> SceneObjects;
+        std::vector<SceneObject*> sceneObjects;
 
     public:
         // This will compile a default shader
@@ -26,7 +26,7 @@ class Shader {
         Shader(const char* vertSource, const char* fragSource, unsigned int numTextures);
         ~Shader();
 
-        void draw(Sprite spr, int x, int y);
+        void draw(Sprite& spr, int x, int y);
         void use(SceneObject& so);
 
         GLuint getProgramID();
