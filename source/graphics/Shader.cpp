@@ -147,12 +147,14 @@ void Shader::draw(Sprite& spr, int x, int y) {
     GLfloat pos[] = {
         x1, y1,
         x1, y2,
-        x2, y1,
-        x2, y2
+        x2, y2,
+        x1, y1,
+        x2, y2,
+        x2, y1
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*8, &pos, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, &pos, GL_STATIC_DRAW);
 
     // And then set the attribute
     GLint aVertPos  = glGetAttribLocation( programID, "aVertPos");
@@ -212,7 +214,7 @@ void Shader::draw(Sprite& spr, int x, int y) {
     sceneObjects.clear();
 
     // Draw
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // Cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);

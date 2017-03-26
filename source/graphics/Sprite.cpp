@@ -163,12 +163,14 @@ void Sprite::updateBuffers() {
         float data[] = {
             spec.u1, spec.v1,
             spec.u1, spec.v2,
-            spec.u2, spec.v1,
-            spec.u2, spec.v2
+            spec.u2, spec.v2,
+            spec.u1, spec.v1,
+            spec.u2, spec.v2,
+            spec.u2, spec.v1
         };
 
         glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*8, &data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, &data, GL_STATIC_DRAW);
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
