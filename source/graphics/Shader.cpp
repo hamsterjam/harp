@@ -48,6 +48,7 @@ Shader::Shader(const char* vertSource, const char* fragSource, unsigned int numT
     this->numTextures = numTextures;
 
     currDrawMode = GF_FILL;
+    lineWidth = 1;
 
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -219,9 +220,11 @@ void Shader::draw(Sprite& spr, int x, int y) {
     // Draw
     switch (currDrawMode) {
         case GF_BOX:
+            glLineWidth(lineWidth);
             glDrawArrays(GL_LINE_LOOP, 1, 4);
             break;
         case GF_LINE:
+            glLineWidth(lineWidth);
             glDrawArrays(GL_LINES, 0, 2);
             break;
         case GF_FILL:
@@ -240,6 +243,10 @@ void Shader::use(SceneObject& so) {
 
 void Shader::setDrawMode(DrawMode mode) {
     currDrawMode = mode;
+}
+
+void Shader::setLineWidth(float width) {
+    lineWidth = (GLfloat) width;
 }
 
 GLuint Shader::getProgramID() {

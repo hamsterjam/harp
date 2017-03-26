@@ -24,6 +24,7 @@ class Shader {
         GLuint vertPosBuffer;
 
         DrawMode currDrawMode;
+        GLfloat  lineWidth;
 
         // A list might be faster
         std::vector<SceneObject*> sceneObjects;
@@ -38,6 +39,7 @@ class Shader {
         void use(SceneObject& so);
 
         void setDrawMode(DrawMode mode);
+        void setLineWidth(float width);
 
         GLuint getProgramID();
 };
