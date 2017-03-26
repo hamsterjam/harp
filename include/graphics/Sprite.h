@@ -27,6 +27,8 @@ class Sprite {
         int w, h;
         std::vector<texSpecifier> textures;
 
+        bool needsBufferUpdates;
+
         texSpecifier defaultSpec(Texture* tex);
 
     public:

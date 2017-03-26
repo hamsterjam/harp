@@ -47,7 +47,7 @@ Sprite::Sprite(Texture* tex) {
     w = spec.tex->w;
     h = spec.tex->h;
 
-    updateBuffers();
+    needsBufferUpdates = true;
 }
 
 Sprite::Sprite(const char* filename, uint x, uint y, int w, int h) : Sprite(createTexture(filename), x, y, w, h) {
@@ -79,7 +79,7 @@ Sprite::Sprite(Texture* tex, uint x, uint y, int w, int h) {
     this->w = w;
     this->h = h;
 
-    updateBuffers();
+    needsBufferUpdates = true;
 }
 
 void Sprite::addImage(const char* filename, const char* texUniform, const char* UVAttrib) {
@@ -98,7 +98,7 @@ void Sprite::addTexture(Texture* tex, const char* texUniform, const char* UVAttr
         h = spec.tex->h;
     }
 
-    updateBuffers();
+    needsBufferUpdates = true;
 }
 
 void Sprite::addSubImage(const char* filename, const char* texUniform, const char* UVAttrib,
@@ -140,7 +140,7 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
 
     textures.push_back(spec);
 
-    updateBuffers();
+    needsBufferUpdates = true;
 }
 
 void Sprite::updateBuffers() {
@@ -158,4 +158,5 @@ void Sprite::updateBuffers() {
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    needsBufferUpdates = false;
 }

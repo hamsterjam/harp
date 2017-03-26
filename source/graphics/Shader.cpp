@@ -116,6 +116,10 @@ Shader::~Shader() {
 }
 
 void Shader::draw(Sprite spr, int x, int y) {
+    // Update the sprite if it needs it
+    if (spr.needsBufferUpdates) {
+        spr.updateBuffers();
+    }
     // Make sure we use the shader
     glUseProgram(programID);
 
