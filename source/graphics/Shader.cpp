@@ -14,7 +14,7 @@
 
 #include <globals.h>
 
-const char* defaultVertSource = R"(
+static const char* defaultVertSource = R"(
 attribute vec2 aVertPos;
 attribute vec2 aTexCoord;
 
@@ -26,7 +26,7 @@ void main(void) {
 }
 )";
 
-const char* defaultFragSource = R"(
+static const char* defaultFragSource = R"(
 #ifdef GL_ES
 precision mediump float;
 #endif
