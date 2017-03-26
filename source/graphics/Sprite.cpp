@@ -62,10 +62,10 @@ Sprite::Sprite(Texture* tex, uint x, uint y, int w, int h) {
     int texW = tex->w;
     int texH = tex->h;
 
-    float u1 = (float) x / (float) texW;
-    float v1 = (float) y / (float) texH;
-    float u2 = (float) (x + w) / (float) texW;
-    float v2 = (float) (y + h) / (float) texH;
+    GLfloat u1 = (GLfloat) x / (GLfloat) texW;
+    GLfloat v1 = (GLfloat) y / (GLfloat) texH;
+    GLfloat u2 = (GLfloat) (x + w) / (GLfloat) texW;
+    GLfloat v2 = (GLfloat) (y + h) / (GLfloat) texH;
 
     // Remember to flip the y axis
     v1 = 1.0 - v1;
@@ -131,10 +131,10 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
     int texW = tex->w;
     int texH = tex->h;
 
-    float u1 = (float) x / (float) texW;
-    float v1 = (float) y / (float) texH;
-    float u2 = (float) (x + w) / (float) texW;
-    float v2 = (float) (y + h) / (float) texH;
+    GLfloat u1 = (GLfloat) x / (GLfloat) texW;
+    GLfloat v1 = (GLfloat) y / (GLfloat) texH;
+    GLfloat u2 = (GLfloat) (x + w) / (GLfloat) texW;
+    GLfloat v2 = (GLfloat) (y + h) / (GLfloat) texH;
 
     // Remember to flip the y axis
     v1 = 1.0 - v1;

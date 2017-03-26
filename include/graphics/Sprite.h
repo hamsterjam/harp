@@ -17,7 +17,7 @@ class Sprite {
             Texture* tex;
 
             // As these are passed straight to OpenGL, flip the y
-            float u1, u2, v1, v2;
+            GLfloat u1, u2, v1, v2;
 
             const char* texUniform;
             const char* UVAttrib;

@@ -133,10 +133,10 @@ void Shader::draw(Sprite& spr, int x, int y) {
     int texWidth  = spr.w;
     int texHeight = spr.h;
 
-    float x1 = (float) x / (float) SCREEN_WIDTH;
-    float y1 = (float) y / (float) SCREEN_HEIGHT;
-    float x2 = (float) (x + texWidth)  / (float) SCREEN_WIDTH;
-    float y2 = (float) (y + texHeight) / (float) SCREEN_HEIGHT;
+    GLfloat x1 = (GLfloat) x / (GLfloat) SCREEN_WIDTH;
+    GLfloat y1 = (GLfloat) y / (GLfloat) SCREEN_HEIGHT;
+    GLfloat x2 = (GLfloat) (x + texWidth)  / (GLfloat) SCREEN_WIDTH;
+    GLfloat y2 = (GLfloat) (y + texHeight) / (GLfloat) SCREEN_HEIGHT;
 
     x1 = x1 * 2.0 - 1.0;
     x2 = x2 * 2.0 - 1.0;
@@ -144,7 +144,7 @@ void Shader::draw(Sprite& spr, int x, int y) {
     y2 = y2 * 2.0 - 1.0;
 
     // Note the order
-    float pos[] = {
+    GLfloat pos[] = {
         x1, y1,
         x1, y2,
         x2, y1,
@@ -152,7 +152,7 @@ void Shader::draw(Sprite& spr, int x, int y) {
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &pos, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*8, &pos, GL_STATIC_DRAW);
 
     // And then set the attribute
     GLint aVertPos  = glGetAttribLocation( programID, "aVertPos");
