@@ -50,6 +50,38 @@ Sprite::Sprite(Texture* tex) {
     updateBuffers();
 }
 
+Sprite::Sprite(const char* filename, uint x, uint y, int w, int h) : Sprite(createTexture(filename), x, y, w, h) {
+    // That's all
+}
+
+Sprite::Sprite(Texture* tex, uint x, uint y, int w, int h) {
+    texSpecifier spec = defaultSpec(tex);
+
+    int texW = tex->w;
+    int texH = tex->h;
+
+    float u1 = (float) x / (float) texW;
+    float v1 = (float) y / (float) texH;
+    float u2 = (float) (x + w) / (float) texW;
+    float v2 = (float) (y + h) / (float) texH;
+
+    // Remember to flip the y axis
+    v1 = 1.0 - v1;
+    v2 = 1.0 - v2;
+
+    spec.u1 = u1;
+    spec.u2 = u2;
+    spec.v1 = v1;
+    spec.v2 = v2;
+
+    textures.push_back(spec);
+
+    this->w = w;
+    this->h = h;
+
+    updateBuffers();
+}
+
 void Sprite::addImage(const char* filename, const char* texUniform, const char* UVAttrib) {
     addTexture(createTexture(filename), texUniform, UVAttrib);
 }
@@ -58,6 +90,53 @@ void Sprite::addTexture(Texture* tex, const char* texUniform, const char* UVAttr
     texSpecifier spec = defaultSpec(tex);
     spec.texUniform = texUniform;
     spec.UVAttrib = UVAttrib;
+
+    textures.push_back(spec);
+
+    if (w == 0 && h == 0) {
+        w = spec.tex->w;
+        h = spec.tex->h;
+    }
+
+    updateBuffers();
+}
+
+void Sprite::addSubImage(const char* filename, const char* texUniform, const char* UVAttrib,
+                         uint x, uint y, int w, int h) {
+    addSubTexture(createTexture(filename), texUniform, UVAttrib, x, y, w, h);
+}
+
+void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVAttrib,
+                           uint x, uint y, int w, int h) {
+    if (this->w == 0 && this->h == 0) {
+        this->w = w;
+        this->h = h;
+    }
+
+    texSpecifier spec;
+
+    spec.tex = tex;
+    spec.texUniform = texUniform;
+    spec.UVAttrib   = UVAttrib;
+
+    glGenBuffers(1, &spec.UVBuffer);
+
+    int texW = tex->w;
+    int texH = tex->h;
+
+    float u1 = (float) x / (float) texW;
+    float v1 = (float) y / (float) texH;
+    float u2 = (float) (x + w) / (float) texW;
+    float v2 = (float) (y + h) / (float) texH;
+
+    // Remember to flip the y axis
+    v1 = 1.0 - v1;
+    v2 = 1.0 - v2;
+
+    spec.u1 = u1;
+    spec.u2 = u2;
+    spec.v1 = v1;
+    spec.v2 = v2;
 
     textures.push_back(spec);
 

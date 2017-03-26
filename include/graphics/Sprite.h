@@ -33,9 +33,19 @@ class Sprite {
         Sprite();
         Sprite(const char* filename);
         Sprite(Texture* tex);
+        // Sub image constructors
+        Sprite(const char* filename, unsigned int x, unsigned int y, int w, int h);
+        Sprite(Texture* tex, unsigned int x, unsigned int y, int w, int h);
 
         void addImage(const char* filename, const char* texUniform, const char* UVAttrib);
         void addTexture(Texture* tex, const char* texUniform, const char* UVAttrib);
+
+        // Note that these explicitly allow negative widths and heights
+        void addSubImage(const char* filename, const char* texUniform, const char* UVAttrib,
+                         unsigned int x, unsigned int y, int w, int h);
+
+        void addSubTexture(Texture* tex, const char* texUniform, const char* UVAttrib,
+                           unsigned int x, unsigned int y, int w, int h);
 
         void updateBuffers();
 };

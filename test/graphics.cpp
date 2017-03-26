@@ -105,8 +105,8 @@ int main(int argc, char** argv) {
 
     Shader shd(vertSource, fragSource, 2);
 
-    Sprite spr("res/test.png");
-    spr.addImage("res/crane.png", "uTexture2", "aAuxTexCoord");
+    Sprite spr("res/test.png", 64, 64, 128, 128);
+    spr.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 64, 64, 128, 128);
 
     SceneObject so("mixRatios");
     GLfloat mix1 = 0.5;
