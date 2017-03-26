@@ -168,7 +168,7 @@ void Sprite::updateBuffers() {
         };
 
         glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, &data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*8, &data, GL_STATIC_DRAW);
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
