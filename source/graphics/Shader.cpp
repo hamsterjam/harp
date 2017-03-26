@@ -207,7 +207,7 @@ void Shader::draw(Sprite& spr, int x, int y) {
 
     // SceneObjects
     for (auto so : sceneObjects) {
-        so->updateBuffer(programID);
+        so->updateBuffer(*this);
     }
     sceneObjects.clear();
 

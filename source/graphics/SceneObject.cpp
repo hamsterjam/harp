@@ -85,10 +85,12 @@ void SceneObject::setUniform(const char* name, std::size_t size, void* value) {
     needsBufferUpdate = true;
 }
 
-void SceneObject::shaderInit(GLuint programID) {
+void SceneObject::shaderInit(Shader& shd) {
     if (!needsShaderInit) {
         return;
     }
+
+    GLuint programID = shd.getProgramID();
 
     blockID = glGetUniformBlockIndex(programID, blockName);
     glGetActiveUniformBlockiv(programID, blockID, GL_UNIFORM_BLOCK_DATA_SIZE, &bufferSize);
@@ -107,9 +109,11 @@ void SceneObject::shaderInit(GLuint programID) {
     needsShaderInit = false;
 }
 
-void SceneObject::updateBuffer(GLuint programID) {
+void SceneObject::updateBuffer(Shader& shd) {
+    GLuint programID = shd.getProgramID();
+
     if (needsShaderInit) {
-        shaderInit(programID);
+        shaderInit(shd);
     }
     else {
         if (lastProgramID != programID) {
