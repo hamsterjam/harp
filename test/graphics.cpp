@@ -101,6 +101,7 @@ int main(int argc, char** argv) {
     // The fun stuff starts here
     //
 
+    //*
     Shader shd(vertSource, fragSource, 2);
 
     Sprite spr("res/test.png", 64, 64, 128, 128);
@@ -115,6 +116,18 @@ int main(int argc, char** argv) {
     spr.setAuxData(so);
 
     shd.draw(spr, 100, 100);
+
+    Sprite spr1("res/test.png", 0, 0, 128, 256);
+    spr1.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 0, 0, 128, 256);
+    spr1.setAuxData(so);
+
+    Sprite spr2("res/test.png", 128, 0, 128, 256);
+    spr2.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 128, 0, 128, 256);
+    spr2.setAuxData(so);
+
+    shd.batchQueue(spr1, 250, 10);
+    shd.batchQueue(spr2, 378, 10);
+    shd.batchDraw();
 
     //
     // And ends here...

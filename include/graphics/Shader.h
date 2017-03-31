@@ -29,6 +29,15 @@ class Shader {
         // A list might be faster
         std::vector<SceneObject*> sceneObjects;
 
+        // Batched drawing
+        // This is the ugliest way to fix this ever
+        struct Pos {
+            int x;
+            int y;
+        };
+        std::vector<Sprite*> batchSprites;
+        std::vector<Pos>  batchPositions;
+
     public:
         // This will compile a default shader
         Shader();
@@ -37,6 +46,9 @@ class Shader {
 
         void draw(Sprite& spr, int x, int y);
         void use(SceneObject& so);
+
+        void batchQueue(Sprite& spr, int x, int y);
+        void batchDraw();
 
         void setDrawMode(DrawMode mode);
         void setLineWidth(float width);

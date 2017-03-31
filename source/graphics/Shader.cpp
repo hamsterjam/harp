@@ -40,7 +40,7 @@ void main(void) {
 }
 )";
 
-Shader::Shader() : Shader(defaultFragSource, defaultVertSource, 1) {
+Shader::Shader() : Shader(defaultVertSource, defaultFragSource, 1) {
     // That's all
 }
 
@@ -64,7 +64,7 @@ Shader::Shader(const char* vertSource, const char* fragSource, unsigned int numT
         GLint logLength;
         glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &logLength);
 
-        GLchar* log = (GLchar*) malloc(sizeof(GLchar) * (logLength + 1));
+        GLchar* log = (GLchar*) malloc(sizeof(GLchar) * logLength);
         glGetShaderInfoLog(fragShader, logLength, NULL, log);
 
         std::cerr << "Failed to compile vertex shader: " << log << std::endl;
@@ -78,7 +78,7 @@ Shader::Shader(const char* vertSource, const char* fragSource, unsigned int numT
         GLint logLength;
         glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &logLength);
 
-        GLchar* log = (GLchar*) malloc(sizeof(GLchar) * (logLength + 1));
+        GLchar* log = (GLchar*) malloc(sizeof(GLchar) * logLength);
         glGetShaderInfoLog(fragShader, logLength, NULL, log);
 
         std::cerr << "Failed to compile fragment shader: " << log << std::endl;
@@ -239,6 +239,163 @@ void Shader::draw(Sprite& spr, int x, int y) {
 
 void Shader::use(SceneObject& so) {
     sceneObjects.push_back(&so);
+}
+
+void Shader::batchQueue(Sprite& spr, int x, int y) {
+    batchSprites.push_back(&spr);
+    Pos pos;
+    pos.x = x;
+    pos.y = y;
+    batchPositions.push_back(pos);
+}
+
+void Shader::batchDraw() {
+    // I'll just write this from scratch for now, It is probably possible to
+    // consolidate it with draw()
+
+    Sprite& first = *batchSprites.front();
+    unsigned int numSprites = batchSprites.size();
+
+    // Update all the sprites
+    for (auto spr : batchSprites) {
+        if (spr->needsBufferUpdates) spr->updateBuffers();
+    }
+
+    // Check that the sprites actually work with this shader
+    if (first.textures.size() != numTextures) {
+        std::cerr << "Sprite has incorrect number of textures for this Shader" << std::endl;
+        std::cerr << "Expected: " << numTextures << ". Found: " << first.textures.size() << std::endl;
+        exit(1);
+    }
+
+    // Only use the aux data from the first sprite
+    if (first.auxData) {
+        sceneObjects.push_back(first.auxData);
+    }
+
+    glUseProgram(programID);
+
+    // Build the vert pos VBO
+    int texWidth  = first.w;
+    int texHeight = first.h;
+
+    GLfloat* posData = (GLfloat*) malloc(sizeof(GLfloat) * 12 * numSprites);
+
+    unsigned int currSpr = 0;
+    for (auto pos : batchPositions) {
+        int x = pos.x;
+        int y = pos.y;
+
+        GLfloat x1 = (GLfloat) x / (GLfloat) SCREEN_WIDTH;
+        GLfloat y1 = (GLfloat) y / (GLfloat) SCREEN_HEIGHT;
+        GLfloat x2 = (GLfloat) (x + texWidth)  / (GLfloat) SCREEN_WIDTH;
+        GLfloat y2 = (GLfloat) (y + texHeight) / (GLfloat) SCREEN_HEIGHT;
+
+        x1 = x1 * 2.0 - 1.0;
+        x2 = x2 * 2.0 - 1.0;
+        y1 = y1 * 2.0 - 1.0;
+        y2 = y2 * 2.0 - 1.0;
+
+        GLfloat currPos[] = {
+            x1, y1,
+            x2, y2,
+            x1, y2,
+
+            x1, y1,
+            x2, y1,
+            x2, y2
+        };
+
+        memcpy(posData + currSpr * 12, &currPos, sizeof(GLfloat)*12);
+        ++currSpr;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12*numSprites, posData, GL_DYNAMIC_DRAW);
+
+    free(posData);
+
+    GLint aVertPos = glGetAttribLocation(programID, "aVertPos");
+    if (aVertPos < 0) {
+        std::cerr << "Failed to find 'aVertPos'"  << std::endl;
+        exit(1);
+    }
+    glEnableVertexAttribArray(aVertPos);
+    glVertexAttribPointer(aVertPos, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    // Now for UVs and textures
+
+    // This array is like this:
+    // [spr1_tex1, spr2_tex1, ... , sprN_tex1, spr1_tex2, spr2_tex2, ...]
+    GLfloat* UVData = (GLfloat*) malloc(sizeof(GLfloat) * 12 * numSprites * numTextures);
+
+    currSpr = 0;
+    unsigned int currTex = 0;
+    for (auto spr  : batchSprites) {
+        currTex = 0;
+        for (auto spec : spr->textures) {
+            GLfloat currUV[] = {
+                spec.u1, spec.v1,
+                spec.u2, spec.v2,
+                spec.u1, spec.v2,
+
+                spec.u1, spec.v1,
+                spec.u2, spec.v1,
+                spec.u2, spec.v2
+            };
+
+            memcpy(UVData + currSpr*12 + currTex*numSprites*12, &currUV, sizeof(GLfloat)*12);
+
+            ++currTex;
+        }
+        ++currSpr;
+    }
+
+    currTex = 0;
+    for (auto spec : first.textures) {
+        // UV
+        glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12*numSprites, UVData + currTex*numSprites*12, GL_DYNAMIC_DRAW);
+
+        GLint UVAttribID = glGetAttribLocation(programID, spec.UVAttrib);
+        if (UVAttribID < 0) {
+            std::cerr << "Failed to find attribute '" << spec.UVAttrib << "'" << std::endl;
+            exit(1);
+        }
+        glEnableVertexAttribArray(UVAttribID);
+        glVertexAttribPointer(UVAttribID, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+        // Now the texture
+        GLint texUniformID = glGetUniformLocation(programID, spec.texUniform);
+        if (texUniformID < 0) {
+            std::cerr << "Failed to find uniform '" << spec.texUniform << "'" << std::endl;
+            exit(1);
+        }
+
+        glActiveTexture(GL_TEXTURE0 + currTex);
+        glBindTexture(GL_TEXTURE_2D, spec.tex->textureID);
+        glUniform1i(texUniformID, currTex);
+
+        ++currTex;
+    }
+
+    free(UVData);
+
+    // SceneObjects
+    for (auto so : sceneObjects) {
+        so->updateBuffer(*this);
+    }
+    sceneObjects.clear();
+
+    // Draw, only fill mode is allowed
+    glDrawArrays(GL_TRIANGLES, 0, 6*numSprites);
+
+    // Cleanup
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    batchSprites.clear();
+    batchPositions.clear();
 }
 
 void Shader::setDrawMode(DrawMode mode) {
