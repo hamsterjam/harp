@@ -1,5 +1,7 @@
 #include <cstdlib>
 
+#include <iostream>
+
 #include <SDL_opengl.h>
 
 #include <globals.h>
@@ -25,9 +27,9 @@ TextureAtlas::TextureAtlas(Texture* tex, int tileW, int tileH, int padding, int 
         for (int y = 0; y < numTilesH; ++y) {
             unsigned int offset = 0;
 
-            offset += x;
-            offset *= numTilesH;
             offset += y;
+            offset *= numTilesW;
+            offset += x;
             offset *= 4;
 
             unsigned int* curr = UVCoords + offset;
@@ -57,9 +59,9 @@ void TextureAtlas::addTextureToSprite(Sprite& spr, int i) {
 void TextureAtlas::addTextureToSprite(Sprite& spr, const char* texUniform, const char* UVAttrib, int tileX, int tileY) {
     unsigned int offset = 0;
 
-    offset += tileX;
-    offset *= numTilesH;
     offset += tileY;
+    offset *= numTilesW;
+    offset += tileX;
     offset *= 4;
 
     int pixelX = UVCoords[offset + 0];

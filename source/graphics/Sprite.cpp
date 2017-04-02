@@ -68,8 +68,9 @@ Sprite::Sprite(Texture* tex, uint x, uint y, int w, int h) {
     GLfloat v2 = (GLfloat) (y + h) / (GLfloat) texH;
 
     // Remember to flip the y axis
-    v1 = 1.0 - v1;
-    v2 = 1.0 - v2;
+    GLfloat temp = v1;
+    v1 = v2;
+    v2 = temp;
 
     spec.u1 = u1;
     spec.u2 = u2;
@@ -137,8 +138,9 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
     GLfloat v2 = (GLfloat) (y + h) / (GLfloat) texH;
 
     // Remember to flip the y axis
-    v1 = 1.0 - v1;
-    v2 = 1.0 - v2;
+    GLfloat temp = v1;
+    v1 = v2;
+    v2 = temp;
 
     spec.u1 = u1;
     spec.u2 = u2;

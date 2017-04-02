@@ -10,7 +10,7 @@ class TextureAtlas {
     private:
         Texture* tex;
 
-        // This is a 3D array, UVCoords[x][y][component]
+        // This is a 3D array, UVCoords[y][x][component]
         unsigned int* UVCoords;
 
         unsigned int numTilesW;

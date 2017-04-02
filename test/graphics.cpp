@@ -117,8 +117,8 @@ int main(int argc, char** argv) {
 
     shd.draw(spr, 100, 100);
 
-    TextureAtlas testAtlas("res/test.png", 128, 256, 0, 0);
-    TextureAtlas craneAtlas("res/crane.png", 128, 256, 0, 0);
+    TextureAtlas testAtlas("res/test.png", 128, 128, 0, 0);
+    TextureAtlas craneAtlas("res/crane.png", 128, 128, 0, 0);
 
     Sprite spr1;
     testAtlas.addTextureToSprite(spr1, 0);
