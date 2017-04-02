@@ -15,8 +15,8 @@ TextureAtlas::TextureAtlas(const char* filename, int tileW, int tileH, int paddi
 TextureAtlas::TextureAtlas(Texture* tex, int tileW, int tileH, int padding, int border) {
     this->tex = tex;
 
-    numTilesW = (tex->w - border) / (tileW + padding);
-    numTilesH = (tex->h - border) / (tileH + padding);
+    numTilesW = (tex->w - border + padding) / (tileW + padding);
+    numTilesH = (tex->h - border + padding) / (tileH + padding);
 
     UVCoords = (unsigned int*) malloc(sizeof(unsigned int) * numTilesW * numTilesH * 4);
 
