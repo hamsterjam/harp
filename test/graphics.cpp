@@ -8,6 +8,7 @@
 
 #include <globals.h>
 #include <graphics/Texture.h>
+#include <graphics/TextureAtlas.h>
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
@@ -101,7 +102,6 @@ int main(int argc, char** argv) {
     // The fun stuff starts here
     //
 
-    //*
     Shader shd(vertSource, fragSource, 2);
 
     Sprite spr("res/test.png", 64, 64, 128, 128);
@@ -117,12 +117,17 @@ int main(int argc, char** argv) {
 
     shd.draw(spr, 100, 100);
 
-    Sprite spr1("res/test.png", 0, 0, 128, 256);
-    spr1.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 0, 0, 128, 256);
+    TextureAtlas testAtlas("res/test.png", 128, 256, 0, 0);
+    TextureAtlas craneAtlas("res/crane.png", 128, 256, 0, 0);
+
+    Sprite spr1;
+    testAtlas.addTextureToSprite(spr1, 0);
+    craneAtlas.addTextureToSprite(spr1, "uTexture2", "aAuxTexCoord", 0);
     spr1.setAuxData(so);
 
-    Sprite spr2("res/test.png", 128, 0, 128, 256);
-    spr2.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 128, 0, 128, 256);
+    Sprite spr2;
+    testAtlas.addTextureToSprite(spr2, 1, 0);
+    craneAtlas.addTextureToSprite(spr2, "uTexture2", "aAuxTexCoord", 1, 0);
     spr2.setAuxData(so);
 
     shd.batchQueue(spr1, 250, 10);

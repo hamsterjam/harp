@@ -9,6 +9,9 @@ class Texture;
 class Shader;
 class SceneObject;
 
+extern const char* DEFAULT_TEXTURE_UNIFORM;
+extern const char* DEFAULT_UV_ATTRIBUTE;
+
 class Sprite {
     private:
         friend Shader;
