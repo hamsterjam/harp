@@ -96,6 +96,9 @@ int main(int argc, char** argv) {
 
     SDL_GL_MakeCurrent(window, gl_context);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -122,7 +125,7 @@ int main(int argc, char** argv) {
     TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
     FontManager testFont(fontAtlas, ' ', '~');
 
-    testFont.drawString("Princess Luna sees your lack of progress!", 100, 300);
+    testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
 
     //
     // And ends here...
