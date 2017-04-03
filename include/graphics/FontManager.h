@@ -5,6 +5,7 @@
 
 class TextureAtlas;
 class Sprite;
+class Shader;
 
 class FontManager {
     private:
@@ -15,7 +16,7 @@ class FontManager {
         FontManager(TextureAtlas& atlas, const char* charDef);
         ~FontManager();
 
-        void drawString(const char* string, int x, int y);
+        void drawString(const char* string, int x, int y, Shader& shd);
 };
 
 #endif

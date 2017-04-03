@@ -122,10 +122,11 @@ int main(int argc, char** argv) {
     shd.draw(spr, 100, 100);
 
     // Testing fonts
+    Shader defShd;
     TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
     FontManager testFont(fontAtlas, ' ', '~');
 
-    testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
+    testFont.drawString("Princess Luna sees your lack of progress!", 132, 132, defShd);
 
     //
     // And ends here...

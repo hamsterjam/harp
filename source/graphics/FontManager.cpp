@@ -6,8 +6,6 @@
 #include <graphics/Sprite.h>
 #include <graphics/Shader.h>
 
-// Might be a good idea to have a global default shader or something...
-
 FontManager::FontManager(TextureAtlas& atlas, char firstChar, char lastChar) {
     for (int i = 0; i < lastChar - firstChar; ++i) {
         Sprite* spr = new Sprite();
@@ -30,8 +28,7 @@ FontManager::~FontManager() {
     }
 }
 
-void FontManager::drawString(const char* string, int x, int y) {
-    Shader shd;
+void FontManager::drawString(const char* string, int x, int y, Shader& shd) {
     for (int i = 0; string[i] != 0; ++i) {
         Sprite* currSprite = spriteMap[string[i]];
         shd.batchQueue(*currSprite, x, y);
