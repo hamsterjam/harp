@@ -256,10 +256,7 @@ void Shader::batchDraw() {
     Sprite& first = *batchSprites.front();
     unsigned int numSprites = batchSprites.size();
 
-    // Update all the sprites
-    for (auto spr : batchSprites) {
-        if (spr->needsBufferUpdates) spr->updateBuffers();
-    }
+    // Updating the sprites isn't nesecary
 
     // Check that the sprites actually work with this shader
     if (first.textures.size() != numTextures) {
@@ -396,6 +393,9 @@ void Shader::batchDraw() {
 
     batchSprites.clear();
     batchPositions.clear();
+
+    // We borrowed the buffers in first, so it needs an update
+    first.needsBufferUpdates = true;
 }
 
 void Shader::setDrawMode(DrawMode mode) {
