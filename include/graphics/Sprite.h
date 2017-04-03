@@ -47,6 +47,9 @@ class Sprite {
 
         ~Sprite();
 
+        int getWidth();
+        int getHeight();
+
         void addImage(const char* filename, const char* texUniform, const char* UVAttrib);
         void addTexture(Texture* tex, const char* texUniform, const char* UVAttrib);
 

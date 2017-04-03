@@ -12,6 +12,7 @@
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
+#include <graphics/FontManager.h>
 
 using namespace std;
 
@@ -117,22 +118,11 @@ int main(int argc, char** argv) {
 
     shd.draw(spr, 100, 100);
 
-    TextureAtlas testAtlas("res/test.png", 128, 128, 0, 0);
-    TextureAtlas craneAtlas("res/crane.png", 128, 128, 0, 0);
+    // Testing fonts
+    TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
+    FontManager testFont(fontAtlas, ' ', '~');
 
-    Sprite spr1;
-    testAtlas.addTextureToSprite(spr1, 0);
-    craneAtlas.addTextureToSprite(spr1, "uTexture2", "aAuxTexCoord", 0);
-    spr1.setAuxData(so);
-
-    Sprite spr2;
-    testAtlas.addTextureToSprite(spr2, 1, 0);
-    craneAtlas.addTextureToSprite(spr2, "uTexture2", "aAuxTexCoord", 1, 0);
-    spr2.setAuxData(so);
-
-    shd.batchQueue(spr1, 250, 10);
-    shd.batchQueue(spr2, 378, 10);
-    shd.batchDraw();
+    testFont.drawString("Princess Luna sees your lack of progress!", 100, 300);
 
     //
     // And ends here...

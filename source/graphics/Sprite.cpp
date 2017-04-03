@@ -90,6 +90,13 @@ Sprite::~Sprite() {
     delete auxData;
 }
 
+int Sprite::getHeight() {
+    return h;
+}
+int Sprite::getWidth() {
+    return w;
+}
+
 void Sprite::addImage(const char* filename, const char* texUniform, const char* UVAttrib) {
     addTexture(createTexture(filename), texUniform, UVAttrib);
 }
