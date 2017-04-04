@@ -34,6 +34,9 @@ Sprite::texSpecifier Sprite::defaultSpec(Texture* tex) {
 Sprite::Sprite() {
     w = 0;
     h = 0;
+
+    auxData = 0;
+    needsBufferUpdates = true;
 }
 
 Sprite::Sprite(const char* filename) : Sprite(createTexture(filename)){
