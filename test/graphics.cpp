@@ -106,27 +106,29 @@ int main(int argc, char** argv) {
     // The fun stuff starts here
     //
 
-    Shader shd(vertSource, fragSource, 2);
+    {
+        Shader shd(vertSource, fragSource, 2);
 
-    Sprite spr("res/test.png", 64, 64, 128, 128);
-    spr.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 64, 64, 128, 128);
+        Sprite spr("res/test.png", 64, 64, 128, 128);
+        spr.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 64, 64, 128, 128);
 
-    SceneObject so("mixRatios");
-    GLfloat mix1 = 0.5;
-    GLfloat mix2 = 0.5;
-    so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
-    so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
+        SceneObject so("mixRatios");
+        GLfloat mix1 = 0.5;
+        GLfloat mix2 = 0.5;
+        so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
+        so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
 
-    spr.setAuxData(so);
+        spr.setAuxData(so);
 
-    shd.draw(spr, 100, 100);
+        shd.draw(spr, 100, 100);
 
-    // Testing fonts
-    Shader defShd;
-    TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
-    FontManager testFont(fontAtlas, ' ', '~');
+        // Testing fonts
+        Shader defShd;
+        TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
+        FontManager testFont(fontAtlas, ' ', '~');
 
-    testFont.drawString("Princess Luna sees your lack of progress!", 132, 132, defShd);
+        testFont.drawString("Princess Luna sees your lack of progress!", 132, 132, defShd);
+    }
 
     //
     // And ends here...
