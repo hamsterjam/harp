@@ -1,13 +1,13 @@
-#include <GL/glew.h>
-
-#define SDL_MAIN_HANDLED
-
-#include <SDL.h>
-#include <SDL_opengl.h>
-
 #include <iostream>
 
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
+
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+
 #include <globals.h>
+#include <graphics/Texture.h>
 
 using namespace std;
 
@@ -19,6 +19,7 @@ static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
 void init() {
+    initGlobals();
 }
 
 void update(unsigned int deltaT) {
@@ -34,6 +35,8 @@ void draw() {
 }
 
 void cleanup() {
+    destroyTextures();
+    cleanupGlobals();
 }
 
 int main(int argc, char** argv) {
@@ -64,6 +67,9 @@ int main(int argc, char** argv) {
         cerr << "Failed to initialize glew: " << glewGetErrorString(err) << endl;
         return 1;
     }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     init();
 

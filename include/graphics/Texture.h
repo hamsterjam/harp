@@ -7,10 +7,10 @@ struct Texture {
     int w, h;
     int channels;
     GLuint textureID;
-    unsigned char* data;
 };
 
 Texture* createTexture(const char* filename);
-void destroyTexture(Texture* tex);
+// Because this acts like a static manager class, this unloads ALL textures
+void destroyTextures();
 
 #endif

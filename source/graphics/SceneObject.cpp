@@ -23,6 +23,31 @@ SceneObject::SceneObject(const char* blockName) {
     needsBufferUpdate = true;
 }
 
+SceneObject::SceneObject(SceneObject& clone) {
+    blockName = clone.blockName;
+
+    glGenBuffers(1, &bufferID);
+    blockID = 0;
+    bufferSize = 0;
+
+    lastProgramID = 0;
+
+    for (auto item : clone.uniforms) {
+        const char* cloneName = item.first;
+        UniformSpec cloneSpec = item.second;
+
+        UniformSpec spec;
+        spec.size = cloneSpec.size;
+        spec.data = malloc(cloneSpec.size);
+        memcpy(spec.data, cloneSpec.data, cloneSpec.size);
+
+        uniforms[cloneName] = spec;
+    }
+
+    needsShaderInit = true;
+    needsBufferUpdate = true;
+}
+
 SceneObject::~SceneObject() {
     glDeleteBuffers(1, &bufferID);
     for (auto item : uniforms) {
@@ -60,10 +85,12 @@ void SceneObject::setUniform(const char* name, std::size_t size, void* value) {
     needsBufferUpdate = true;
 }
 
-void SceneObject::shaderInit(GLuint programID) {
+void SceneObject::shaderInit(Shader& shd) {
     if (!needsShaderInit) {
         return;
     }
+
+    GLuint programID = shd.getProgramID();
 
     blockID = glGetUniformBlockIndex(programID, blockName);
     glGetActiveUniformBlockiv(programID, blockID, GL_UNIFORM_BLOCK_DATA_SIZE, &bufferSize);
@@ -82,9 +109,11 @@ void SceneObject::shaderInit(GLuint programID) {
     needsShaderInit = false;
 }
 
-void SceneObject::updateBuffer(GLuint programID) {
+void SceneObject::updateBuffer(Shader& shd) {
+    GLuint programID = shd.getProgramID();
+
     if (needsShaderInit) {
-        shaderInit(programID);
+        shaderInit(shd);
     }
     else {
         if (lastProgramID != programID) {

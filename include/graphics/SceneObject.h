@@ -32,11 +32,12 @@ class SceneObject {
 
     public:
         SceneObject(const char* blockName);
+        SceneObject(SceneObject& clone);
         ~SceneObject();
 
         void setUniform(const char* name, std::size_t size, void* value);
-        void shaderInit(GLuint programID);
-        void updateBuffer(GLuint programID);
+        void shaderInit(Shader& shd);
+        void updateBuffer(Shader& shd);
 };
 
 #endif

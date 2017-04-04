@@ -1,22 +1,26 @@
 #include <cstdlib>
+
 #include <iostream>
+#include <map>
 
 #include <GL/glew.h>
-
 #include <SDL_opengl.h>
+
 #include <stb_image.h>
 
 #include <graphics/Texture.h>
 
-// Just wrap the stb_image interface for now, in the future this
-// should make sure it only loads each filename once.
+static std::map<const char*, Texture*> loadedTextures;
 
 Texture* createTexture(const char* filename) {
+    if (loadedTextures.count(filename) != 0) {
+        return loadedTextures[filename];
+    }
     Texture* ret = (Texture*) malloc(sizeof(Texture));
 
-    ret->data = stbi_load(filename, &ret->w, &ret->h, &ret->channels, 0);
+    unsigned char* data = stbi_load(filename, &ret->w, &ret->h, &ret->channels, 0);
 
-    if (!ret->data) {
+    if (!data) {
         std::cerr << "Failed to load image: " << filename << std::endl;
         exit(1);
     }
@@ -42,18 +46,23 @@ Texture* createTexture(const char* filename) {
             internalFormat = GL_RGBA;
             break;
     }
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, ret->w, ret->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, ret->data);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, ret->w, ret->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    stbi_image_free(data);
+
+    loadedTextures[filename] = ret;
 
     return ret;
 }
 
-void destroyTexture(Texture* tex) {
-    stbi_image_free(tex->data);
-    glDeleteTextures(1, &tex->textureID);
-    free(tex);
+// Because this acts
+void destroyTextures() {
+    for (auto item : loadedTextures) {
+        Texture* tex = item.second;
+        glDeleteTextures(1, &tex->textureID);
+    }
 }

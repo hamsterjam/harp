@@ -1,17 +1,18 @@
-
-#include <GL/glew.h>
-
-#define SDL_MAIN_HANDLED
-
-#include <SDL.h>
-#include <SDL_opengl.h>
-
 #include <iostream>
 
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
+
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+
+#include <globals.h>
+#include <graphics/Texture.h>
+#include <graphics/TextureAtlas.h>
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
-#include <globals.h>
+#include <graphics/FontManager.h>
 
 using namespace std;
 
@@ -93,7 +94,12 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    initGlobals();
+
     SDL_GL_MakeCurrent(window, gl_context);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -102,19 +108,28 @@ int main(int argc, char** argv) {
     // The fun stuff starts here
     //
 
-    Shader shd(vertSource, fragSource, 2);
+    {
+        Shader shd(vertSource, fragSource, 2);
 
-    Sprite spr("res/test.png");
-    spr.addImage("res/crane.png", "uTexture2", "aAuxTexCoord");
+        Sprite spr("res/test.png", 64, 64, 128, 128);
+        spr.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 64, 64, 128, 128);
 
-    SceneObject so("mixRatios");
-    GLfloat mix1 = 0.5;
-    GLfloat mix2 = 0.5;
-    so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
-    so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
+        SceneObject so("mixRatios");
+        GLfloat mix1 = 0.5;
+        GLfloat mix2 = 0.5;
+        so.setUniform("uMix1", sizeof(GLfloat), (void*) &mix1);
+        so.setUniform("uMix2", sizeof(GLfloat), (void*) &mix2);
 
-    shd.use(so);
-    shd.draw(spr, 100, 100);
+        spr.setAuxData(so);
+
+        shd.draw(spr, 100, 100);
+
+        // Testing fonts
+        TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
+        FontManager testFont(fontAtlas, ' ', '~');
+
+        testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
+    }
 
     //
     // And ends here...
@@ -130,6 +145,9 @@ int main(int argc, char** argv) {
             }
         }
     }
+
+    destroyTextures();
+    cleanupGlobals();
 
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
