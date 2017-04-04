@@ -19,8 +19,7 @@ static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
 void init() {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    initGlobals();
 }
 
 void update(unsigned int deltaT) {
@@ -37,6 +36,7 @@ void draw() {
 
 void cleanup() {
     destroyTextures();
+    cleanupGlobals();
 }
 
 int main(int argc, char** argv) {
@@ -67,6 +67,9 @@ int main(int argc, char** argv) {
         cerr << "Failed to initialize glew: " << glewGetErrorString(err) << endl;
         return 1;
     }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     init();
 

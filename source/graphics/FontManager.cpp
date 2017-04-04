@@ -1,6 +1,7 @@
 #include <map>
 #include <utility>
 
+#include <globals.h>
 #include <graphics/FontManager.h>
 #include <graphics/TextureAtlas.h>
 #include <graphics/Sprite.h>
@@ -26,6 +27,10 @@ FontManager::~FontManager() {
     for (auto item : spriteMap) {
         free(item.second);
     }
+}
+
+void FontManager::drawString(const char* string, int x, int y) {
+    drawString(string, x, y, *defaultShader);
 }
 
 void FontManager::drawString(const char* string, int x, int y, Shader& shd) {

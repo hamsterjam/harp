@@ -94,6 +94,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    initGlobals();
+
     SDL_GL_MakeCurrent(window, gl_context);
 
     glEnable(GL_BLEND);
@@ -123,11 +125,10 @@ int main(int argc, char** argv) {
         shd.draw(spr, 100, 100);
 
         // Testing fonts
-        Shader defShd;
         TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
         FontManager testFont(fontAtlas, ' ', '~');
 
-        testFont.drawString("Princess Luna sees your lack of progress!", 132, 132, defShd);
+        testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
     }
 
     //
@@ -146,6 +147,7 @@ int main(int argc, char** argv) {
     }
 
     destroyTextures();
+    cleanupGlobals();
 
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);

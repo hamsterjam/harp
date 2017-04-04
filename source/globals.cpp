@@ -1,6 +1,15 @@
-// These aren't in a header because defining things
-// in headers is a way to not have a good day.
+#include <globals.h>
+#include <graphics/Shader.h>
 
+void initGlobals() {
+    defaultShader = new Shader();
+}
 
-extern const int SCREEN_WIDTH  = 640;
-extern const int SCREEN_HEIGHT = 480;
+void cleanupGlobals() {
+    delete defaultShader;
+}
+
+Shader* defaultShader = 0;
+
+const int SCREEN_WIDTH  = 640;
+const int SCREEN_HEIGHT = 480;
