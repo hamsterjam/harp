@@ -119,6 +119,14 @@ Shader::~Shader() {
     glDeleteBuffers(1, &vertPosBuffer);
 }
 
+void toScreenCoord(GLfloat& x, GLfloat& y) {
+    x = x / (GLfloat) SCREEN_WIDTH;
+    y = y / (GLfloat) SCREEN_HEIGHT;
+
+    x = x * 2.0 - 1.0;
+    y = y * 2.0 - 1.0;
+}
+
 void Shader::drawUsingCurrentBuffers() {
     // Set aVertPos
     glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
@@ -156,37 +164,13 @@ void Shader::drawUsingCurrentBuffers() {
             glLineWidth(lineWidth);
             glDrawArrays(GL_LINES, 0, 2);
             break;
+        case POINT:
+            glDrawArrays(GL_POINTS, 0, 1);
     }
 
     // Cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void Shader::setBufferToRect(float x, float y, float w, float h) {
-    GLfloat x1 = (GLfloat) x / (GLfloat) SCREEN_WIDTH;
-    GLfloat y1 = (GLfloat) y / (GLfloat) SCREEN_HEIGHT;
-    GLfloat x2 = (GLfloat) (x + w)  / (GLfloat) SCREEN_WIDTH;
-    GLfloat y2 = (GLfloat) (y + h) / (GLfloat) SCREEN_HEIGHT;
-
-    x1 = x1 * 2.0 - 1.0;
-    x2 = x2 * 2.0 - 1.0;
-    y1 = y1 * 2.0 - 1.0;
-    y2 = y2 * 2.0 - 1.0;
-
-    // Note the order
-    GLfloat pos[] = {
-        x1, y1,
-        x2, y2,
-        x1, y2,
-
-        x1, y1,
-        x2, y1,
-        x2, y2
-    };
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, &pos, GL_DYNAMIC_DRAW);
 }
 
 void Shader::drawSprite(Sprite& spr, float x, float y) {
@@ -203,8 +187,6 @@ void Shader::drawSprite(Sprite& spr, float x, float y) {
     // Make sure we use the shader
     glUseProgram(programID);
 
-    // Set the vertPosBuffer
-    setBufferToRect(x, y, spr.w, spr.h);
 
     // Now let's load the stuff from the textures
     unsigned int currTex = 0;
@@ -248,32 +230,51 @@ void Shader::drawSprite(Sprite& spr, float x, float y) {
         exit(1);
     }
 
-    drawUsingCurrentBuffers();
+    drawRect(x, y, spr.w, spr.h);
 }
 
 void Shader::drawRect(float x, float y, float w, float h) {
     glUseProgram(programID);
-    setBufferToRect(x, y, w, h);
+
+    GLfloat x1 = (GLfloat) x;
+    GLfloat y1 = (GLfloat) y;
+    GLfloat x2 = (GLfloat) (x + w);
+    GLfloat y2 = (GLfloat) (y + h);
+
+    toScreenCoord(x1, y1);
+    toScreenCoord(x2, y2);
+
+    // Note the order
+    GLfloat pos[] = {
+        x1, y1,
+        x2, y2,
+        x1, y2,
+
+        x1, y1,
+        x2, y1,
+        x2, y2
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, &pos, GL_DYNAMIC_DRAW);
+
     drawUsingCurrentBuffers();
 }
 
 void Shader::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
     glUseProgram(programID);
 
-    GLfloat xx1 = (GLfloat) x1 / (GLfloat) SCREEN_WIDTH;
-    GLfloat xx2 = (GLfloat) x2 / (GLfloat) SCREEN_WIDTH;
-    GLfloat xx3 = (GLfloat) x3 / (GLfloat) SCREEN_WIDTH;
+    GLfloat xx1 = (GLfloat) x1;
+    GLfloat xx2 = (GLfloat) x2;
+    GLfloat xx3 = (GLfloat) x3;
 
-    GLfloat yy1 = (GLfloat) y1 / (GLfloat) SCREEN_HEIGHT;
-    GLfloat yy2 = (GLfloat) y2 / (GLfloat) SCREEN_HEIGHT;
-    GLfloat yy3 = (GLfloat) y3 / (GLfloat) SCREEN_HEIGHT;
+    GLfloat yy1 = (GLfloat) y1;
+    GLfloat yy2 = (GLfloat) y2;
+    GLfloat yy3 = (GLfloat) y3;
 
-    xx1 = xx1 * 2.0 - 1.0;
-    xx2 = xx2 * 2.0 - 1.0;
-    xx3 = xx3 * 2.0 - 1.0;
-    yy1 = yy1 * 2.0 - 1.0;
-    yy2 = yy2 * 2.0 - 1.0;
-    yy3 = yy3 * 2.0 - 1.0;
+    toScreenCoord(xx1, yy1);
+    toScreenCoord(xx2, yy2);
+    toScreenCoord(xx3, yy3);
 
     GLfloat pos[] = {
         xx1, yy1,
@@ -283,6 +284,44 @@ void Shader::drawTriangle(float x1, float y1, float x2, float y2, float x3, floa
 
     glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*6, &pos, GL_DYNAMIC_DRAW);
+
+    drawUsingCurrentBuffers();
+}
+
+void Shader::drawLine(float x1, float y1, float x2, float y2) {
+    GLfloat xx1 = (GLfloat) x1;
+    GLfloat xx2 = (GLfloat) x2;
+    GLfloat yy1 = (GLfloat) y1;
+    GLfloat yy2 = (GLfloat) y2;
+
+    toScreenCoord(xx1, yy1);
+    toScreenCoord(xx2, yy2);
+
+    GLfloat pos[] = {
+        xx1, yy1,
+        xx2, yy2
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*4, &pos, GL_DYNAMIC_DRAW);
+
+    drawUsingCurrentBuffers();
+}
+
+void Shader::drawPoint(float x, float y) {
+    glUseProgram(programID);
+
+    GLfloat xx = (GLfloat) x / (GLfloat) SCREEN_WIDTH;
+    GLfloat yy = (GLfloat) y / (GLfloat) SCREEN_HEIGHT;
+
+    toScreenCoord(xx, yy);
+
+    GLfloat pos[] = {
+        xx, yy
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*2, &pos, GL_DYNAMIC_DRAW);
 
     drawUsingCurrentBuffers();
 }

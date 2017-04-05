@@ -12,7 +12,8 @@ enum DrawMode {
     RECT_FILL,
     TRIANGLE,
     TRIANGLE_FILL,
-    LINE
+    LINE,
+    POINT
 };
 
 class Shader {
@@ -41,7 +42,6 @@ class Shader {
         std::vector<Pos>  batchPositions;
 
         void drawUsingCurrentBuffers();
-        void setBufferToRect(float x, float y, float w, float h);
 
     public:
         // This will compile a default shader
@@ -52,6 +52,8 @@ class Shader {
         void drawSprite(Sprite& spr, float x, float y);
         void drawRect(float x, float y, float w, float h);
         void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
+        void drawLine(float x1, float y1, float x2, float y2);
+        void drawPoint(float x, float y);
 
         void batchQueue(Sprite& spr, int x, int y);
         void batchDraw();

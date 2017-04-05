@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
 
         spr.setAuxData(so);
 
-        shd.draw(spr, 100, 100);
+        shd.drawSprite(spr, 100, 100);
 
         // Testing fonts
         TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
