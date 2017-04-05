@@ -1,4 +1,6 @@
 #include <graphics/PrimitiveRenderer.h>
+#include <graphics/Shader.h>
+#include <graphics/Color.h>
 #include <globals.h>
 
 const char* defaultPrimitiveVertSource = R"(
@@ -61,4 +63,24 @@ PrimitiveRenderer::PrimitiveRenderer(Shader& shd) :
     elipse("elipse")
 {
     this->shd = &shd;
+}
+
+void PrimitiveRenderer::setAllPrims(bool elipse, Color color) {
+    GLboolean isElipse = (GLboolean) elipse;
+    allPrims.setUniform("uElipse", sizeof(GLboolean), (void*) &isElipse);
+
+    GLfloat colorArray[4] = {
+        (GLfloat) color.r,
+        (GLfloat) color.g,
+        (GLfloat) color.b,
+        (GLfloat) color.a
+    };
+    allPrims.setUniform("uColor", sizeof(GLfloat)*4, (void*) &colorArray);
+}
+
+void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Color color) {
+    setAllPrims(false, color);
+
+    shd->use(allPrims);
+    shd->drawRect(x, y, w, h);
 }

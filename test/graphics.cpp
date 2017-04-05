@@ -14,6 +14,7 @@
 #include <graphics/SceneObject.h>
 #include <graphics/FontRenderer.h>
 #include <graphics/PrimitiveRenderer.h>
+#include <graphics/Color.h>
 
 using namespace std;
 
@@ -133,6 +134,7 @@ int main(int argc, char** argv) {
 
         // Testing primitives
         PrimitiveRenderer prim;
+        prim.drawRectangleFill(200, 200, 50, 50, rgbToColor(0.1, 0.8, 0.8));
     }
 
     //

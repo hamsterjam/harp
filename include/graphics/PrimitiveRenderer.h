@@ -15,6 +15,8 @@ class PrimitiveRenderer {
         SceneObject allPrims;
         SceneObject elipse;
 
+        void setAllPrims(bool elipse, Color color);
+
     public:
         PrimitiveRenderer();
         PrimitiveRenderer(Shader& shd);
