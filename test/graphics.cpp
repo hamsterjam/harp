@@ -13,6 +13,7 @@
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
 #include <graphics/FontRenderer.h>
+#include <graphics/PrimitiveRenderer.h>
 
 using namespace std;
 
@@ -129,6 +130,9 @@ int main(int argc, char** argv) {
         FontRenderer testFont(fontAtlas, ' ', '~');
 
         testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
+
+        // Testing primitives
+        PrimitiveRenderer prim;
     }
 
     //
