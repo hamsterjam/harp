@@ -84,7 +84,6 @@ Color hslaToColor(float h, float s, float l, float a) {
     chromaSwitch(hh, c, x, &r, &g, &b);
 
     float m = l - c/2.0;
-
     return rgbaToColor(r+m, g+m, b+m, a);
 }
 
