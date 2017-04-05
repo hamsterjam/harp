@@ -25,15 +25,25 @@ uniform allPrims {
 };
 
 uniform elipse {
-    float uRadius;
     vec2 uCenter;
+    float uRadiusX;
+    float uRadiusY;
+    float uTheta1;
+    float uTheta2;
 };
 
 void main(void) {
     if (uElipse) {
-        vec2 radial = gl_FragCoord.xy - uCenter;
+        vec2 trueRadial = gl_FragCoord.xy - uCenter;
+        vec2 scaleRadial = trueRadial / vec2(uRadiusX, uRadiusY);
 
-        if (dot(radial, radial) <= uRadius*uRadius) {
+        float angle = degrees(atan(trueRadial.y, trueRadial.x));
+        angle = mod(angle, 360);
+
+        bool rTest = dot(scaleRadial, scaleRadial) <= 1;
+        bool aTest = angle >= uTheta1 && angle <= uTheta2;
+
+        if (rTest && aTest) {
             gl_FragColor = uColor;
         }
         else {
@@ -57,7 +67,7 @@ PrimitiveRenderer::PrimitiveRenderer(Shader& shd) :
     this->shd = &shd;
 }
 
-void PrimitiveRenderer::setAllPrims(bool elipse, Color color) {
+void PrimitiveRenderer::setAllPrimsSO(bool elipse, Color color) {
     GLboolean isElipse = (GLboolean) elipse;
     allPrims.setUniform("uElipse", sizeof(GLboolean), (void*) &isElipse);
 
@@ -70,28 +80,75 @@ void PrimitiveRenderer::setAllPrims(bool elipse, Color color) {
     allPrims.setUniform("uColor", sizeof(GLfloat)*4, (void*) &colorArray);
 }
 
-void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Color color) {
-    setAllPrims(false, color);
-
-    shd->use(allPrims);
-    shd->drawRect(x, y, w, h);
-}
-
-void PrimitiveRenderer::drawCircleFill(float x, float y, float r, Color color) {
-    setAllPrims(true, color);
-
+void PrimitiveRenderer::setElipseSO(float x, float y, float rx, float ry, float theta1, float theta2) {
     GLfloat center[] = {
         (GLfloat) x,
         (GLfloat) y
     };
     elipse.setUniform("uCenter", sizeof(GLfloat)*2, (void*) &center);
 
-    GLfloat rr = (GLfloat) r;
-    elipse.setUniform("uRadius", sizeof(GLfloat), (void*) &rr);
+    GLfloat rrx = (GLfloat) rx;
+    elipse.setUniform("uRadiusX", sizeof(GLfloat), (void*) &rrx);
 
+    GLfloat rry = (GLfloat) ry;
+    elipse.setUniform("uRadiusY", sizeof(GLfloat), (void*) &rry);
+
+    GLfloat ttheta1 = (GLfloat) theta1;
+    elipse.setUniform("uTheta1", sizeof(GLfloat), (void*) &ttheta1);
+
+    GLfloat ttheta2 = (GLfloat) theta2;
+    elipse.setUniform("uTheta2", sizeof(GLfloat), (void*) &ttheta2);
+}
+
+void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Color color) {
+    setAllPrimsSO(false, color);
     shd->use(allPrims);
+
+    shd->setDrawMode(RECT_FILL);
+    shd->drawRect(x, y, w, h);
+}
+
+void PrimitiveRenderer::drawCircleFill(float x, float y, float r, Color color) {
+    setAllPrimsSO(true, color);
+    shd->use(allPrims);
+
+    setElipseSO(x, y, r, r, 0, 360);
     shd->use(elipse);
 
     shd->setDrawMode(RECT_FILL);
     shd->drawRect(x-r, y-r, 2*r, 2*r);
 }
+
+void PrimitiveRenderer::drawSegment(float x, float y, float r, float theta1, float theta2, Color color) {
+    setAllPrimsSO(true, color);
+    shd->use(allPrims);
+
+    setElipseSO(x, y, r, r, theta1, theta2);
+    shd->use(elipse);
+
+    shd->setDrawMode(RECT_FILL);
+    shd->drawRect(x-r, y-r, 2*r, 2*r);
+}
+
+void PrimitiveRenderer::drawElipseFill(float x, float y, float rx, float ry, Color color) {
+    setAllPrimsSO(true, color);
+    shd->use(allPrims);
+
+    setElipseSO(x, y, rx, ry, 0, 360);
+    shd->use(elipse);
+
+    shd->setDrawMode(RECT_FILL);
+    shd->drawRect(x-rx, y-ry, 2*rx, 2*ry);
+}
+
+void PrimitiveRenderer::drawElipseSegment(float x, float y, float rx, float ry, float theta1, float theta2, Color color) {
+    setAllPrimsSO(true, color);
+    shd->use(allPrims);
+
+    setElipseSO(x, y, rx, ry, theta1, theta2);
+    shd->use(elipse);
+
+    shd->setDrawMode(RECT_FILL);
+    shd->drawRect(x-rx, y-ry, 2*rx, 2*ry);
+}
+

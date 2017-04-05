@@ -134,8 +134,10 @@ int main(int argc, char** argv) {
 
         // Testing primitives
         PrimitiveRenderer prim;
-        //prim.drawRectangleFill(200, 200, 50, 50, rgbToColor(0.1, 0.8, 0.8));
-        prim.drawCircleFill(400, 100, 50, rgbToColor(0.2, 0.2, 0.9));
+        prim.drawRectangleFill(200, 200, 50, 50, rgbToColor(0.1, 0.8, 0.8));
+        prim.drawElipseFill(400, 100, 100, 50, rgbaToColor(0.2, 0.2, 0.9, 0.8));
+        prim.drawSegment(400, 300, 50, 0 + 45, 360 - 45, rgbToColor(1, 1, 0));
+        prim.drawElipseSegment(200, 350, 100, 50, 0, 270, rgbToColor(0.8, 0, 0));
     }
 
     //
