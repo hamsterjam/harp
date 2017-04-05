@@ -114,50 +114,7 @@ void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Co
     shd->drawRect(x, y, w, h);
 }
 
-void PrimitiveRenderer::drawCircleFill(float x, float y, float r, Color color) {
-    setAllPrimsSO(true, color);
-    shd->use(allPrims);
-
-    setElipseSO(x, y, r, r, 0, 360, r);
-    shd->use(elipse);
-
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x-r, y-r, 2*r, 2*r);
-}
-
-void PrimitiveRenderer::drawSegment(float x, float y, float r, float theta1, float theta2, Color color) {
-    setAllPrimsSO(true, color);
-    shd->use(allPrims);
-
-    setElipseSO(x, y, r, r, theta1, theta2, r);
-    shd->use(elipse);
-
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x-r, y-r, 2*r, 2*r);
-}
-
-void PrimitiveRenderer::drawElipseFill(float x, float y, float rx, float ry, Color color) {
-    setAllPrimsSO(true, color);
-    shd->use(allPrims);
-
-    setElipseSO(x, y, rx, ry, 0, 360, (rx > ry) ? rx : ry);
-    shd->use(elipse);
-
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x-rx, y-ry, 2*rx, 2*ry);
-}
-
-void PrimitiveRenderer::drawElipseSegment(float x, float y, float rx, float ry, float theta1, float theta2, Color color) {
-    setAllPrimsSO(true, color);
-    shd->use(allPrims);
-
-    setElipseSO(x, y, rx, ry, theta1, theta2, (rx > ry) ? rx : ry);
-    shd->use(elipse);
-
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x-rx, y-ry, 2*rx, 2*ry);
-}
-
+// All the circle/elipse drawing functions are really just specialisations of this
 void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
     setAllPrimsSO(true, color);
     shd->use(allPrims);
@@ -167,4 +124,29 @@ void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, floa
 
     shd->setDrawMode(RECT_FILL);
     shd->drawRect(x-rx-lineWidth/2, y-ry-lineWidth/2, 2*rx+lineWidth, 2*ry+lineWidth);
+}
+
+// Circles
+void PrimitiveRenderer::drawCircleFill(float x, float y, float r, Color color) {
+    drawElipseArc(x, y, r, r, 0, 360, r, color);
+}
+void PrimitiveRenderer::drawCircle(float x, float y, float r, float lineWidth, Color color) {
+    drawElipseArc(x, y, r, r, 0, 360, lineWidth, color);
+}
+void PrimitiveRenderer::drawSegment(float x, float y, float r, float theta1, float theta2, Color color) {
+    drawElipseArc(x, y, r, r, theta1, theta2, r, color);
+}
+void PrimitiveRenderer::drawArc(float x, float y, float r, float theta1, float theta2, float lineWidth, Color color) {
+    drawElipseArc(x, y, r, r, theta1, theta2, lineWidth, color);
+}
+
+// Elipses
+void PrimitiveRenderer::drawElipseFill(float x, float y, float rx, float ry, Color color) {
+    drawElipseArc(x, y, rx, ry, 0, 360, (rx > ry) ? rx : ry, color);
+}
+void PrimitiveRenderer::drawElipse(float x, float y, float rx, float ry, float lineWidth, Color color) {
+    drawElipseArc(x, y, rx, ry, 0, 360, lineWidth, color);
+}
+void PrimitiveRenderer::drawElipseSegment(float x, float y, float rx, float ry, float theta1, float theta2, Color color) {
+    drawElipseArc(x, y, rx, ry, theta1, theta2, (rx > ry) ? rx : ry, color);
 }
