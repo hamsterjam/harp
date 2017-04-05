@@ -109,7 +109,7 @@ void SceneObject::shaderInit(Shader& shd) {
     needsShaderInit = false;
 }
 
-void SceneObject::updateBuffer(Shader& shd) {
+void SceneObject::updateBuffer(Shader& shd, GLuint bindingPoint) {
     GLuint programID = shd.getProgramID();
 
     if (needsShaderInit) {
@@ -138,6 +138,7 @@ void SceneObject::updateBuffer(Shader& shd) {
 
     glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
     glBufferData(GL_UNIFORM_BUFFER, bufferSize, bufferData, GL_STATIC_DRAW);
+    glUniformBlockBinding(programID, blockID, bindingPoint);
     glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);

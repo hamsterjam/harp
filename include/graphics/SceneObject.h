@@ -37,7 +37,7 @@ class SceneObject {
 
         void setUniform(const char* name, std::size_t size, void* value);
         void shaderInit(Shader& shd);
-        void updateBuffer(Shader& shd);
+        void updateBuffer(Shader& shd, GLuint bindingPoint);
 };
 
 #endif

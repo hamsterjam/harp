@@ -139,8 +139,10 @@ void Shader::drawUsingCurrentBuffers() {
     glVertexAttribPointer(aVertPos, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     // SceneObjects
+    GLuint bindingPoint = 0;
     for (auto so : sceneObjects) {
-        so->updateBuffer(*this);
+        so->updateBuffer(*this, bindingPoint);
+        ++bindingPoint;
     }
     sceneObjects.clear();
 
@@ -464,8 +466,10 @@ void Shader::batchDraw() {
     free(UVData);
 
     // SceneObjects
+    GLuint bindingPoint = 0;
     for (auto so : sceneObjects) {
-        so->updateBuffer(*this);
+        so->updateBuffer(*this, bindingPoint);
+        ++bindingPoint;
     }
     sceneObjects.clear();
 

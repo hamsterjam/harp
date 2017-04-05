@@ -134,7 +134,8 @@ int main(int argc, char** argv) {
 
         // Testing primitives
         PrimitiveRenderer prim;
-        prim.drawRectangleFill(200, 200, 50, 50, rgbToColor(0.1, 0.8, 0.8));
+        //prim.drawRectangleFill(200, 200, 50, 50, rgbToColor(0.1, 0.8, 0.8));
+        prim.drawCircleFill(400, 100, 50, rgbToColor(0.2, 0.2, 0.9));
     }
 
     //

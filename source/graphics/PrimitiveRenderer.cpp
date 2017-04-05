@@ -24,28 +24,20 @@ uniform allPrims {
     vec4 uColor;
 };
 
-uniform elipse{
+uniform elipse {
+    float uRadius;
     vec2 uCenter;
-    float uRadiusX;
-    float uRadiusY;
-    float uLineWidth;
-    float uTheta1;
-    float uTheta2;
 };
 
 void main(void) {
     if (uElipse) {
-        vec4 trueRadial = gl_FragCoord - vec4(uCenter, 0.0, 1.0);
+        vec2 radial = gl_FragCoord.xy - uCenter;
 
-        vec4 outerRadial = trueRadial / vec4(uRadiusX, uRadiusY, 0.0, 1.0);
-        vec4 innerRadial = trueRadial / vec4(uRadiusX - uLineWidth, uRadiusY - uLineWidth, 0.0, 1.0);
-
-        float outerRadius = dot(outerRadial, outerRadial);
-        float innerRadius = dot(innerRadial, innerRadial);
-        float angle = degrees(atan(trueRadial.y, trueRadial.x));
-
-        if (outerRadius <= 1.0 && innerRadius >= 1.0 && angle >= uTheta1 && angle <= uTheta2) {
+        if (dot(radial, radial) <= uRadius*uRadius) {
             gl_FragColor = uColor;
+        }
+        else {
+            gl_FragColor = vec4(0.0);
         }
     }
     else {
@@ -83,4 +75,23 @@ void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Co
 
     shd->use(allPrims);
     shd->drawRect(x, y, w, h);
+}
+
+void PrimitiveRenderer::drawCircleFill(float x, float y, float r, Color color) {
+    setAllPrims(true, color);
+
+    GLfloat center[] = {
+        (GLfloat) x,
+        (GLfloat) y
+    };
+    elipse.setUniform("uCenter", sizeof(GLfloat)*2, (void*) &center);
+
+    GLfloat rr = (GLfloat) r;
+    elipse.setUniform("uRadius", sizeof(GLfloat), (void*) &rr);
+
+    shd->use(allPrims);
+    shd->use(elipse);
+
+    shd->setDrawMode(RECT_FILL);
+    shd->drawRect(x-r, y-r, 2*r, 2*r);
 }
