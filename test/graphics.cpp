@@ -12,7 +12,7 @@
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/SceneObject.h>
-#include <graphics/FontManager.h>
+#include <graphics/FontRenderer.h>
 
 using namespace std;
 
@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
 
         // Testing fonts
         TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
-        FontManager testFont(fontAtlas, ' ', '~');
+        FontRenderer testFont(fontAtlas, ' ', '~');
 
         testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
     }
