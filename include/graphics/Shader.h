@@ -8,9 +8,11 @@ class Sprite;
 class SceneObject;
 
 enum DrawMode {
-    GF_BOX,
-    GF_LINE,
-    GF_FILL
+    RECT,
+    RECT_FILL,
+    TRIANGLE,
+    TRIANGLE_FILL,
+    LINE
 };
 
 class Shader {

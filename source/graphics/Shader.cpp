@@ -47,7 +47,7 @@ Shader::Shader() : Shader(defaultVertSource, defaultFragSource, 1) {
 Shader::Shader(const char* vertSource, const char* fragSource, unsigned int numTextures) {
     this->numTextures = numTextures;
 
-    currDrawMode = GF_FILL;
+    currDrawMode = RECT_FILL;
     lineWidth = 1;
 
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
@@ -219,16 +219,23 @@ void Shader::draw(Sprite& spr, int x, int y) {
 
     // Draw
     switch (currDrawMode) {
-        case GF_BOX:
+        case RECT:
             glLineWidth(lineWidth);
             glDrawArrays(GL_LINE_LOOP, 1, 4);
             break;
-        case GF_LINE:
+        case RECT_FILL:
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            break;
+        case TRIANGLE:
+            glLineWidth(lineWidth);
+            glDrawArrays(GL_LINE_LOOP, 0, 3);
+            break;
+        case TRIANGLE_FILL:
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            break;
+        case LINE:
             glLineWidth(lineWidth);
             glDrawArrays(GL_LINES, 0, 2);
-            break;
-        case GF_FILL:
-            glDrawArrays(GL_TRIANGLES, 0, 6);
             break;
     }
 
