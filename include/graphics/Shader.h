@@ -40,17 +40,23 @@ class Shader {
         std::vector<Sprite*> batchSprites;
         std::vector<Pos>  batchPositions;
 
+        void drawUsingCurrentBuffers();
+        void setBufferToRect(float x, float y, float w, float h);
+
     public:
         // This will compile a default shader
         Shader();
         Shader(const char* vertSource, const char* fragSource, unsigned int numTextures);
         ~Shader();
 
-        void draw(Sprite& spr, int x, int y);
-        void use(SceneObject& so);
+        void drawSprite(Sprite& spr, float x, float y);
+        void drawRect(float x, float y, float w, float h);
+        void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
 
         void batchQueue(Sprite& spr, int x, int y);
         void batchDraw();
+
+        void use(SceneObject& so);
 
         void setDrawMode(DrawMode mode);
         void setLineWidth(float width);

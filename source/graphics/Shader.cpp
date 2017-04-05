@@ -119,7 +119,77 @@ Shader::~Shader() {
     glDeleteBuffers(1, &vertPosBuffer);
 }
 
-void Shader::draw(Sprite& spr, int x, int y) {
+void Shader::drawUsingCurrentBuffers() {
+    // Set aVertPos
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    GLint aVertPos  = glGetAttribLocation(programID, "aVertPos");
+    if (aVertPos < 0)  {
+        std::cerr << "Failed to find 'aVertPos'" << std::endl;
+        exit(1);
+    }
+    glEnableVertexAttribArray(aVertPos);
+    glVertexAttribPointer(aVertPos, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    // SceneObjects
+    for (auto so : sceneObjects) {
+        so->updateBuffer(*this);
+    }
+    sceneObjects.clear();
+
+    // Draw
+    switch (currDrawMode) {
+        case RECT:
+            glLineWidth(lineWidth);
+            glDrawArrays(GL_LINE_LOOP, 1, 4);
+            break;
+        case RECT_FILL:
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            break;
+        case TRIANGLE:
+            glLineWidth(lineWidth);
+            glDrawArrays(GL_LINE_LOOP, 0, 3);
+            break;
+        case TRIANGLE_FILL:
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            break;
+        case LINE:
+            glLineWidth(lineWidth);
+            glDrawArrays(GL_LINES, 0, 2);
+            break;
+    }
+
+    // Cleanup
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Shader::setBufferToRect(float x, float y, float w, float h) {
+    GLfloat x1 = (GLfloat) x / (GLfloat) SCREEN_WIDTH;
+    GLfloat y1 = (GLfloat) y / (GLfloat) SCREEN_HEIGHT;
+    GLfloat x2 = (GLfloat) (x + w)  / (GLfloat) SCREEN_WIDTH;
+    GLfloat y2 = (GLfloat) (y + h) / (GLfloat) SCREEN_HEIGHT;
+
+    x1 = x1 * 2.0 - 1.0;
+    x2 = x2 * 2.0 - 1.0;
+    y1 = y1 * 2.0 - 1.0;
+    y2 = y2 * 2.0 - 1.0;
+
+    // Note the order
+    GLfloat pos[] = {
+        x1, y1,
+        x2, y2,
+        x1, y2,
+
+        x1, y1,
+        x2, y1,
+        x2, y2
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, &pos, GL_DYNAMIC_DRAW);
+}
+
+void Shader::drawSprite(Sprite& spr, float x, float y) {
     // Update the sprite if it needs it
     if (spr.needsBufferUpdates) {
         spr.updateBuffers();
@@ -133,41 +203,8 @@ void Shader::draw(Sprite& spr, int x, int y) {
     // Make sure we use the shader
     glUseProgram(programID);
 
-    // First, let's fill our vertPos VBO
-    int texWidth  = spr.w;
-    int texHeight = spr.h;
-
-    GLfloat x1 = (GLfloat) x / (GLfloat) SCREEN_WIDTH;
-    GLfloat y1 = (GLfloat) y / (GLfloat) SCREEN_HEIGHT;
-    GLfloat x2 = (GLfloat) (x + texWidth)  / (GLfloat) SCREEN_WIDTH;
-    GLfloat y2 = (GLfloat) (y + texHeight) / (GLfloat) SCREEN_HEIGHT;
-
-    x1 = x1 * 2.0 - 1.0;
-    x2 = x2 * 2.0 - 1.0;
-    y1 = y1 * 2.0 - 1.0;
-    y2 = y2 * 2.0 - 1.0;
-
-    // Note the order
-    GLfloat pos[] = {
-        x1, y1,
-        x2, y2,
-        x1, y2,
-        x1, y1,
-        x2, y1,
-        x2, y2
-    };
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, &pos, GL_STATIC_DRAW);
-
-    // And then set the attribute
-    GLint aVertPos  = glGetAttribLocation( programID, "aVertPos");
-    if (aVertPos < 0)  {
-        std::cerr << "Failed to find 'aVertPos'"  << std::endl;
-        exit(1);
-    }
-    glEnableVertexAttribArray(aVertPos);
-    glVertexAttribPointer(aVertPos, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    // Set the vertPosBuffer
+    setBufferToRect(x, y, spr.w, spr.h);
 
     // Now let's load the stuff from the textures
     unsigned int currTex = 0;
@@ -211,41 +248,43 @@ void Shader::draw(Sprite& spr, int x, int y) {
         exit(1);
     }
 
-    // SceneObjects
-    for (auto so : sceneObjects) {
-        so->updateBuffer(*this);
-    }
-    sceneObjects.clear();
-
-    // Draw
-    switch (currDrawMode) {
-        case RECT:
-            glLineWidth(lineWidth);
-            glDrawArrays(GL_LINE_LOOP, 1, 4);
-            break;
-        case RECT_FILL:
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            break;
-        case TRIANGLE:
-            glLineWidth(lineWidth);
-            glDrawArrays(GL_LINE_LOOP, 0, 3);
-            break;
-        case TRIANGLE_FILL:
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-            break;
-        case LINE:
-            glLineWidth(lineWidth);
-            glDrawArrays(GL_LINES, 0, 2);
-            break;
-    }
-
-    // Cleanup
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    drawUsingCurrentBuffers();
 }
 
-void Shader::use(SceneObject& so) {
-    sceneObjects.push_back(&so);
+void Shader::drawRect(float x, float y, float w, float h) {
+    glUseProgram(programID);
+    setBufferToRect(x, y, w, h);
+    drawUsingCurrentBuffers();
+}
+
+void Shader::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+    glUseProgram(programID);
+
+    GLfloat xx1 = (GLfloat) x1 / (GLfloat) SCREEN_WIDTH;
+    GLfloat xx2 = (GLfloat) x2 / (GLfloat) SCREEN_WIDTH;
+    GLfloat xx3 = (GLfloat) x3 / (GLfloat) SCREEN_WIDTH;
+
+    GLfloat yy1 = (GLfloat) y1 / (GLfloat) SCREEN_HEIGHT;
+    GLfloat yy2 = (GLfloat) y2 / (GLfloat) SCREEN_HEIGHT;
+    GLfloat yy3 = (GLfloat) y3 / (GLfloat) SCREEN_HEIGHT;
+
+    xx1 = xx1 * 2.0 - 1.0;
+    xx2 = xx2 * 2.0 - 1.0;
+    xx3 = xx3 * 2.0 - 1.0;
+    yy1 = yy1 * 2.0 - 1.0;
+    yy2 = yy2 * 2.0 - 1.0;
+    yy3 = yy3 * 2.0 - 1.0;
+
+    GLfloat pos[] = {
+        xx1, yy1,
+        xx2, yy2,
+        xx3, yy3
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*6, &pos, GL_DYNAMIC_DRAW);
+
+    drawUsingCurrentBuffers();
 }
 
 void Shader::batchQueue(Sprite& spr, int x, int y) {
@@ -403,6 +442,10 @@ void Shader::batchDraw() {
 
     // We borrowed the buffers in first, so it needs an update
     first.needsBufferUpdates = true;
+}
+
+void Shader::use(SceneObject& so) {
+    sceneObjects.push_back(&so);
 }
 
 void Shader::setDrawMode(DrawMode mode) {
