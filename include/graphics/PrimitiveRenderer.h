@@ -11,12 +11,17 @@ extern const char* defaultPrimitiveFragSource;
 
 class PrimitiveRenderer {
     private:
-        Shader* shd;
-        SceneObject allPrims;
-        SceneObject elipse;
+        enum Shape {
+            OTHER      = 0,
+            ELIPSE     = 1,
+            ROUND_RECT = 2
+        };
 
-        void setAllPrimsSO(bool elipse, Color color);
-        void setElipseSO(float x, float y, float rx, float ry, float theta1, float theta2, float lineWidth);
+        Shader* shd;
+        SceneObject commonUniforms;
+        SceneObject elipseUniforms;
+
+        void setCommonSO(Shape shape, Color color);
 
     public:
         PrimitiveRenderer();
