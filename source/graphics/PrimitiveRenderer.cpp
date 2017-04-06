@@ -97,12 +97,20 @@ void main(void) {
                 break;
             }
 
-            bool rTestN = pos.y >= uRoundPoint2.y + uRadius - uLineWidthRR;
-            bool rTestS = pos.y <= uRoundPoint1.y - uRadius + uLineWidthRR;
-            bool rTestE = pos.x >= uRoundPoint2.x + uRadius - uLineWidthRR;
-            bool rTestW = pos.x <= uRoundPoint1.x - uRadius + uLineWidthRR;
+            bool rTestN1 = pos.y >= uRoundPoint2.y + uRadius - uLineWidthRR;
+            bool rTestS1 = pos.y <= uRoundPoint1.y - uRadius + uLineWidthRR;
+            bool rTestE1 = pos.x >= uRoundPoint2.x + uRadius - uLineWidthRR;
+            bool rTestW1 = pos.x <= uRoundPoint1.x - uRadius + uLineWidthRR;
 
-            if (rTestN || rTestS || rTestE || rTestW || uLineWidthRR == 0) {
+            bool rTestN2 = pos.y <= uRoundPoint2.y + uRadius;
+            bool rTestS2 = pos.y >= uRoundPoint1.y - uRadius;
+            bool rTestE2 = pos.x <= uRoundPoint2.x + uRadius;
+            bool rTestW2 = pos.x >= uRoundPoint1.x - uRadius;
+
+            bool rTestInner = rTestN1 || rTestS1 || rTestE1 || rTestW1;
+            bool rTestOuter = rTestN2 && rTestS2 && rTestE2 && rTestW2;
+
+            if ((rTestOuter && rTestInner) || uLineWidthRR == 0) {
                 gl_FragColor = uColor;
                 break;
             }
@@ -217,7 +225,7 @@ void PrimitiveRenderer::drawRoundedRectangle(float x, float y, float w, float h,
     shd->use(roundRectUniforms);
 
     shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x, y, w, h);
+    shd->drawRect(x-lineWidth/2, y-lineWidth/2, w+lineWidth, h+lineWidth);
 }
 
 void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, float h, float r, Color color) {
