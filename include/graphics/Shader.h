@@ -8,9 +8,12 @@ class Sprite;
 class SceneObject;
 
 enum DrawMode {
-    GF_BOX,
-    GF_LINE,
-    GF_FILL
+    RECT,
+    RECT_FILL,
+    TRIANGLE,
+    TRIANGLE_FILL,
+    LINE,
+    POINT
 };
 
 class Shader {
@@ -38,17 +41,24 @@ class Shader {
         std::vector<Sprite*> batchSprites;
         std::vector<Pos>  batchPositions;
 
+        void drawUsingCurrentBuffers();
+
     public:
         // This will compile a default shader
         Shader();
         Shader(const char* vertSource, const char* fragSource, unsigned int numTextures);
         ~Shader();
 
-        void draw(Sprite& spr, int x, int y);
-        void use(SceneObject& so);
+        void drawSprite(Sprite& spr, float x, float y);
+        void drawRect(float x, float y, float w, float h);
+        void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
+        void drawLine(float x1, float y1, float x2, float y2);
+        void drawPoint(float x, float y);
 
         void batchQueue(Sprite& spr, int x, int y);
         void batchDraw();
+
+        void use(SceneObject& so);
 
         void setDrawMode(DrawMode mode);
         void setLineWidth(float width);
