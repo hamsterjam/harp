@@ -30,13 +30,14 @@ uniform elipse {
     float uRadiusY;
     float uTheta1;
     float uTheta2;
-    float uLineWidth;
+    float uLineWidthE;
 };
 
 uniform roundRect {
     vec2 uRoundPoint1;
     vec2 uRoundPoint2;
     float uRadius;
+    float uLineWidthRR;
 };
 
 const uint OTHER = 0u;
@@ -51,21 +52,20 @@ void main(void) {
         case ELIPSE:
             vec2 trueRadial = gl_FragCoord.xy - uCenter;
             vec2 outerRadial = trueRadial / vec2(uRadiusX, uRadiusY);
-            vec2 innerRadial = trueRadial / vec2(uRadiusX - uLineWidth, uRadiusY - uLineWidth);
+            vec2 innerRadial = trueRadial / vec2(uRadiusX - uLineWidthE, uRadiusY - uLineWidthE);
 
             float angle = degrees(atan(trueRadial.y, trueRadial.x));
             angle = mod(angle, 360);
 
             bool rTest1 = dot(outerRadial, outerRadial) <= 1;
-            bool rTest2 = dot(innerRadial, innerRadial) >= 1 || uLineWidth == 0;
+            bool rTest2 = dot(innerRadial, innerRadial) >= 1 || uLineWidthE == 0;
             bool aTest = angle >= uTheta1 && angle <= uTheta2;
 
             if (rTest1 && rTest2 && aTest) {
                 gl_FragColor = uColor;
+                break;
             }
-            else {
-                gl_FragColor = vec4(0.0);
-            }
+            gl_FragColor = vec4(0.0);
             break;
         case ROUND_RECT:
             vec2 pos = gl_FragCoord.xy;
@@ -87,14 +87,27 @@ void main(void) {
 
             if (isNE || isSE || isSW || isNW) {
                 float r = min(min(min(rNE, rSE), rSW), rNW);
-                if (r <= uRadius) {
+                bool rTest1 = r <= uRadius;
+                bool rTest2 = r >= uRadius - uLineWidthRR || uLineWidthRR == 0;
+                if (rTest1 && rTest2) {
                     gl_FragColor = uColor;
                     break;
                 }
                 gl_FragColor = vec4(0.0);
                 break;
             }
-            gl_FragColor = uColor;
+
+            bool rTestN = pos.y >= uRoundPoint2.y + uRadius - uLineWidthRR;
+            bool rTestS = pos.y <= uRoundPoint1.y - uRadius + uLineWidthRR;
+            bool rTestE = pos.x >= uRoundPoint2.x + uRadius - uLineWidthRR;
+            bool rTestW = pos.x <= uRoundPoint1.x - uRadius + uLineWidthRR;
+
+            if (rTestN || rTestS || rTestE || rTestW || uLineWidthRR == 0) {
+                gl_FragColor = uColor;
+                break;
+            }
+            gl_FragColor = vec4(0.0);
+
             break;
         default:
             gl_FragColor = vec4(0.0);
@@ -128,6 +141,8 @@ void PrimitiveRenderer::setCommonSO(Shape shape, Color color) {
     commonUniforms.setUniform("uColor", sizeof(GLfloat)*4, (void*) &colorArray);
 }
 
+// Rectangles
+
 void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Color color) {
     setCommonSO(OTHER, color);
     shd->use(commonUniforms);
@@ -144,6 +159,8 @@ void PrimitiveRenderer::drawRectangle(float x, float y, float w, float h, float 
     shd->setDrawMode(RECT);
     shd->drawRect(x, y, w, h);
 }
+
+// Triangles
 
 void PrimitiveRenderer::drawTriangleFill(float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
     setCommonSO(OTHER, color);
@@ -162,6 +179,8 @@ void PrimitiveRenderer::drawTriangle(float x1, float y1, float x2, float y2, flo
     shd->drawTriangle(x1, y1, x2, y2, x3, y3);
 }
 
+// Lines
+
 void PrimitiveRenderer::drawLine(float x1, float y1, float x2, float y2, float lineWidth, Color color) {
     setCommonSO(OTHER, color);
     shd->use(commonUniforms);
@@ -171,7 +190,9 @@ void PrimitiveRenderer::drawLine(float x1, float y1, float x2, float y2, float l
     shd->drawLine(x1, y1, x2, y2);
 }
 
-void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, float h, float r, Color color) {
+// Rounded Rectangles
+
+void PrimitiveRenderer::drawRoundedRectangle(float x, float y, float w, float h, float r, float lineWidth, Color color) {
     setCommonSO(ROUND_RECT, color);
 
     GLfloat roundPoint1[] = {
@@ -189,6 +210,9 @@ void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, floa
     GLfloat rr = (GLfloat) r;
     roundRectUniforms.setUniform("uRadius", sizeof(GLfloat), (void*) &rr);
 
+    GLfloat wwidth = (GLfloat) lineWidth;
+    roundRectUniforms.setUniform("uLineWidthRR", sizeof(GLfloat), (void*) &wwidth);
+
     shd->use(commonUniforms);
     shd->use(roundRectUniforms);
 
@@ -196,7 +220,12 @@ void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, floa
     shd->drawRect(x, y, w, h);
 }
 
-// All the circle/elipse drawing functions are really just specialisations of this
+void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, float h, float r, Color color) {
+    drawRoundedRectangle(x, y, w, h, r, 0, color);
+}
+
+// Circles and Elipses (they are really the same things)
+
 void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
     setCommonSO(ELIPSE, color);
 
@@ -219,7 +248,7 @@ void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, floa
     elipseUniforms.setUniform("uTheta2", sizeof(GLfloat), (void*) &ttheta2);
 
     GLfloat wwidth = (GLfloat) lineWidth;
-    elipseUniforms.setUniform("uLineWidth", sizeof(GLfloat), (void*) &wwidth);
+    elipseUniforms.setUniform("uLineWidthE", sizeof(GLfloat), (void*) &wwidth);
 
     shd->use(commonUniforms);
     shd->use(elipseUniforms);
