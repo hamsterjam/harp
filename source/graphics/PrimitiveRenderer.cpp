@@ -33,6 +33,12 @@ uniform elipse {
     float uLineWidth;
 };
 
+uniform roundRect {
+    vec2 uRoundPoint1;
+    vec2 uRoundPoint2;
+    float uRadius;
+};
+
 const uint OTHER = 0u;
 const uint ELIPSE = 1u;
 const uint ROUND_RECT = 2u;
@@ -51,7 +57,7 @@ void main(void) {
             angle = mod(angle, 360);
 
             bool rTest1 = dot(outerRadial, outerRadial) <= 1;
-            bool rTest2 = dot(innerRadial, innerRadial) >= 1;
+            bool rTest2 = dot(innerRadial, innerRadial) >= 1 || uLineWidth == 0;
             bool aTest = angle >= uTheta1 && angle <= uTheta2;
 
             if (rTest1 && rTest2 && aTest) {
@@ -62,7 +68,33 @@ void main(void) {
             }
             break;
         case ROUND_RECT:
-            gl_FragColor = vec4(0.0);
+            vec2 pos = gl_FragCoord.xy;
+
+            vec2 radialNE = pos - uRoundPoint2;
+            vec2 radialSE = pos - vec2(uRoundPoint2.x, uRoundPoint1.y);
+            vec2 radialSW = pos - uRoundPoint1;
+            vec2 radialNW = pos - vec2(uRoundPoint1.x, uRoundPoint2.y);
+
+            float rNE = length(radialNE);
+            float rSE = length(radialSE);
+            float rSW = length(radialSW);
+            float rNW = length(radialNW);
+
+            bool isNE = dot(radialNE, vec2( 1.0,  1.0)) > rNE;
+            bool isSE = dot(radialSE, vec2( 1.0, -1.0)) > rSE;
+            bool isSW = dot(radialSW, vec2(-1.0, -1.0)) > rSW;
+            bool isNW = dot(radialNW, vec2(-1.0,  1.0)) > rNW;
+
+            if (isNE || isSE || isSW || isNW) {
+                float r = min(min(min(rNE, rSE), rSW), rNW);
+                if (r <= uRadius) {
+                    gl_FragColor = uColor;
+                    break;
+                }
+                gl_FragColor = vec4(0.0);
+                break;
+            }
+            gl_FragColor = uColor;
             break;
         default:
             gl_FragColor = vec4(0.0);
@@ -77,7 +109,8 @@ PrimitiveRenderer::PrimitiveRenderer() : PrimitiveRenderer(*defaultPrimitiveShad
 
 PrimitiveRenderer::PrimitiveRenderer(Shader& shd) :
     commonUniforms("allPrims"),
-    elipseUniforms("elipse")
+    elipseUniforms("elipse"),
+    roundRectUniforms("roundRect")
 {
     this->shd = &shd;
 }
@@ -138,6 +171,31 @@ void PrimitiveRenderer::drawLine(float x1, float y1, float x2, float y2, float l
     shd->drawLine(x1, y1, x2, y2);
 }
 
+void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, float h, float r, Color color) {
+    setCommonSO(ROUND_RECT, color);
+
+    GLfloat roundPoint1[] = {
+        (GLfloat) (x + r),
+        (GLfloat) (y + r)
+    };
+    roundRectUniforms.setUniform("uRoundPoint1", sizeof(GLfloat)*2, (void*) &roundPoint1);
+
+    GLfloat roundPoint2[] = {
+        (GLfloat) (x + w - r),
+        (GLfloat) (y + h - r)
+    };
+    roundRectUniforms.setUniform("uRoundPoint2", sizeof(GLfloat)*2, (void*) &roundPoint2);
+
+    GLfloat rr = (GLfloat) r;
+    roundRectUniforms.setUniform("uRadius", sizeof(GLfloat), (void*) &rr);
+
+    shd->use(commonUniforms);
+    shd->use(roundRectUniforms);
+
+    shd->setDrawMode(RECT_FILL);
+    shd->drawRect(x, y, w, h);
+}
+
 // All the circle/elipse drawing functions are really just specialisations of this
 void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
     setCommonSO(ELIPSE, color);
@@ -172,13 +230,13 @@ void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, floa
 
 // Circles
 void PrimitiveRenderer::drawCircleFill(float x, float y, float r, Color color) {
-    drawElipseArc(x, y, r, r, 0, 360, r, color);
+    drawElipseArc(x, y, r, r, 0, 360, 0, color);
 }
 void PrimitiveRenderer::drawCircle(float x, float y, float r, float lineWidth, Color color) {
     drawElipseArc(x, y, r, r, 0, 360, lineWidth, color);
 }
 void PrimitiveRenderer::drawSegment(float x, float y, float r, float theta1, float theta2, Color color) {
-    drawElipseArc(x, y, r, r, theta1, theta2, r, color);
+    drawElipseArc(x, y, r, r, theta1, theta2, 0, color);
 }
 void PrimitiveRenderer::drawArc(float x, float y, float r, float theta1, float theta2, float lineWidth, Color color) {
     drawElipseArc(x, y, r, r, theta1, theta2, lineWidth, color);
@@ -186,11 +244,11 @@ void PrimitiveRenderer::drawArc(float x, float y, float r, float theta1, float t
 
 // Elipses
 void PrimitiveRenderer::drawElipseFill(float x, float y, float rx, float ry, Color color) {
-    drawElipseArc(x, y, rx, ry, 0, 360, (rx > ry) ? rx : ry, color);
+    drawElipseArc(x, y, rx, ry, 0, 360, 0, color);
 }
 void PrimitiveRenderer::drawElipse(float x, float y, float rx, float ry, float lineWidth, Color color) {
     drawElipseArc(x, y, rx, ry, 0, 360, lineWidth, color);
 }
 void PrimitiveRenderer::drawElipseSegment(float x, float y, float rx, float ry, float theta1, float theta2, Color color) {
-    drawElipseArc(x, y, rx, ry, theta1, theta2, (rx > ry) ? rx : ry, color);
+    drawElipseArc(x, y, rx, ry, theta1, theta2, 0, color);
 }

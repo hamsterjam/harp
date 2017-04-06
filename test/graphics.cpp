@@ -140,6 +140,8 @@ int main(int argc, char** argv) {
         prim.drawElipseArc(200, 350, 100, 50, 0, 270, 2, rgbToColor(0.8, 0, 0));
         prim.drawTriangle(10, 10, 110, 10, 60, 100, 3, rgbToColor(0.2, 0.8, 0.0));
         prim.drawLine(620, 460, 520, 160, 7, hsvToColor(72, 0.5, 0.4));
+
+        prim.drawRoundedRectangleFill(520, 20, 100, 200, 20, rgbaToColor(0.5, 0.5, 0.5, 0.8));
     }
 
     //

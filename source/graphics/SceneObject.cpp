@@ -139,7 +139,7 @@ void SceneObject::updateBuffer(Shader& shd, GLuint bindingPoint) {
     glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
     glBufferData(GL_UNIFORM_BUFFER, bufferSize, bufferData, GL_STATIC_DRAW);
     glUniformBlockBinding(programID, blockID, bindingPoint);
-    glBindBufferBase(GL_UNIFORM_BUFFER, blockID, bufferID);
+    glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, bufferID);
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     free(bufferData);

@@ -20,6 +20,7 @@ class PrimitiveRenderer {
         Shader* shd;
         SceneObject commonUniforms;
         SceneObject elipseUniforms;
+        SceneObject roundRectUniforms;
 
         void setCommonSO(Shape shape, Color color);
 
