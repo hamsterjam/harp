@@ -130,14 +130,16 @@ int main(int argc, char** argv) {
         TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
         FontRenderer testFont(fontAtlas, ' ', '~');
 
-        testFont.drawString("Princess Luna sees your lack of progress!", 132, 132);
+        testFont.drawString("Princess Luna sees your PROGRESS!", 132, 132);
 
         // Testing primitives
         PrimitiveRenderer prim;
-        prim.drawRectangleFill(200, 200, 50, 50, rgbToColor(0.1, 0.8, 0.8));
+        prim.drawRectangle(200, 200, 50, 50, 5, rgbToColor(0.1, 0.8, 0.8));
         prim.drawElipseFill(400, 100, 100, 50, rgbaToColor(0.2, 0.2, 0.9, 0.8));
         prim.drawSegment(400, 300, 50, 0 + 45, 360 - 45, rgbToColor(1, 1, 0));
         prim.drawElipseArc(200, 350, 100, 50, 0, 270, 2, rgbToColor(0.8, 0, 0));
+        prim.drawTriangle(10, 10, 110, 10, 60, 100, 3, rgbToColor(0.2, 0.8, 0.0));
+        prim.drawLine(620, 460, 520, 160, 7, hsvToColor(72, 0.5, 0.4));
     }
 
     //

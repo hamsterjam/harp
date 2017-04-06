@@ -114,6 +114,41 @@ void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Co
     shd->drawRect(x, y, w, h);
 }
 
+void PrimitiveRenderer::drawRectangle(float x, float y, float w, float h, float lineWidth, Color color) {
+    setAllPrimsSO(false, color);
+    shd->use(allPrims);
+
+    shd->setLineWidth(lineWidth);
+    shd->setDrawMode(RECT);
+    shd->drawRect(x, y, w, h);
+}
+
+void PrimitiveRenderer::drawTriangleFill(float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
+    setAllPrimsSO(false, color);
+    shd->use(allPrims);
+
+    shd->setDrawMode(TRIANGLE_FILL);
+    shd->drawTriangle(x1, y1, x2, y2, x3, y3);
+}
+
+void PrimitiveRenderer::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, float lineWidth, Color color) {
+    setAllPrimsSO(false, color);
+    shd->use(allPrims);
+
+    shd->setLineWidth(lineWidth);
+    shd->setDrawMode(TRIANGLE);
+    shd->drawTriangle(x1, y1, x2, y2, x3, y3);
+}
+
+void PrimitiveRenderer::drawLine(float x1, float y1, float x2, float y2, float lineWidth, Color color) {
+    setAllPrimsSO(false, color);
+    shd->use(allPrims);
+
+    shd->setLineWidth(lineWidth);
+    shd->setDrawMode(LINE);
+    shd->drawLine(x1, y1, x2, y2);
+}
+
 // All the circle/elipse drawing functions are really just specialisations of this
 void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
     setAllPrimsSO(true, color);
