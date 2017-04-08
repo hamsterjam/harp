@@ -51,3 +51,8 @@ void FontRenderer::drawString(const char* string, float x, float y) {
     }
     shd->batchDraw();
 }
+
+void FontRenderer::drawGlyph(char glyph, float x, float y) {
+    Sprite* glyphSprite = spriteMap[glyph];
+    shd->drawSprite(*glyphSprite, x, y);
+}
