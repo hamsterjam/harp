@@ -333,9 +333,6 @@ void Shader::batchQueue(Sprite& spr, float x, float y) {
 }
 
 void Shader::batchDraw() {
-    // I'll just write this from scratch for now, It is probably possible to
-    // consolidate it with draw()
-
     Sprite& first = *batchSprites.front();
     unsigned int numSprites = batchSprites.size();
     unsigned int numTextures = first.textures.size();
