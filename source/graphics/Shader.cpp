@@ -116,9 +116,9 @@ Shader::~Shader() {
     glDeleteBuffers(1, &vertPosBuffer);
 }
 
-void toInternalCoord(GLfloat& x, GLfloat& y) {
-    x = x / (GLfloat) SCREEN_WIDTH;
-    y = y / (GLfloat) SCREEN_HEIGHT;
+void toInternalCoord(float& x, float& y) {
+    x = x / (float) SCREEN_WIDTH;
+    y = y / (float) SCREEN_HEIGHT;
 
     x = x * 2.0 - 1.0;
     y = y * 2.0 - 1.0;
@@ -129,9 +129,6 @@ void fillRectDataArray(float x1, float y1, float x2, float y2, GLfloat* data) {
     GLfloat xx2 = (GLfloat) x2;
     GLfloat yy1 = (GLfloat) y1;
     GLfloat yy2 = (GLfloat) y2;
-
-    toInternalCoord(xx1, yy1);
-    toInternalCoord(xx2, yy2);
 
     GLfloat newData[] = {
         xx1, yy1,
@@ -147,10 +144,10 @@ void fillRectDataArray(float x1, float y1, float x2, float y2, GLfloat* data) {
 }
 
 void Shader::bindTextures(Sprite& spr) {
+    // This requires us to be using the program
+    glUseProgram(programID);
     unsigned int currTex = 0;
     for (auto spec : spr.textures) {
-
-        // Now the UVs
         glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
 
         // Set the attribute
@@ -253,7 +250,16 @@ void Shader::drawSprite(Sprite& spr, float x, float y) {
 void Shader::drawRectangle(float x, float y, float w, float h) {
     // I shouldn't need a malloc here... but decalring it on the stack wasn't working
     GLfloat* pos = (GLfloat*) malloc(sizeof(GLfloat) * 12);
-    fillRectDataArray(x, y, x+w, y+h, pos);
+
+    float x1 = x;
+    float y1 = y;
+    float x2 = x + w;
+    float y2 = y + h;
+
+    toInternalCoord(x1, y1);
+    toInternalCoord(x2, y2);
+
+    fillRectDataArray(x1, y1, x2, y2, pos);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12, pos, GL_DYNAMIC_DRAW);
@@ -353,9 +359,15 @@ void Shader::batchDraw() {
 
     unsigned int currSpr = 0;
     for (auto pos : batchPositions) {
-        float x = pos.x;
-        float y = pos.y;
-        fillRectDataArray(x, y, x+texWidth, y+texHeight, posData + currSpr * 12);
+        float x1 = pos.x;
+        float y1 = pos.y;
+        float x2 = pos.x + texWidth;
+        float y2 = pos.y + texHeight;
+
+        toInternalCoord(x1, y1);
+        toInternalCoord(x2, y2);
+
+        fillRectDataArray(x1, y1, x2, y2, posData + currSpr * 12);
         ++currSpr;
     }
 
@@ -379,7 +391,6 @@ void Shader::batchDraw() {
 
             offset += currTex;
             offset *= numSprites;
-
             offset += currSpr;
             offset *= 12;
 
@@ -390,18 +401,24 @@ void Shader::batchDraw() {
     }
 
     // Buffer all this into first's buffers
+    currTex = 0;
     for (auto spec : first.textures) {
         glBindBuffer(GL_ARRAY_BUFFER, spec.UVBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*12*numSprites, UVData + currTex*numSprites*12, GL_DYNAMIC_DRAW);
+        ++currTex;
     }
 
     free(UVData);
     bindTextures(first);
 
+    lineWidth = 0;
     draw(RECT, numSprites);
 
     // We borrowed the buffers in first, so it needs an update
     first.needsBufferUpdates = true;
+
+    batchSprites.clear();
+    batchPositions.clear();
 }
 
 void Shader::use(SceneObject& so) {

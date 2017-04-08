@@ -24,6 +24,7 @@ class FontRenderer {
         ~FontRenderer();
 
         void drawString(const char* string, float x, float y);
+        void drawGlyph(char glyps, float x, float y);
 };
 
 #endif
