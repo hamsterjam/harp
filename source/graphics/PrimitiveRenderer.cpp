@@ -155,8 +155,8 @@ void PrimitiveRenderer::drawRectangleFill(float x, float y, float w, float h, Co
     setCommonSO(OTHER, color);
     shd->use(commonUniforms);
 
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x, y, w, h);
+    shd->setLineWidth(0);
+    shd->drawRectangle(x, y, w, h);
 }
 
 void PrimitiveRenderer::drawRectangle(float x, float y, float w, float h, float lineWidth, Color color) {
@@ -164,8 +164,7 @@ void PrimitiveRenderer::drawRectangle(float x, float y, float w, float h, float 
     shd->use(commonUniforms);
 
     shd->setLineWidth(lineWidth);
-    shd->setDrawMode(RECT);
-    shd->drawRect(x, y, w, h);
+    shd->drawRectangle(x, y, w, h);
 }
 
 // Triangles
@@ -174,7 +173,7 @@ void PrimitiveRenderer::drawTriangleFill(float x1, float y1, float x2, float y2,
     setCommonSO(OTHER, color);
     shd->use(commonUniforms);
 
-    shd->setDrawMode(TRIANGLE_FILL);
+    shd->setLineWidth(0);
     shd->drawTriangle(x1, y1, x2, y2, x3, y3);
 }
 
@@ -183,7 +182,6 @@ void PrimitiveRenderer::drawTriangle(float x1, float y1, float x2, float y2, flo
     shd->use(commonUniforms);
 
     shd->setLineWidth(lineWidth);
-    shd->setDrawMode(TRIANGLE);
     shd->drawTriangle(x1, y1, x2, y2, x3, y3);
 }
 
@@ -194,7 +192,6 @@ void PrimitiveRenderer::drawLine(float x1, float y1, float x2, float y2, float l
     shd->use(commonUniforms);
 
     shd->setLineWidth(lineWidth);
-    shd->setDrawMode(LINE);
     shd->drawLine(x1, y1, x2, y2);
 }
 
@@ -224,8 +221,8 @@ void PrimitiveRenderer::drawRoundedRectangle(float x, float y, float w, float h,
     shd->use(commonUniforms);
     shd->use(roundRectUniforms);
 
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x-lineWidth/2, y-lineWidth/2, w+lineWidth, h+lineWidth);
+    shd->setLineWidth(0);
+    shd->drawRectangle(x-lineWidth/2, y-lineWidth/2, w+lineWidth, h+lineWidth);
 }
 
 void PrimitiveRenderer::drawRoundedRectangleFill(float x, float y, float w, float h, float r, Color color) {
@@ -261,8 +258,8 @@ void PrimitiveRenderer::drawElipseArc(float x, float y, float rx, float ry, floa
     shd->use(commonUniforms);
     shd->use(elipseUniforms);
 
-    shd->setDrawMode(RECT_FILL);
-    shd->drawRect(x-rx-lineWidth/2, y-ry-lineWidth/2, 2*rx+lineWidth, 2*ry+lineWidth);
+    shd->setLineWidth(0);
+    shd->drawRectangle(x-rx-lineWidth/2, y-ry-lineWidth/2, 2*rx+lineWidth, 2*ry+lineWidth);
 }
 
 // Circles

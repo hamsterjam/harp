@@ -4,7 +4,7 @@
 
 void initGlobals() {
     defaultShader = new Shader();
-    defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource, 0);
+    defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);
 }
 
 void cleanupGlobals() {

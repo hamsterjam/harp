@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
     //
 
     {
-        Shader shd(vertSource, fragSource, 2);
+        Shader shd(vertSource, fragSource);
 
         Sprite spr("res/test.png", 64, 64, 128, 128);
         spr.addSubImage("res/crane.png", "uTexture2", "aAuxTexCoord", 64, 64, 128, 128);
