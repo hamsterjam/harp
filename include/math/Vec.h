@@ -12,6 +12,34 @@ class Vec {
         T& operator[](unsigned int index) {
             return data[index];
         }
+
+        Vec<N, T>& operator*=(T scalar) {
+            for (int i = 0; i < N; ++i) {
+                data[i] *= scalar;
+            }
+            return *this;
+        }
+
+        Vec<N, T>& operator/=(T scalar) {
+            for (int i = 0; i < N; ++i) {
+                data[i] /= scalar;
+            }
+            return *this;
+        }
+
+        Vec<N, T>& operator+=(Vec<N, T> rhs) {
+            for (int i = 0; i < N; ++i) {
+                data[i] += rhs[i];
+            }
+            return *this;
+        }
+
+        Vec<N, T>& operator-=(Vec<N, T> rhs) {
+            for (int i = 0; i < N; ++i) {
+                data[i] -= rhs[i];
+            }
+            return *this;
+        }
 };
 
 //
@@ -33,31 +61,25 @@ bool operator==(Vec<N, T> lhs, Vec<N, T> rhs) {
 //
 
 template<unsigned int N, typename T>
-Vec<N, T> operator*(T scalarOp, Vec<N, T> vecOp) {
-    Vec<N, T> ret = vecOp;
-    for (int i = 0; i < N; ++i) {
-        ret[i] *= scalarOp;
-    }
-    return ret;
+Vec<N, T> operator*(T scalar, Vec<N, T> vec) {
+    vec *= scalar;
+    return vec;
 }
 
 template<unsigned int N, typename T>
-Vec<N, T> operator*(Vec<N, T> vecOp, T scalarOp) {
-    return scalarOp*vecOp;
+Vec<N, T> operator*(Vec<N, T> vec, T scalar) {
+    return scalar*vec;
 }
 
 template<unsigned int N, typename T>
-Vec<N, T> operator/(Vec<N, T> vecOp, T scalarOp) {
-    Vec<N, T> ret = vecOp;
-    for (int i = 0; i < N; ++i) {
-        ret[i] /= scalarOp;
-    }
-    return ret;
+Vec<N, T> operator/(Vec<N, T> vec, T scalar) {
+    vec /= scalar;
+    return vec;
 }
 
 template<unsigned int N, typename T>
 Vec<N, T> operator-(Vec<N, T> op) {
-    return -1*op;
+    return (T) -1 * op;
 }
 
 //
@@ -66,21 +88,15 @@ Vec<N, T> operator-(Vec<N, T> op) {
 
 template<unsigned int N, typename T>
 Vec<N, T> operator+(Vec<N, T> lhs, Vec<N, T> rhs) {
-    Vec<N, T> ret;
-    for (int i = 0; i < N; ++i) {
-        ret[i] = lhs[i] + rhs[i];
-    }
-    return ret;
+    lhs += rhs;
+    return lhs;
 }
 
 // Do it like this instead of just multiplying by -1 so unsigned types work
 template<unsigned int N, typename T>
 Vec<N, T> operator-(Vec<N, T> lhs, Vec<N, T> rhs) {
-    Vec<N, T> ret;
-    for (int i = 0; i < N; ++i) {
-        ret[i] = lhs[i] - rhs[i];
-    }
-    return ret;
+    lhs -= rhs;
+    return lhs;
 }
 
 //
@@ -88,7 +104,7 @@ Vec<N, T> operator-(Vec<N, T> lhs, Vec<N, T> rhs) {
 //
 
 template<unsigned int N, typename T>
-T operator*(Vec<N, T> lhs, Vec<N, T> rhs) {
+T dot(Vec<N, T> lhs, Vec<N, T> rhs) {
     T ret = lhs[0] * rhs[0];
     for (int i = 1; i < N; ++i) {
         ret += lhs[i] * rhs[i];
@@ -119,12 +135,17 @@ Vec<3, T> cross(Vec<3, T> lhs, Vec<3, T> rhs) {
 
 template<unsigned int N, typename T>
 T norm(Vec<N, T> op) {
-    return sqrt(op*op);
+    return sqrt(dot(op,op));
 }
 
 template<unsigned int N, typename T>
 Vec<N, T> normalize(Vec<N, T> op) {
     return op/norm(op);
+}
+
+template<unsigned int N, typename T>
+Vec<N, T> proj(Vec<N, T> lhs, Vec<N, T> rhs) {
+    return dot(lhs,rhs)*normalize(rhs);
 }
 
 #endif

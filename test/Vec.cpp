@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     assert(testVec4[1] == 3);
     assert(testVec4[2] == 5);
 
-    assert(testVec1*testVec2 == 10);
+    assert(dot(testVec1,testVec2) == 10);
 
     Vec<3, float> testFloatVec;
     testFloatVec[0] = 3;
