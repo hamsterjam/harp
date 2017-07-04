@@ -38,7 +38,14 @@ int main(int argc, char** argv) {
 
     // Direct comparison of floats doesn't really work, so use a delta
     float delta = 0.000001;
-    assert(abs(norm(testFloatVec) - sqrt(50)) < delta);
+    assert(abs(norm(testFloatVec) - sqrt(2)*5) < delta);
+
+    auto normalized = normalize(testFloatVec);
+    assert(abs(normalized[0] - 3./(sqrt(2) * 5)) < delta);
+    assert(abs(normalized[1] - 2.*sqrt(2)/5) < delta);
+    assert(abs(normalized[2] - 1./sqrt(2)) < delta);
+
+    assert(abs(norm(normalized) - 1.0) < delta);
 
     Vec<3, int> x;
     x[0] = 1;

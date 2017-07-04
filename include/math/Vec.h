@@ -33,17 +33,26 @@ bool operator==(Vec<N, T> lhs, Vec<N, T> rhs) {
 //
 
 template<unsigned int N, typename T>
-Vec<N, T> operator*(T lhs, Vec<N, T> rhs) {
-    Vec<N, T> ret = rhs;
+Vec<N, T> operator*(T scalarOp, Vec<N, T> vecOp) {
+    Vec<N, T> ret = vecOp;
     for (int i = 0; i < N; ++i) {
-        ret[i] *= lhs;
+        ret[i] *= scalarOp;
     }
     return ret;
 }
 
 template<unsigned int N, typename T>
-Vec<N, T> operator*(Vec<N, T> lhs, T rhs) {
-    return rhs*lhs;
+Vec<N, T> operator*(Vec<N, T> vecOp, T scalarOp) {
+    return scalarOp*vecOp;
+}
+
+template<unsigned int N, typename T>
+Vec<N, T> operator/(Vec<N, T> vecOp, T scalarOp) {
+    Vec<N, T> ret = vecOp;
+    for (int i = 0; i < N; ++i) {
+        ret[i] /= scalarOp;
+    }
+    return ret;
 }
 
 template<unsigned int N, typename T>
@@ -111,6 +120,11 @@ Vec<3, T> cross(Vec<3, T> lhs, Vec<3, T> rhs) {
 template<unsigned int N, typename T>
 T norm(Vec<N, T> op) {
     return sqrt(op*op);
+}
+
+template<unsigned int N, typename T>
+Vec<N, T> normalize(Vec<N, T> op) {
+    return op/norm(op);
 }
 
 #endif
