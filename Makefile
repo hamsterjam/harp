@@ -1,4 +1,4 @@
-NAME = galaxy-fort
+NAME = harp
 
 #Local Folders
 SOURCE_DIR = source

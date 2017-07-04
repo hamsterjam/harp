@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_SPRITE_H
-#define __GALAXY_FORT_SPRITE_H
+#ifndef HARP_SPRITE_H
+#define HARP_SPRITE_H
 
 #include <vector>
 

@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_SHADER_H
-#define __GALAXY_FORT_SHADER_H
+#ifndef HARP_SHADER_H
+#define HARP_SHADER_H
 
 #include <vector>
 #include <SDL_opengl.h>

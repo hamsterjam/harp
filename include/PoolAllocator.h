@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_POOL_ALLOCATOR_H
-#define __GALAXY_FORT_POOL_ALLOCATOR_H
+#ifndef HARP_POOL_ALLOCATOR_H
+#define HARP_POOL_ALLOCATOR_H
 
 #include <cstddef>
 

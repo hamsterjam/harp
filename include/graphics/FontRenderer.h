@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_FONT_MANAGER_H
-#define __GALAXY_FORT_FONT_MANAGER_H
+#ifndef HARP_FONT_MANAGER_H
+#define HARP_FONT_MANAGER_H
 
 #include <map>
 

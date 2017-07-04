@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_SCENE_OBJECT_H
-#define __GALAXY_FORT_SCENE_OBJECT_H
+#ifndef HARP_SCENE_OBJECT_H
+#define HARP_SCENE_OBJECT_H
 
 #include <cstdlib>
 

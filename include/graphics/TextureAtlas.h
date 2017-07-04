@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_TEXTURE_ATLAS_H
-#define __GALAXY_FORT_TEXTURE_ATLAS_H
+#ifndef HARP_TEXTURE_ATLAS_H
+#define HARP_TEXTURE_ATLAS_H
 
 #include <SDL_opengl.h>
 

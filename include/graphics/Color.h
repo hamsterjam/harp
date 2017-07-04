@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_COLOR_H
-#define __GALAXY_FORT_COLOR_H
+#ifndef HARP_COLOR_H
+#define HARP_COLOR_H
 
 #include <SDL_opengl.h>
 

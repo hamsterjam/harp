@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_GLOBALS_H
-#define __GALAXY_FORT_GLOBALS_H
+#ifndef HARP_GLOBALS_H
+#define HARP_GLOBALS_H
 
 class Shader;
 

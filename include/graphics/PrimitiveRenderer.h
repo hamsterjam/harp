@@ -1,5 +1,5 @@
-#ifndef __GALAXY_FORT_PRIMITIVE_RENDERER_H
-#define __GALAXY_FORT_PRIMITIVE_RENDERER_H
+#ifndef HARP_PRIMITIVE_RENDERER_H
+#define HARP_PRIMITIVE_RENDERER_H
 
 #include <graphics/SceneObject.h>
 
