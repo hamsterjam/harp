@@ -56,6 +56,11 @@ bool operator==(Vec<N, T> lhs, Vec<N, T> rhs) {
     return true;
 }
 
+template<unsigned int N, typename T>
+bool operator!=(Vec<N, T> lhs, Vec<N, T> rhs) {
+    return !(lhs == rhs);
+}
+
 //
 // Scalar Multiplication
 //
@@ -92,7 +97,6 @@ Vec<N, T> operator+(Vec<N, T> lhs, Vec<N, T> rhs) {
     return lhs;
 }
 
-// Do it like this instead of just multiplying by -1 so unsigned types work
 template<unsigned int N, typename T>
 Vec<N, T> operator-(Vec<N, T> lhs, Vec<N, T> rhs) {
     lhs -= rhs;
