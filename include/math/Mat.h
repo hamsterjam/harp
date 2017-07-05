@@ -56,4 +56,38 @@ Vec<M, T> operator*(Mat<M, N, T> mat, Vec<N, T> vec) {
     return ret;
 }
 
+//
+// Other stuff
+//
+
+template<unsigned int N, typename T>
+Mat<N-1, N-1, T> minorMatrix(Mat<N, N, T> op, unsigned int rTarget, unsigned int cTarget) {
+    Mat<N-1, N-1, T> ret;
+    for (int row = 0; row < N-1; ++row) {
+        int rOff = (row < rTarget) ? 0 : 1;
+        for (int col = 0; col < N-1; ++col) {
+            int cOff = (col < cTarget) ? 0 : 1;
+            ret[row][col] = op[row+rOff][col+cOff];
+        }
+    }
+    return ret;
+}
+
+template<typename T>
+T det(Mat<2, 2, T> op) {
+    return op[0][0]*op[1][1] - op[0][1]*op[1][0];
+}
+
+template<unsigned int N, typename T>
+T det(Mat<N, N, T> op) {
+    // Expand on the first row and recurse
+    T ret = (T) 0;
+    for (int col = 0; col < N; ++col) {
+        T sign = (col%2 == 0) ? (T) 1 : (T) -1;
+        Mat<N-1, N-1, T> min = minorMatrix(op, 0, col);
+        ret += sign * op[0][col] * det(min);
+    }
+    return ret;
+}
+
 #endif

@@ -62,6 +62,22 @@ int main(int argc, char** argv) {
         assert(resVec[0] == 23 && resVec[1] == 53 && resVec[2] == 83);
     }
 
+    {
+        int data[] = {
+            1, 4, 7,
+            2, 4, 8,
+            3, 6, 9
+        };
+        Mat<3, 3, int> test1;
+        test1.set(data);
+
+        Mat<2, 2, int> test2 = minorMatrix(test1, 1, 1);
+        assert(test2[0][0] == 1 && test2[0][1] == 3);
+        assert(test2[1][0] == 7 && test2[1][1] == 9);
+
+        assert(det(test1) == 12);
+    }
+
     cout << "All systems nominal" << endl;
 
     return 0;
