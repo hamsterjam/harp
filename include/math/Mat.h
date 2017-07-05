@@ -2,7 +2,6 @@
 #define HARP_MATRIX_H
 
 #include <math/Vec.h>
-#include <iostream>
 
 template<unsigned int M, unsigned int N, typename T>
 class Mat : public Vec<M, Vec<N, T> > {
