@@ -4,6 +4,8 @@
 #include <math/Mat.h>
 #include <math/Vec.h>
 
+#include <cmath>
+
 using namespace std;
 
 int main(int argc, char** argv) {
@@ -76,6 +78,35 @@ int main(int argc, char** argv) {
         assert(test2[1][0] == 7 && test2[1][1] == 9);
 
         assert(det(test1) == 12);
+    }
+
+    {
+        double data[] = {
+            2.,  7., 17.,
+            3., 11., 19.,
+            5., 13., 23.
+        };
+        Mat<3, 3, double> mat;
+        mat.set(data);
+
+        assert(det(mat) == -78);
+
+        Mat<3, 3, double> inv = inverse(mat);
+
+        Mat<3, 3, double> test1 = inv * mat;
+        Mat<3, 3, double> test2 = mat * inv;
+
+        double delta = 0.00000000001;
+        for (int r=0; r<3; ++r) for (int c=0; c<3; ++c) {
+            if (r == c) {
+                assert(abs(test1[r][c] - 1) < delta);
+                assert(abs(test2[r][c] - 1) < delta);
+            }
+            else {
+                assert(abs(test1[r][c]) < delta);
+                assert(abs(test2[r][c]) < delta);
+            }
+        }
     }
 
     cout << "All systems nominal" << endl;

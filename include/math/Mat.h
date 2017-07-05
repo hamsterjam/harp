@@ -16,6 +16,32 @@ class Mat : public Vec<M, Vec<N, T> > {
 };
 
 //
+// Builder Functions
+//
+
+template<unsigned int N, typename T>
+Mat<N, N, T> identityMatrix() {
+    Mat<N, N, T> ret;
+    for (int row = 0; row < N; ++row) {
+        for (int col = 0; col < N; ++col) {
+            ret[row][col] = (row == col) ? 1 : 0;
+        }
+    }
+    return ret;
+}
+
+template<unsigned int M, unsigned int N, typename T>
+Mat<M, N, T> zeroMatrix() {
+    Mat<M, N, T> ret;
+    for (int row = 0; row < M; ++row) {
+        for (int col = 0; col < N; ++col) {
+            ret[row][col] = 0;
+        }
+    }
+    return ret;
+}
+
+//
 // Unary Operations
 //
 
@@ -88,6 +114,33 @@ T det(Mat<N, N, T> op) {
         ret += sign * op[0][col] * det(min);
     }
     return ret;
+}
+
+template<unsigned int N, typename T>
+Mat<N, N, T> inverse(Mat<N, N, T> op) {
+    Mat<N, N, T> id = identityMatrix<N, T>();
+    // This is row reduction, the rule is, whatever we do to op, we do to ret
+    //
+    // This isn't that complex, its also probably not very fast but eh
+    for (int r = 0; r < N; ++r) {
+        // Keep track of the value on the diagonal, we are going to pretend
+        // to divide every value on the row by this (but do it later)
+        T pivot = op[r][r];
+
+        // For each other row, add the right amount to make the coloumn all zeros
+        for (int rr = 0; rr < N; ++rr) {
+            if (rr == r) continue;
+            T target = op[rr][r];
+            op[rr] -= op[r] * target / pivot;
+            id[rr] -= id[r] * target / pivot;
+        }
+
+        // Now set the pivot to one
+        op[r] /= pivot;
+        id[r] /= pivot;
+    }
+
+    return id;
 }
 
 #endif
