@@ -65,6 +65,17 @@ int main(int argc, char** argv) {
     assert(cross(x, y) ==  z);
     assert(cross(y, x) == -z);
 
+    {
+        Vec<3, int> test1;
+        test1[0] = 1;
+        test1[1] = 2;
+        test1[2] = 3;
+
+        Vec<4, int> test2 = resize<4>(test1);
+
+        assert(test2[0] == 1 && test2[1] == 2 && test2[2] == 3);
+    }
+
     cout << "All systems nominal" << endl;
 
     return 0;

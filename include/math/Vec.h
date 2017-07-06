@@ -3,24 +3,28 @@
 
 #include <cmath>
 
+template <unsigned int M, unsigned int N, typename T>
+class Mat;
+
 template <unsigned int N, typename T>
 class Vec {
-    private:
+    public:
         T data[N];
 
-    public:
         T& operator[](unsigned int index) {
             return data[index];
         }
 
-        Vec<N, T>& operator*=(T scalar) {
+        template<typename T2>
+        Vec<N, T>& operator*=(T2 scalar) {
             for (int i = 0; i < N; ++i) {
                 data[i] *= scalar;
             }
             return *this;
         }
 
-        Vec<N, T>& operator/=(T scalar) {
+        template<typename T2>
+        Vec<N, T>& operator/=(T2 scalar) {
             for (int i = 0; i < N; ++i) {
                 data[i] /= scalar;
             }
@@ -41,6 +45,46 @@ class Vec {
             return *this;
         }
 };
+
+//
+// Builder Functions
+//
+
+template<unsigned int N, typename T>
+Vec<N, T> buildVec(T val[N]) {
+    Vec<N, T> ret;
+    for (int i = 0; i < N; ++i) {
+        ret[i] = val[i];
+    }
+    return ret;
+}
+
+template<unsigned int N, typename T>
+Vec<N, T> oneVec() {
+    Vec<N, T> ret;
+    for (int i = 0; i < N; ++i) {
+        ret[i] = 1;
+    }
+    return ret;
+}
+
+template<unsigned int N, typename T>
+Vec<N, T> zeroVec() {
+    Vec<N, T> ret;
+    for (int i = 0; i < N; ++i) {
+        ret[i] = 0;
+    }
+    return ret;
+}
+
+template<unsigned int M, unsigned int N, typename T>
+Vec<M, T> resize(Vec<N, T> op) {
+    Vec<M, T> ret;
+    for (int i = 0; i < N && i < M; ++i) {
+        ret[i] = op[i];
+    }
+    return ret;
+}
 
 //
 // Comparison
@@ -65,19 +109,19 @@ bool operator!=(Vec<N, T> lhs, Vec<N, T> rhs) {
 // Scalar Multiplication
 //
 
-template<unsigned int N, typename T>
-Vec<N, T> operator*(T scalar, Vec<N, T> vec) {
+template<unsigned int N, typename T, typename T2>
+Vec<N, T> operator*(T2 scalar, Vec<N, T> vec) {
     vec *= scalar;
     return vec;
 }
 
-template<unsigned int N, typename T>
-Vec<N, T> operator*(Vec<N, T> vec, T scalar) {
+template<unsigned int N, typename T, typename T2>
+Vec<N, T> operator*(Vec<N, T> vec, T2 scalar) {
     return scalar*vec;
 }
 
-template<unsigned int N, typename T>
-Vec<N, T> operator/(Vec<N, T> vec, T scalar) {
+template<unsigned int N, typename T, typename T2>
+Vec<N, T> operator/(Vec<N, T> vec, T2 scalar) {
     vec /= scalar;
     return vec;
 }

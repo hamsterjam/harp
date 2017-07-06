@@ -2,16 +2,20 @@
 #define HARP_MATRIX_H
 
 #include <math/Vec.h>
+#include <cstring> // memcpy
 
 template<unsigned int M, unsigned int N, typename T>
 class Mat : public Vec<M, Vec<N, T> > {
     public:
-        void set(T val[N*M]) {
-            for (int row = 0; row < M; ++row) {
-                for (int col = 0; col < N; ++col) {
-                    (*this)[row][col] = val[row + col*M];
-                }
-            }
+        Mat<M, N, T>() {};
+
+        Mat<M, N, T>(Vec<M, Vec<N, T> > clone) {
+            std::memcpy((void*) &(this->data), (void*) &(clone.data), M * sizeof(Vec<N, T>));
+        }
+
+        operator Vec<M, Vec<N, T> >() {
+            Vec<M, Vec<N, T> > ret;
+            ret.data = this->data;
         }
 };
 
@@ -19,8 +23,19 @@ class Mat : public Vec<M, Vec<N, T> > {
 // Builder Functions
 //
 
+template<unsigned int M, unsigned int N, typename T>
+Mat<M, N, T> buildMat(T val[N*M]) {
+    Mat<M, N, T> ret;
+    for (int row = 0; row < M; ++row) {
+        for (int col = 0; col < N; ++col) {
+            ret[row][col] = val[row + col*M];
+        }
+    }
+    return ret;
+}
+
 template<unsigned int N, typename T>
-Mat<N, N, T> identityMatrix() {
+Mat<N, N, T> identityMat() {
     Mat<N, N, T> ret;
     for (int row = 0; row < N; ++row) {
         for (int col = 0; col < N; ++col) {
@@ -31,11 +46,33 @@ Mat<N, N, T> identityMatrix() {
 }
 
 template<unsigned int M, unsigned int N, typename T>
-Mat<M, N, T> zeroMatrix() {
+Mat<M, N, T> zeroMat() {
     Mat<M, N, T> ret;
     for (int row = 0; row < M; ++row) {
         for (int col = 0; col < N; ++col) {
             ret[row][col] = 0;
+        }
+    }
+    return ret;
+}
+
+template<unsigned int M, unsigned int N, typename T>
+Mat<M, N, T> oneMat() {
+    Mat<M, N, T> ret;
+    for (int row = 0; row < M; ++row) {
+        for (int col = 0; col < N; ++col) {
+            ret[row][col] = 1;
+        }
+    }
+    return ret;
+}
+
+template<unsigned int R, unsigned int S, unsigned int M, unsigned int N, typename T>
+Mat<R, S, T> resize(Mat<M, N, T> op) {
+    Mat<R, S, T> ret;
+    for (int row = 0; row < M && row < R; ++row) {
+        for (int col = 0; col < N && col < S; ++col) {
+            ret[row][col] = op[row][col];
         }
     }
     return ret;
@@ -118,10 +155,8 @@ T det(Mat<N, N, T> op) {
 
 template<unsigned int N, typename T>
 Mat<N, N, T> inverse(Mat<N, N, T> op) {
-    Mat<N, N, T> id = identityMatrix<N, T>();
-    // This is row reduction, the rule is, whatever we do to op, we do to ret
-    //
-    // This isn't that complex, its also probably not very fast but eh
+    Mat<N, N, T> id = identityMat<N, T>();
+    // This is row reduction, the rule is, whatever we do to op, we do to id
     for (int r = 0; r < N; ++r) {
         // Keep track of the value on the diagonal, we are going to pretend
         // to divide every value on the row by this (but do it later)
