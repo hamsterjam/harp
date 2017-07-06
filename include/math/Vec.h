@@ -1,5 +1,5 @@
-#ifndef HARP_ECS_H
-#define HARP_ECS_H
+#ifndef HARP_VECTOR_H
+#define HARP_VECTOR_H
 
 #include <cmath>
 
