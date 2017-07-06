@@ -30,8 +30,8 @@ int main(int argc, char** argv) {
     }
 
     {
-        Mat<2, 2, int> mat1 = oneMat<2, 2, int>();
-        Mat<2, 2, int> mat2 = oneMat<2, 2, int>();
+        Mat<2, 2, int> mat1 = onesMat<2, 2, int>();
+        Mat<2, 2, int> mat2 = onesMat<2, 2, int>();
 
         Mat<2, 2, int> mat3;
         mat3 = mat1 + 2 * mat2;

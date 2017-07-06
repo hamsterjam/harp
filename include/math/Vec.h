@@ -60,7 +60,7 @@ Vec<N, T> buildVec(T val[N]) {
 }
 
 template<unsigned int N, typename T>
-Vec<N, T> oneVec() {
+Vec<N, T> onesVec() {
     Vec<N, T> ret;
     for (int i = 0; i < N; ++i) {
         ret[i] = 1;
@@ -69,7 +69,7 @@ Vec<N, T> oneVec() {
 }
 
 template<unsigned int N, typename T>
-Vec<N, T> zeroVec() {
+Vec<N, T> zerosVec() {
     Vec<N, T> ret;
     for (int i = 0; i < N; ++i) {
         ret[i] = 0;

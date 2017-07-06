@@ -46,7 +46,7 @@ Mat<N, N, T> identityMat() {
 }
 
 template<unsigned int M, unsigned int N, typename T>
-Mat<M, N, T> zeroMat() {
+Mat<M, N, T> zerosMat() {
     Mat<M, N, T> ret;
     for (int row = 0; row < M; ++row) {
         for (int col = 0; col < N; ++col) {
@@ -57,7 +57,7 @@ Mat<M, N, T> zeroMat() {
 }
 
 template<unsigned int M, unsigned int N, typename T>
-Mat<M, N, T> oneMat() {
+Mat<M, N, T> onesMat() {
     Mat<M, N, T> ret;
     for (int row = 0; row < M; ++row) {
         for (int col = 0; col < N; ++col) {
