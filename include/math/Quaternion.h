@@ -7,13 +7,13 @@
 #include <math/Vector.h>
 
 template<typename T>
-class Quaternion : public Vec<4, T> {
+class Quaternion : public Vector<4, T> {
     public:
         Quaternion<T>() {}
 
-        Quaternion<T>(T val[4]) : Vec<4, T>(val) {}
+        Quaternion<T>(T val[4]) : Vector<4, T>(val) {}
 
-        Quaternion<T>(Vec<4, T> clone) {
+        Quaternion<T>(Vector<4, T> clone) {
             std::memcpy((void*) &(this->data), (void*) &(clone.data), sizeof(T) * 4);
         }
 
@@ -42,7 +42,7 @@ class Quaternion : public Vec<4, T> {
 //
 
 template<typename T>
-Quaternion<T> rotationQuaternion(T angle, Vec<3, T> axis) {
+Quaternion<T> rotationQuaternion(T angle, Vector<3, T> axis) {
     axis *= sin(angle/2);
     Quaternion<T> ret = resize<4>(axis);
     ret[3] = cos(angle/2);
