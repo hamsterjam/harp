@@ -11,6 +11,14 @@ class Vec {
     public:
         T data[N];
 
+        Vec<N, T>() {}
+
+        Vec<N, T>(T val[N]) {
+            for (int i = 0; i < N; ++i) {
+                data[i] = val[i];
+            }
+        }
+
         T& operator[](unsigned int index) {
             return data[index];
         }
@@ -49,15 +57,6 @@ class Vec {
 //
 // Builder Functions
 //
-
-template<unsigned int N, typename T>
-Vec<N, T> buildVec(T val[N]) {
-    Vec<N, T> ret;
-    for (int i = 0; i < N; ++i) {
-        ret[i] = val[i];
-    }
-    return ret;
-}
 
 template<unsigned int N, typename T>
 Vec<N, T> onesVec() {

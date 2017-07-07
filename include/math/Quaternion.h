@@ -11,6 +11,8 @@ class Quaternion : public Vec<4, T> {
     public:
         Quaternion<T>() {}
 
+        Quaternion<T>(T val[4]) : Vec<4, T>(val) {}
+
         Quaternion<T>(Vec<4, T> clone) {
             std::memcpy((void*) &(this->data), (void*) &(clone.data), sizeof(T) * 4);
         }
@@ -38,11 +40,6 @@ class Quaternion : public Vec<4, T> {
 //
 // Builder Functions
 //
-
-template<typename T>
-Quaternion<T> buildQuaternion(T val[4]) {
-    return buildVec<4>(val);
-}
 
 template<typename T>
 Quaternion<T> rotationQuaternion(T angle, Vec<3, T> axis) {

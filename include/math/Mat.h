@@ -16,6 +16,14 @@ class Mat : public Vec<M, Vec<N, T> > {
     public:
         Mat<M, N, T>() {}
 
+        Mat<M, N, T>(T val[M*N]) {
+            for (int r = 0; r < M; ++r) {
+                for (int c = 0; c < N; ++c) {
+                    (*this)[r][c] = val[r + c*M];
+                }
+            }
+        }
+
         Mat<M, N, T>(Vec<M, Vec<N, T> > clone) {
             std::memcpy((void*) &(this->data), (void*) &(clone.data), M * sizeof(Vec<N, T>));
         }
@@ -29,17 +37,6 @@ class Mat : public Vec<M, Vec<N, T> > {
 //
 // Builder Functions
 //
-
-template<unsigned int M, unsigned int N, typename T>
-Mat<M, N, T> buildMat(T val[N*M]) {
-    Mat<M, N, T> ret;
-    for (int row = 0; row < M; ++row) {
-        for (int col = 0; col < N; ++col) {
-            ret[row][col] = val[row + col*M];
-        }
-    }
-    return ret;
-}
 
 template<unsigned int N, typename T>
 Mat<N, N, T> identityMat() {

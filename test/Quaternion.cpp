@@ -10,13 +10,13 @@ using namespace std;
 int main(int argc, char** argv) {
     {
         int iData[] = {1, 0, 0, 0};
-        Quaternion<int> i = buildQuaternion(iData);
+        Quaternion<int> i(iData);
 
         int jData[] = {0, 1, 0, 0};
-        Quaternion<int> j = buildQuaternion(jData);
+        Quaternion<int> j(jData);
 
         int kData[] = {0, 0, 1, 0};
-        Quaternion<int> k = buildQuaternion(kData);
+        Quaternion<int> k(kData);
 
         Quaternion<int> res1 = i*i;
         Quaternion<int> res2 = j*j;
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 
     {
         double data[] = {1, 1, 1, 1};
-        Quaternion<double> quat = buildQuaternion(data);
+        Quaternion<double> quat(data);
         quat = normalize(quat);
 
         assert(quat[0] == 0.5 && quat[1] == 0.5 && quat[2] == 0.5 && quat[3] == 0.5);
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 
     {
         double data[] = {1, 2, 3, 4};
-        Quaternion<double> q1 = buildQuaternion(data);
+        Quaternion<double> q1(data);
         Quaternion<double> q2 = q1*inverse(q1);
 
         assert(q2[0] == 0 && q2[1] == 0 && q2[2] == 0 && q2[3] == 1);

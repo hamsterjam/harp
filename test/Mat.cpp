@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
             3, 6, 9
         };
 
-        Mat<3, 3, int> testMat1 = buildMat<3, 3>(data1);
+        Mat<3, 3, int> testMat1(data1);
 
         assert(testMat1[0][0] == 1);
         assert(testMat1[1][0] == 4);
@@ -50,8 +50,8 @@ int main(int argc, char** argv) {
             7, 9,
             8, 10
         };
-        Mat<3, 2, int> mat1 = buildMat<3, 2>(data1);
-        Mat<2, 2, int> mat2 = buildMat<2, 2>(data2);
+        Mat<3, 2, int> mat1(data1);
+        Mat<2, 2, int> mat2(data2);
 
         mat1 *= mat2;
 
@@ -70,8 +70,8 @@ int main(int argc, char** argv) {
             8, 11,
             9, 12
         };
-        Mat<3, 2, int> testMat1 = buildMat<3, 2>(data1);
-        Mat<2, 3, int> testMat2 = buildMat<2, 3>(data2);
+        Mat<3, 2, int> testMat1(data1);
+        Mat<2, 3, int> testMat2(data2);
 
         Mat<3, 3, int> resMat1 = testMat1 * testMat2;
         Mat<2, 2, int> resMat2 = testMat2 * testMat1;
@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
             2, 4, 8,
             3, 6, 9
         };
-        Mat<3, 3, int> test1 = buildMat<3, 3>(data);
+        Mat<3, 3, int> test1(data);
 
         Mat<2, 2, int> test2 = minorMatrix(test1, 1, 1);
         assert(test2[0][0] == 1 && test2[0][1] == 3);
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
             3., 11., 19.,
             5., 13., 23.
         };
-        Mat<3, 3, double> mat = buildMat<3, 3>(data);
+        Mat<3, 3, double> mat(data);
 
         assert(det(mat) == -78);
 
@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
             1, 3,
             2, 4
         };
-        Mat<2, 2, int> mat1 = buildMat<2, 2>(data);
+        Mat<2, 2, int> mat1(data);
 
         Mat<3, 4, int> mat2 = resize<3, 4>(mat1);
         assert(mat2[0][0] == 1 && mat2[0][1] == 2);
