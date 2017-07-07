@@ -1,8 +1,9 @@
 #ifndef HARP_MATRIX_H
 #define HARP_MATRIX_H
 
-#include <math/Vec.h>
 #include <cstring> // memcpy
+
+#include <math/Vec.h>
 
 template<unsigned int M, unsigned int N, typename T>
 class Mat;
@@ -13,15 +14,10 @@ Mat<M, K, T> operator*(Mat<M, N, T> lhs, Mat<N, K, T> rhs);
 template<unsigned int M, unsigned int N, typename T>
 class Mat : public Vec<M, Vec<N, T> > {
     public:
-        Mat<M, N, T>() {};
+        Mat<M, N, T>() {}
 
         Mat<M, N, T>(Vec<M, Vec<N, T> > clone) {
             std::memcpy((void*) &(this->data), (void*) &(clone.data), M * sizeof(Vec<N, T>));
-        }
-
-        operator Vec<M, Vec<N, T> >() {
-            Vec<M, Vec<N, T> > ret;
-            ret.data = this->data;
         }
 
         Mat<M, N, T>& operator*=(Mat<N, N, T> rhs) {

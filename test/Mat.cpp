@@ -1,10 +1,11 @@
+#include <cmath>
+
 #include <iostream>
 #include <cassert>
 
 #include <math/Mat.h>
 #include <math/Vec.h>
 
-#include <cmath>
 
 using namespace std;
 
