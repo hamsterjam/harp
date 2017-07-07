@@ -35,10 +35,49 @@ class Quaternion : public Vec<4, T> {
         }
 };
 
+//
+// Builder Functions
+//
+
+template<typename T>
+Quaternion<T> buildQuaternion(T val[4]) {
+    return buildVec<4>(val);
+}
+
+template<typename T>
+Quaternion<T> rotationQuaternion(T angle, Vec<3, T> axis) {
+    axis *= sin(angle/2);
+    Quaternion<T> ret = resize<4>(axis);
+    ret[3] = cos(angle/2);
+
+    return ret;
+}
+
+//
+// Arithmetic
+//
+
 template<typename T>
 Quaternion<T> operator*(Quaternion<T> lhs, Quaternion<T> rhs) {
     lhs *= rhs;
     return lhs;
+}
+
+//
+// Standard Operations
+//
+
+template<typename T>
+Quaternion<T> conj(Quaternion<T> op) {
+    for (int i = 0; i < 3; ++i) {
+        op[i] = -op[i];
+    }
+    return op;
+}
+
+template<typename T>
+Quaternion<T> inverse(Quaternion<T> op) {
+    return conj(op)/dot(op, op);
 }
 
 #endif
