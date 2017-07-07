@@ -5,6 +5,12 @@
 #include <cstring> // memcpy
 
 template<unsigned int M, unsigned int N, typename T>
+class Mat;
+
+template<unsigned int M, unsigned int N, unsigned int K, typename T>
+Mat<M, K, T> operator*(Mat<M, N, T> lhs, Mat<N, K, T> rhs);
+
+template<unsigned int M, unsigned int N, typename T>
 class Mat : public Vec<M, Vec<N, T> > {
     public:
         Mat<M, N, T>() {};
@@ -16,6 +22,11 @@ class Mat : public Vec<M, Vec<N, T> > {
         operator Vec<M, Vec<N, T> >() {
             Vec<M, Vec<N, T> > ret;
             ret.data = this->data;
+        }
+
+        Mat<M, N, T>& operator*=(Mat<N, N, T> rhs) {
+            *this = *this * rhs;
+            return *this;
         }
 };
 

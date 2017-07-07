@@ -46,6 +46,25 @@ int main(int argc, char** argv) {
             2, 4, 6
         };
         int data2[] = {
+            7, 9,
+            8, 10
+        };
+        Mat<3, 2, int> mat1 = buildMat<3, 2>(data1);
+        Mat<2, 2, int> mat2 = buildMat<2, 2>(data2);
+
+        mat1 *= mat2;
+
+        assert(mat1[0][0] == 25 && mat1[0][1] ==  28);
+        assert(mat1[1][0] == 57 && mat1[1][1] ==  64);
+        assert(mat1[2][0] == 89 && mat1[2][1] == 100);
+    }
+
+    {
+        int data1[] = {
+            1, 3, 5,
+            2, 4, 6
+        };
+        int data2[] = {
             7, 10,
             8, 11,
             9, 12
