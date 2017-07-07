@@ -3,9 +3,6 @@
 
 #include <cmath>
 
-template <unsigned int M, unsigned int N, typename T>
-class Mat;
-
 template <unsigned int N, typename T>
 class Vec {
     public:
