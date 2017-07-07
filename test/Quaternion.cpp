@@ -3,7 +3,7 @@
 #include<iostream>
 
 #include<math/Quaternion.h>
-#include<math/Vec.h>
+#include<math/Vector.h>
 
 using namespace std;
 

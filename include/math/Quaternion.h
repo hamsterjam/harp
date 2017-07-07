@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstring> // memcpy
 
-#include <math/Vec.h>
+#include <math/Vector.h>
 
 template<typename T>
 class Quaternion : public Vec<4, T> {

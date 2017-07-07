@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include <math/Mat.h>
-#include <math/Vec.h>
+#include <math/Matrix.h>
+#include <math/Vector.h>
 
 
 using namespace std;

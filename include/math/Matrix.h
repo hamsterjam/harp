@@ -3,7 +3,7 @@
 
 #include <cstring> // memcpy
 
-#include <math/Vec.h>
+#include <math/Vector.h>
 
 template<unsigned int M, unsigned int N, typename T>
 class Mat;
