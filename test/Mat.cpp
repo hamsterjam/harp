@@ -1,7 +1,7 @@
 #include <cmath>
+#include <cassert>
 
 #include <iostream>
-#include <cassert>
 
 #include <math/Mat.h>
 #include <math/Vec.h>
