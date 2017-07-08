@@ -73,7 +73,7 @@ Matrix<M, N, T> onesMatrix() {
 
 template<typename T>
 Matrix<3, 3, T> conjugationTransformation(Vector<4, T> q) {
-    // q is a Vec<4, T> instead of a Quaternion<T> because dependancy
+    // q is a Vector<4, T> instead of a Quaternion<T> because dependancy
     T qi = q[0];
     T qj = q[1];
     T qk = q[2];
