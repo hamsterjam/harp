@@ -36,15 +36,17 @@ class Vector {
             return *this;
         }
 
-        Vector<N, T>& operator+=(Vector<N, T> rhs) {
-            for (int i = 0; i < N; ++i) {
+        template<unsigned int N2, typename T2>
+        Vector<N, T>& operator+=(Vector<N2, T2> rhs) {
+            for (int i = 0; i < N && i < N2; ++i) {
                 data[i] += rhs[i];
             }
             return *this;
         }
 
-        Vector<N, T>& operator-=(Vector<N, T> rhs) {
-            for (int i = 0; i < N; ++i) {
+        template<unsigned int N2, typename T2>
+        Vector<N, T>& operator-=(Vector<N2, T2> rhs) {
+            for (int i = 0; i < N && i < N2; ++i) {
                 data[i] -= rhs[i];
             }
             return *this;
@@ -69,15 +71,6 @@ Vector<N, T> zerosVector() {
     Vector<N, T> ret;
     for (int i = 0; i < N; ++i) {
         ret[i] = 0;
-    }
-    return ret;
-}
-
-template<unsigned int M, unsigned int N, typename T>
-Vector<M, T> resize(Vector<N, T> op) {
-    Vector<M, T> ret;
-    for (int i = 0; i < N && i < M; ++i) {
-        ret[i] = op[i];
     }
     return ret;
 }
@@ -131,14 +124,14 @@ Vector<N, T> operator-(Vector<N, T> op) {
 // Vector Addition
 //
 
-template<unsigned int N, typename T>
-Vector<N, T> operator+(Vector<N, T> lhs, Vector<N, T> rhs) {
+template<unsigned int N, unsigned int N2, typename T, typename T2>
+Vector<N, T> operator+(Vector<N, T> lhs, Vector<N2, T2> rhs) {
     lhs += rhs;
     return lhs;
 }
 
-template<unsigned int N, typename T>
-Vector<N, T> operator-(Vector<N, T> lhs, Vector<N, T> rhs) {
+template<unsigned int N, unsigned int N2, typename T, typename T2>
+Vector<N, T> operator-(Vector<N, T> lhs, Vector<N2, T2> rhs) {
     lhs -= rhs;
     return lhs;
 }

@@ -71,14 +71,33 @@ Matrix<M, N, T> onesMatrix() {
     return ret;
 }
 
-template<unsigned int R, unsigned int S, unsigned int M, unsigned int N, typename T>
-Matrix<R, S, T> resize(Matrix<M, N, T> op) {
-    Matrix<R, S, T> ret;
-    for (int row = 0; row < M && row < R; ++row) {
-        for (int col = 0; col < N && col < S; ++col) {
-            ret[row][col] = op[row][col];
-        }
-    }
+template<typename T>
+Matrix<3, 3, T> conjugationTransformation(Vector<4, T> q) {
+    // q is a Vec<4, T> instead of a Quaternion<T> because dependancy
+    T qi = q[0];
+    T qj = q[1];
+    T qk = q[2];
+    T qr = q[3];
+
+    T s = (T) 1 / dot(q, q);
+
+    Matrix<3, 3, T> ret;
+
+    // Row 1
+    ret[0][0] = 1 - 2*s*(qj*qj +qk*qk);
+    ret[0][1] = 2*s*(qi*qj - qk*qr);
+    ret[0][2] = 2*s*(qi*qk + qj*qr);
+
+    // Row 2
+    ret[1][0] = 2*s*(qi*qj + qk*qr);
+    ret[1][1] = 1 - 2*s*(qi*qi + qk*qk);
+    ret[1][2] = 2*s*(qj*qk - qi*qr);
+
+    // Row 2
+    ret[2][0] = 2*s*(qi*qk - qj*qr);
+    ret[2][1] = 2*s*(qj*qk + qi*qr);
+    ret[2][2] = 1 - 2*s*(qi*qi + qj*qj);
+
     return ret;
 }
 

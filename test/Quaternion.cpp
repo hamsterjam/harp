@@ -1,22 +1,24 @@
 #include<cassert>
+#include<cmath>
 
 #include<iostream>
 
 #include<math/Quaternion.h>
+#include<math/Matrix.h>
 #include<math/Vector.h>
 
 using namespace std;
 
 int main(int argc, char** argv) {
     {
-        int iData[] = {1, 0, 0, 0};
-        Quaternion<int> i(iData);
+        Quaternion<int> i = zerosVector<4, int>();
+        i[0] = 1;
 
-        int jData[] = {0, 1, 0, 0};
-        Quaternion<int> j(jData);
+        Quaternion<int> j = zerosVector<4, int>();
+        j[1] = 1;
 
-        int kData[] = {0, 0, 1, 0};
-        Quaternion<int> k(kData);
+        Quaternion<int> k = zerosVector<4, int>();
+        k[2] = 1;
 
         Quaternion<int> res1 = i*i;
         Quaternion<int> res2 = j*j;
@@ -43,6 +45,27 @@ int main(int argc, char** argv) {
         Quaternion<double> q2 = q1*inverse(q1);
 
         assert(q2[0] == 0 && q2[1] == 0 && q2[2] == 0 && q2[3] == 1);
+    }
+
+    {
+        double data[] = {5, 7, 11, 0};
+        Quaternion<double> pQuat(data);
+        Vector<3, double>  pVec = zerosVector<3, double>() + pQuat;
+
+        double axisData[] = {1, -2, 3};
+        Vector<3, double> axis(axisData);
+        axis = normalize(axis);
+
+        Quaternion<double>   rQuat = rotationQuaternion(M_PI*7/5, axis);
+        Matrix<3, 3, double> rMat  = conjugationTransformation(rQuat);
+
+        Quaternion<double> resQuat = rQuat * pQuat * inverse(rQuat);
+        Vector<3, double>  resVec  = rMat * pVec;
+
+        double delta = 0.000000000001;
+        for (int i=0; i<3; ++i) {
+            assert(abs(resQuat[i] - resVec[i]) < delta);
+        }
     }
 
     cout << "All systems nominal" << endl;
