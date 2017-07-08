@@ -93,7 +93,7 @@ Matrix<3, 3, T> conjugationTransformation(Vector<4, T> q) {
     ret[1][1] = 1 - 2*s*(qi*qi + qk*qk);
     ret[1][2] = 2*s*(qj*qk - qi*qr);
 
-    // Row 2
+    // Row 3
     ret[2][0] = 2*s*(qi*qk - qj*qr);
     ret[2][1] = 2*s*(qj*qk + qi*qr);
     ret[2][2] = 1 - 2*s*(qi*qi + qj*qj);
