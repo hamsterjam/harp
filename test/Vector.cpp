@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
         test1[1] = 2;
         test1[2] = 3;
 
-        Vector<4, int> test2 = zerosVector<4, int>() + test1;
+        Vector<4, int> test2 = zeroVector<4, int>() + test1;
 
         assert(test2[0] == 1 && test2[1] == 2 && test2[2] == 3 && test2[3] == 0);
     }

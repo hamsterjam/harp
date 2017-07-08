@@ -50,7 +50,7 @@ Matrix<N, N, T> identityMatrix() {
 }
 
 template<unsigned int M, unsigned int N, typename T>
-Matrix<M, N, T> zerosMatrix() {
+Matrix<M, N, T> zeroMatrix() {
     Matrix<M, N, T> ret;
     for (int row = 0; row < M; ++row) {
         for (int col = 0; col < N; ++col) {

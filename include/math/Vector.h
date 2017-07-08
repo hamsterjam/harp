@@ -67,7 +67,7 @@ Vector<N, T> onesVector() {
 }
 
 template<unsigned int N, typename T>
-Vector<N, T> zerosVector() {
+Vector<N, T> zeroVector() {
     Vector<N, T> ret;
     for (int i = 0; i < N; ++i) {
         ret[i] = 0;

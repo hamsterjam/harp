@@ -142,7 +142,7 @@ int main(int argc, char** argv) {
         };
         Matrix<2, 2, int> mat1(data);
 
-        Matrix<3, 4, int> mat2 = zerosMatrix<3, 4, int>() + mat1;
+        Matrix<3, 4, int> mat2 = zeroMatrix<3, 4, int>() + mat1;
         assert(mat2[0][0] == 1 && mat2[0][1] == 2);
         assert(mat2[1][0] == 3 && mat2[1][1] == 4);
         assert(mat2[2][3] == 0);

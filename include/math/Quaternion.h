@@ -44,7 +44,7 @@ class Quaternion : public Vector<4, T> {
 template<typename T>
 Quaternion<T> rotationQuaternion(T angle, Vector<3, T> axis) {
     axis *= sin(angle/2);
-    Quaternion<T> ret = zerosVector<4, T>() + axis;
+    Quaternion<T> ret = zeroVector<4, T>() + axis;
     ret[3] = cos(angle/2);
 
     return ret;
