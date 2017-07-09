@@ -54,14 +54,6 @@ class Vector {
         }
 };
 
-// These forward decalres are here because im defining the *= in terms of the
-// (more general) * operator for matricies
-template<unsigned int M, unsigned int N, typename T>
-class Matrix;
-
-template<unsigned int M, unsigned int N, unsigned int K, typename T>
-Matrix<M, K, T> operator*(Matrix<M, N, T> lhs, Matrix<N, K, T> rhs);
-
 template<unsigned int M, unsigned int N, typename T>
 class Matrix : public Vector<M, Vector<N, T> > {
     public:
@@ -79,6 +71,7 @@ class Matrix : public Vector<M, Vector<N, T> > {
             std::memcpy((void*) &(this->data), (void*) &(clone.data), M * sizeof(Vector<N, T>));
         }
 
+        // This uses the binary * which is defined later
         Matrix<M, N, T>& operator*=(Matrix<N, N, T> rhs) {
             *this = *this * rhs;
             return *this;
@@ -235,7 +228,28 @@ Vector<3, T> cross(Vector<3, T> lhs, Vector<3, T> rhs) {
     return ret;
 }
 
-//TODO// A general wedge product
+// This uses det and minorMatrix which are defined later
+template<unsigned int N, typename T>
+Vector<N, T> wedge(Vector<N, T> args[N-1]) {
+    // You should look this up if your confused.
+    // You build up a matrix of all the vectors, the components of the new vector
+    // are minors of this matrix
+
+    Matrix<N, N, T> vecMatrix;
+    for (int i = 0; i < N-1; ++i) {
+        vecMatrix[i+1] = args[i];
+    }
+    // row 0 is always going to be deleted by minorMatrix so its all good
+
+    Vector<N, T> ret;
+    for (int i = 0; i < N; ++i) {
+        T sign = (i % 2 == 0) ? (T) 1 : (T) -1;
+
+        ret[i] = sign * det(minorMatrix(vecMatrix, 0, i));
+    }
+
+    return ret;
+}
 
 template<unsigned int N, typename T>
 T norm(Vector<N, T> op) {

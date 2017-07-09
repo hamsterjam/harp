@@ -76,6 +76,23 @@ int main(int argc, char** argv) {
         assert(test2[0] == 1 && test2[1] == 2 && test2[2] == 3 && test2[3] == 0);
     }
 
+    {
+        int aData[] = {2, 3, 0, 0};
+        Vector<4, int> a(aData);
+
+        int bData[] = {0, 5, 7, 0};
+        Vector<4, int> b(bData);
+
+        int cData[] = {0, 0, 11, 13};
+        Vector<4, int> c(cData);
+
+        Vector<4, int> vecs[] = {a, b, c};
+        Vector<4, int> d = wedge(vecs);
+
+        assert(dot(a, d) == 0 && dot(b, d) == 0 && dot(c, d) == 0);
+        assert(d[0] == 273 && d[1] == -182 && d[2] == 130 && d[3] == -110);
+    }
+
     cout << "All systems nominal" << endl;
 
     return 0;
