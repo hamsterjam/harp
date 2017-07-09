@@ -1,11 +1,9 @@
-#include<cassert>
-#include<cmath>
+#include <cassert>
+#include <cmath>
 
-#include<iostream>
+#include <iostream>
 
-#include<math/Quaternion.h>
-#include<math/Matrix.h>
-#include<math/Vector.h>
+#include <harpMath.h>
 
 using namespace std;
 

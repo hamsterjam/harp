@@ -3,9 +3,7 @@
 
 #include <iostream>
 
-#include <math/Matrix.h>
-#include <math/Vector.h>
-
+#include <harpMath.h>
 
 using namespace std;
 
