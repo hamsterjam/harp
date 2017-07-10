@@ -222,7 +222,7 @@ template<typename T>
 Vector<3, T> cross(Vector<3, T> lhs, Vector<3, T> rhs) {
     Vector<3, T> ret;
     ret[0] = lhs[1]*rhs[2] - lhs[2]*rhs[1];
-    ret[1] = lhs[3]*rhs[0] - lhs[0]*rhs[3];
+    ret[1] = lhs[2]*rhs[0] - lhs[0]*rhs[2];
     ret[2] = lhs[0]*rhs[1] - lhs[1]*rhs[0];
 
     return ret;
