@@ -4,6 +4,8 @@
 #include <vector>
 #include <SDL_opengl.h>
 
+#include <harpMath.h>
+
 class Sprite;
 class SceneObject;
 
@@ -33,13 +35,8 @@ class Shader {
         std::vector<SceneObject*> sceneObjects;
 
         // Batched drawing
-        // This is the ugliest way to fix this ever
-        struct Pos {
-            float x;
-            float y;
-        };
         std::vector<Sprite*> batchSprites;
-        std::vector<Pos>  batchPositions;
+        std::vector<Vector<2, float> >  batchPositions;
 
         void bindTextures(Sprite& spr);
         void draw(DrawMode mode, unsigned int numElements);

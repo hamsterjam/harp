@@ -13,6 +13,7 @@
 #include <graphics/SceneObject.h>
 
 #include <globals.h>
+#include <harpMath.h>
 
 static const char* defaultVertSource = R"(
 attribute vec2 aVertPos;
@@ -332,9 +333,9 @@ void Shader::drawPoint(float x, float y) {
 
 void Shader::batchQueue(Sprite& spr, float x, float y) {
     batchSprites.push_back(&spr);
-    Pos pos;
-    pos.x = x;
-    pos.y = y;
+    Vector<2, float> pos;
+    pos[0] = x;
+    pos[1] = y;
     batchPositions.push_back(pos);
 }
 
@@ -359,10 +360,10 @@ void Shader::batchDraw() {
 
     unsigned int currSpr = 0;
     for (auto pos : batchPositions) {
-        float x1 = pos.x;
-        float y1 = pos.y;
-        float x2 = pos.x + texWidth;
-        float y2 = pos.y + texHeight;
+        float x1 = pos[0];
+        float y1 = pos[1];
+        float x2 = pos[0] + texWidth;
+        float y2 = pos[1] + texHeight;
 
         toInternalCoord(x1, y1);
         toInternalCoord(x2, y2);
