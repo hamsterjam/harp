@@ -36,9 +36,30 @@ void init() {
     consoleFont = new FontRenderer(fontAtlas, ' ', '~');
 
     console = new Console(*consolePrim, *consoleFont);
-    console->toggle();
 
     harp->updateComponents();
+}
+
+void handleEvent(SDL_Event e) {
+    switch (e.type) {
+
+        case SDL_QUIT:
+            shouldExit = true;
+            break;
+
+        case SDL_KEYDOWN:
+            switch (e.key.keysym.sym) {
+
+                case SDLK_CARET:
+                    console->toggle();
+                    break;
+
+                case SDLK_ESCAPE:
+                    shouldExit = true;
+                    break;
+            }
+            break;
+    }
 }
 
 void update(unsigned int deltaT) {
@@ -106,11 +127,7 @@ int main(int argc, char** argv) {
 
     while(!shouldExit) {
         SDL_Event e;
-        while(SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                shouldExit = true;
-            }
-        }
+        while(SDL_PollEvent(&e)) handleEvent(e);
 
         unsigned int currTime = SDL_GetTicks();
         if (prevTime == 0) {
