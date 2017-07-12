@@ -15,6 +15,8 @@
 #include <graphics/FontRenderer.h>
 #include <graphics/PrimitiveRenderer.h>
 
+#include <harpMath.h>
+
 using namespace std;
 
 const unsigned int FRAME_RATE = 60;

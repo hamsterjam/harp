@@ -20,27 +20,27 @@ void system_draw() {
             auto& ele = *jt;
             switch (ele.type) {
                 case (DrawType::SPRITE):
-                    ele.shd->drawSprite(*ele.spr, ele.p1, ele.p2);
+                    ele.shd->drawSprite(*ele.spr, pos[0]+ele.p1, pos[1]+ele.p2);
                     break;
                 case (DrawType::RECTANGLE):
-                    ele.prim->drawRectangle(ele.p1, ele.p2, ele.p3, ele.p4, ele.p5, ele.color);
+                    ele.prim->drawRectangle(pos[0]+ele.p1, pos[1]+ele.p2, ele.p3, ele.p4, ele.p5, ele.color);
                     break;
                 case (DrawType::ROUNDED_RECTANGLE):
-                    ele.prim->drawRoundedRectangle(ele.p1, ele.p2, ele.p3, ele.p4, ele.p5, ele.p6, ele.color);
+                    ele.prim->drawRoundedRectangle(pos[0]+ele.p1, pos[1]+ele.p2, ele.p3, ele.p4, ele.p5, ele.p6, ele.color);
                     break;
                 case (DrawType::ELIPSE):
-                    ele.prim->drawElipseArc(ele.p1, ele.p2, ele.p3, ele.p4, ele.p5, ele.p6, ele.p7, ele.color);
+                    ele.prim->drawElipseArc(pos[0]+ele.p1, pos[1]+ele.p2, ele.p3, ele.p4, ele.p5, ele.p6, ele.p7, ele.color);
                     break;
                 case (DrawType::TRIANGLE):
-                    ele.prim->drawTriangle(ele.p1, ele.p2, ele.p3, ele.p4, ele.p5, ele.p6, ele.p7, ele.color);
+                    ele.prim->drawTriangle(pos[0]+ele.p1, pos[1]+ele.p2, pos[0]+ele.p3, pos[1]+ele.p4, pos[0]+ele.p5, pos[1]+ele.p6, ele.p7, ele.color);
                     break;
                 case (DrawType::LINE):
-                    ele.prim->drawLine(ele.p1, ele.p2, ele.p3, ele.p4, ele.p5, ele.color);
+                    ele.prim->drawLine(pos[0]+ele.p1, pos[1]+ele.p2, pos[0]+ele.p3, pos[1]+ele.p4, ele.p5, ele.color);
                     break;
                 case (DrawType::GLYPH):
-                    ele.font->drawGlyph(*ele.glyph, ele.p1, ele.p2);
+                    ele.font->drawGlyph(*ele.glyph, pos[0]+ele.p1, pos[1]+ele.p2);
                 case (DrawType::TEXT):
-                    ele.font->drawString(ele.text, ele.p1, ele.p2);
+                    ele.font->drawString(ele.text, pos[0]+ele.p1, pos[1]+ele.p2);
                     break;
                 default:
                     break;

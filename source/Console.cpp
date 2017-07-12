@@ -1,7 +1,6 @@
 #include <Console.h>
 
 #include <cstring>
-#include <iostream>
 
 #include <ECS.h>
 #include <harpMath.h>
@@ -20,15 +19,16 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     // ECS stuff
     id = harp->createEntity();
     Vector<2, double> pos = zeroVector<2, double>();
+    pos[1] = 50;
 
     harp->setComponent(id, comp_position, &pos);
 
     Color hist  = rgbaToColor(0.05, 0.05, 0.05, 0.9);
     Color input = rgbaToColor(0.10, 0.10, 0.15, 0.9);
 
-    spec.addRectangle(prim, 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT - 50, 0, hist);
-    spec.addRectangle(prim, 0, 50-16, SCREEN_WIDTH, 16,  0, input);
-    spec.addText(font, inputBuffer, 3, 50-16+3-2);
+    spec.addRectangle(prim, 0, 16, SCREEN_WIDTH, SCREEN_HEIGHT - 50, 0, hist);
+    spec.addRectangle(prim, 0, 0, SCREEN_WIDTH, 16,  0, input);
+    spec.addText(font, inputBuffer, 3, 3-2);
 
     harp->setComponent(id, comp_visual, &spec);
 }

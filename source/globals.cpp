@@ -9,12 +9,12 @@
 void initGlobals() {
     harp = new ECS(32, 8, 128);
 
-    Component comp_position     = harp->createComponentType(sizeof(Vector<2, double>));
-    Component comp_velocoty     = harp->createComponentType(sizeof(Vector<2, double>));
-    Component comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
+    comp_position     = harp->createComponentType(sizeof(Vector<2, double>));
+    comp_velocity     = harp->createComponentType(sizeof(Vector<2, double>));
+    comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
 
-    Component comp_sprite = harp->createComponentType(sizeof(Sprite*));
-    Component comp_visual = harp->createComponentType(sizeof(VisualSpec));
+    comp_sprite = harp->createComponentType(sizeof(Sprite*));
+    comp_visual = harp->createComponentType(sizeof(VisualSpec));
 
     defaultShader = new Shader();
     defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);

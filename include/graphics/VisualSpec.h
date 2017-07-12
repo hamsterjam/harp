@@ -22,6 +22,9 @@ enum class DrawType{
     TEXT
 };
 
+// It's important you hold on to this somewhere, you can't just put it in the ECS and let
+// the std::vector deallocate, The ECS never owns pointers, it just stores bits
+
 class VisualSpec {
     // Never thought I'd forward declare INSIDE a class
     public: struct ElementSpec;
