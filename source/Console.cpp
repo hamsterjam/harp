@@ -11,7 +11,7 @@
 #include <globals.h>
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
-    inputBuffer = "The quick brown fox jumps over the lazy dog.";
+    inputBuffer = "";
 
     open = false;
 
@@ -60,4 +60,18 @@ void Console::update() {
         vel = zeroVector<2, double>();
         if (!open) harp->setFlag(id, flag_hidden, true);
     }
+}
+
+void Console::append(std::string text) {
+    inputBuffer += text;
+}
+
+void Console::backspace() {
+    if (inputBuffer.size() == 0) return;
+    inputBuffer.pop_back();
+}
+
+void Console::process() {
+    // Just delete the string for now
+    inputBuffer = "";
 }

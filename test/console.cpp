@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -17,10 +18,15 @@
 
 using namespace std;
 
+enum GameMode {
+    GAME,
+    CONSOLE,
+};
+
 const unsigned int FRAME_RATE = 60;
 
 static bool shouldExit = false;
-static bool consoleMode = true;
+static GameMode mode = GAME;
 
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
@@ -40,9 +46,28 @@ void init() {
     harp->updateComponents();
 }
 
-void handleEvent(SDL_Event e) {
-    switch (e.type) {
+void gameModeEvent(SDL_Event e);
+void consoleModeEvent(SDL_Event e);
 
+void handleEvent(SDL_Event e) {
+    if (e.type == SDL_QUIT) {
+        shouldExit = true;
+        return;
+    }
+
+    switch (mode) {
+        case GAME:
+            gameModeEvent(e);
+            break;
+
+        case CONSOLE:
+            consoleModeEvent(e);
+            break;
+    }
+}
+
+void gameModeEvent(SDL_Event e) {
+    switch (e.type) {
         case SDL_QUIT:
             shouldExit = true;
             break;
@@ -52,12 +77,40 @@ void handleEvent(SDL_Event e) {
 
                 case SDLK_CARET:
                     console->toggle();
+                    SDL_StartTextInput();
+                    mode = CONSOLE;
                     break;
 
                 case SDLK_ESCAPE:
                     shouldExit = true;
                     break;
             }
+            break;
+    }
+}
+
+void consoleModeEvent(SDL_Event e) {
+    switch (e.type) {
+        case SDL_KEYDOWN:
+            switch (e.key.keysym.sym) {
+                case SDLK_CARET:
+                    console->toggle();
+                    SDL_StopTextInput();
+                    mode = GAME;
+                    break;
+
+                case SDLK_BACKSPACE:
+                    console->backspace();
+                    break;
+
+                case SDLK_RETURN:
+                    console->process();
+                    break;
+            }
+            break;
+
+        case SDL_TEXTINPUT:
+            console->append(e.text.text);
             break;
     }
 }

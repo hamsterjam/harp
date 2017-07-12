@@ -23,6 +23,11 @@ class Console {
 
         void toggle();
         void update();
+
+        void append(std::string text);
+        void backspace();
+
+        void process();
 };
 
 #endif

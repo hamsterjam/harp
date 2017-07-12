@@ -55,6 +55,9 @@ void FontRenderer::drawText(std::string text, float x, float y) {
     }
     shd->batchDraw();
     */
+
+    if (text.size() == 0) return;
+
     for (auto it = text.begin(); it != text.end(); ++it) {
         char nextGlyph = *it;
         Sprite* currSprite = spriteMap[nextGlyph];
