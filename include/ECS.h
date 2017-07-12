@@ -68,9 +68,9 @@ class ECS {
         // Technically these work by passing in NULL for the value and 0 for the size, but
         // adding in some wrappers makes it more... nice? I guess?
 
-        Component createFlagComponentType();
-        void setFlagComponent(Entity ent, Component flag, bool val);
-        bool getFlagComponent(Entity ent, Component flag);
+        Component createFlagType();
+        void setFlag(Entity ent, Component flag, bool val);
+        bool getFlag(Entity ent, Component flag);
 
         void  updateComponents();
 

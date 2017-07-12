@@ -170,11 +170,11 @@ void ECS::updateComponents() {
 
 // Zero sized components
 
-Component ECS::createFlagComponentType() {
+Component ECS::createFlagType() {
     return createComponentType(0);
 }
 
-void ECS::setFlagComponent(Entity ent, Component flag, bool val) {
+void ECS::setFlag(Entity ent, Component flag, bool val) {
     if (val) {
         setComponent(ent, flag, NULL);
     }
@@ -183,7 +183,7 @@ void ECS::setFlagComponent(Entity ent, Component flag, bool val) {
     }
 }
 
-bool ECS::getFlagComponent(Entity ent, Component flag) {
+bool ECS::getFlag(Entity ent, Component flag) {
     return getComponent(ent, flag);
 }
 

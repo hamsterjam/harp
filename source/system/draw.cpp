@@ -15,7 +15,7 @@ void system_draw() {
         Entity e = *it;
 
         // If it is hidden, do nothing
-        if (harp->getFlagComponent(e, comp_hidden)) continue;
+        if (harp->getFlag(e, flag_hidden)) continue;
 
         auto& pos  = * (Vector<2, double>*) harp->getComponent(e, comp_position);
         auto& spec = * (VisualSpec*) harp->getComponent(e, comp_visual);

@@ -35,7 +35,7 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     spec.addText(font, inputBuffer, 3, 3-2);
     harp->setComponent(id, comp_visual, &spec);
 
-    harp->setFlagComponent(id, comp_hidden, true);
+    harp->setFlag(id, flag_hidden, true);
 }
 
 Console::~Console() {
@@ -45,7 +45,7 @@ Console::~Console() {
 
 void Console::toggle() {
     open = !open;
-    if (open) harp->setFlagComponent(id, comp_hidden, false);
+    if (open) harp->setFlag(id, flag_hidden, false);
 }
 
 void Console::update() {
@@ -62,6 +62,6 @@ void Console::update() {
     if (dot(vel, vel) < 0.1) {
         pos = tarPos;
         vel = zeroVector<2, double>();
-        if (!open) harp->setFlagComponent(id, comp_hidden, true);
+        if (!open) harp->setFlag(id, flag_hidden, true);
     }
 }

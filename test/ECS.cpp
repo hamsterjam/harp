@@ -185,17 +185,17 @@ int main() {
 
     // Zero sized components
     {
-        Component flag = ecs.createFlagComponentType();
+        Component flag = ecs.createFlagType();
 
-        ecs.setFlagComponent(ent1, flag, true);
+        ecs.setFlag(ent1, flag, true);
         ecs.updateComponents();
 
-        assert(ecs.getFlagComponent(ent1, flag));
+        assert(ecs.getFlag(ent1, flag));
 
-        ecs.setFlagComponent(ent1, flag, false);
+        ecs.setFlag(ent1, flag, false);
         ecs.updateComponents();
 
-        assert(!ecs.getFlagComponent(ent1, flag));
+        assert(!ecs.getFlag(ent1, flag));
     }
 
     // Could probably be more exhaustive, but that's enough I think.
