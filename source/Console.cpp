@@ -16,7 +16,7 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     const char* testString = "The quick brown fox jumps over the lazy dog.";
     memcpy(inputBuffer, testString, sizeof(char) * 45);
 
-    open = true;
+    open = false;
 
     // ECS stuff
     id = harp->createEntity();
@@ -43,6 +43,7 @@ Console::~Console() {
 
 void Console::toggle() {
     open = !open;
+    if (open) harp->setFlagComponent(id, comp_hidden, false);
 }
 
 void Console::update() {
@@ -59,5 +60,6 @@ void Console::update() {
     if (dot(vel, vel) < 0.1) {
         pos = tarPos;
         vel = zeroVector<2, double>();
+        if (!open) harp->setFlagComponent(id, comp_hidden, true);
     }
 }

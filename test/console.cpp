@@ -36,6 +36,7 @@ void init() {
     consoleFont = new FontRenderer(fontAtlas, ' ', '~');
 
     console = new Console(*consolePrim, *consoleFont);
+    console->toggle();
 
     harp->updateComponents();
 }
