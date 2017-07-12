@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
         FontRenderer testFont(fontAtlas, ' ', '~');
 
         testFont.drawGlyph('?', 300, 300);
-        testFont.drawString("Princess Luna sees your PROGRESS!", 132, 132);
+        testFont.drawText("Princess Luna sees your PROGRESS!", 132, 132);
 
         // Testing primitives
         PrimitiveRenderer prim;

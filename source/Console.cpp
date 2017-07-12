@@ -11,10 +11,7 @@
 #include <globals.h>
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
-    inputBuffer = (char*) malloc(sizeof(char) * 80);
-
-    const char* testString = "The quick brown fox jumps over the lazy dog.";
-    memcpy(inputBuffer, testString, sizeof(char) * 45);
+    inputBuffer = "The quick brown fox jumps over the lazy dog.";
 
     open = false;
 
@@ -40,7 +37,6 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 
 Console::~Console() {
     harp->deleteEntity(id);
-    free(inputBuffer);
 }
 
 void Console::toggle() {

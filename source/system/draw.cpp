@@ -44,7 +44,7 @@ void system_draw() {
                 case (DrawType::GLYPH):
                     ele.font->drawGlyph(*ele.glyph, pos[0]+ele.p1, pos[1]+ele.p2);
                 case (DrawType::TEXT):
-                    ele.font->drawString(ele.text, pos[0]+ele.p1, pos[1]+ele.p2);
+                    ele.font->drawText(*ele.text, pos[0]+ele.p1, pos[1]+ele.p2);
                     break;
                 default:
                     break;

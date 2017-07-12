@@ -2,6 +2,7 @@
 #define HARP_FONT_MANAGER_H
 
 #include <map>
+#include <string>
 
 class TextureAtlas;
 class Sprite;
@@ -23,7 +24,7 @@ class FontRenderer {
 
         ~FontRenderer();
 
-        void drawString(char* string, float x, float y);
+        void drawText(std::string text, float x, float y);
         void drawGlyph(char glyph, float x, float y);
 };
 

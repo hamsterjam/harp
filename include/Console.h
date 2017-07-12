@@ -1,6 +1,8 @@
 #ifndef HARP_CONSOLE_H
 #define HARP_CONSOLE_H
 
+#include <string>
+
 #include <ECS.h>
 #include <graphics/VisualSpec.h>
 
@@ -10,7 +12,7 @@ class FontRenderer;
 class Console {
     private:
         Entity id;
-        char* inputBuffer;
+        std::string inputBuffer;
         VisualSpec spec;
 
         bool open;

@@ -2,6 +2,7 @@
 #define HARP_VISUAL_SPEC_H
 
 #include <vector>
+#include <string>
 #include <graphics/Color.h>
 
 class Shader;
@@ -49,7 +50,7 @@ class VisualSpec {
             // Text
             FontRenderer* font;
             char* glyph;
-            char* text;
+            std::string* text;
         };
 
         std::vector<ElementSpec>::iterator begin();
@@ -78,7 +79,7 @@ class VisualSpec {
         void addLine(PrimitiveRenderer& prim, float x1, float y1, float x2, float y2, float lineWidth, Color color);
 
         void addGlyph(FontRenderer& font, char& glyph, float dx, float dy);
-        void addText(FontRenderer& font, char* text, float dx, float dy);
+        void addText(FontRenderer& font, std::string& text, float dx, float dy);
 };
 
 #endif

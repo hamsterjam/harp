@@ -1,4 +1,5 @@
 #include <map>
+#include <string>
 #include <utility>
 
 #include <globals.h>
@@ -43,9 +44,20 @@ FontRenderer::~FontRenderer() {
     }
 }
 
-void FontRenderer::drawString(char* string, float x, float y) {
+void FontRenderer::drawText(std::string text, float x, float y) {
+    /*
+     * This is the old C string version
+     *
     for (int i = 0; string[i] != 0; ++i) {
         Sprite* currSprite = spriteMap[string[i]];
+        shd->batchQueue(*currSprite, x, y);
+        x += (float) currSprite->getWidth();
+    }
+    shd->batchDraw();
+    */
+    for (auto it = text.begin(); it != text.end(); ++it) {
+        char nextGlyph = *it;
+        Sprite* currSprite = spriteMap[nextGlyph];
         shd->batchQueue(*currSprite, x, y);
         x += (float) currSprite->getWidth();
     }

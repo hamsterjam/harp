@@ -1,3 +1,5 @@
+#include <string>
+
 #include <graphics/VisualSpec.h>
 #include <graphics/PrimitiveRenderer.h>
 #include <graphics/FontRenderer.h>
@@ -115,14 +117,14 @@ void VisualSpec::addGlyph(FontRenderer& font, char& glyph, float dx, float dy) {
     elements.push_back(spec);
 }
 
-void VisualSpec::addText(FontRenderer& font, char* text, float dx, float dy) {
+void VisualSpec::addText(FontRenderer& font, std::string& text, float dx, float dy) {
     ElementSpec spec;
 
     spec.type = DrawType::TEXT;
     spec.p1   = dx;
     spec.p2   = dy;
     spec.font = &font;
-    spec.text = text;
+    spec.text = &text;
 
     elements.push_back(spec);
 }
