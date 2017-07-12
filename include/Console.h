@@ -27,6 +27,7 @@ class Console {
         void append(std::string text);
         void backspace();
 
+        void clear();
         void process();
 };
 

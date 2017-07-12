@@ -71,7 +71,11 @@ void Console::backspace() {
     inputBuffer.pop_back();
 }
 
+void Console::clear() {
+    inputBuffer = "";
+}
+
 void Console::process() {
     // Just delete the string for now
-    inputBuffer = "";
+    clear();
 }
