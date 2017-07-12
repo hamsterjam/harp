@@ -15,6 +15,7 @@ extern Component comp_position;
 extern Component comp_velocity;
 extern Component comp_acceleration;
 
+extern Component comp_hidden;
 extern Component comp_sprite;
 extern Component comp_visual;
 

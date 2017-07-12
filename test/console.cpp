@@ -9,19 +9,18 @@
 #include <globals.h>
 #include <graphics/Texture.h>
 
-#include <system/draw.h>
+#include <systems.h>
 #include <Console.h>
 #include <graphics/TextureAtlas.h>
 #include <graphics/FontRenderer.h>
 #include <graphics/PrimitiveRenderer.h>
-
-#include <harpMath.h>
 
 using namespace std;
 
 const unsigned int FRAME_RATE = 60;
 
 static bool shouldExit = false;
+static bool consoleMode = true;
 
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
@@ -42,6 +41,10 @@ void init() {
 }
 
 void update(unsigned int deltaT) {
+    console->update();
+    system_kinematics(deltaT);
+
+    harp->updateComponents();
 }
 
 void draw() {

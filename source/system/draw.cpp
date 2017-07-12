@@ -1,4 +1,4 @@
-#include <system/draw.h>
+#include <systems.h>
 
 #include <ECS.h>
 #include <harpMath.h>
@@ -13,6 +13,10 @@
 void system_draw() {
     for (auto it = harp->begin({comp_position, comp_visual}); it != harp->end(); ++it) {
         Entity e = *it;
+
+        // If it is hidden, do nothing
+        if (harp->getFlagComponent(e, comp_hidden)) continue;
+
         auto& pos  = * (Vector<2, double>*) harp->getComponent(e, comp_position);
         auto& spec = * (VisualSpec*) harp->getComponent(e, comp_visual);
 

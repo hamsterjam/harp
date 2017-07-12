@@ -13,9 +13,14 @@ class Console {
         char* inputBuffer;
         VisualSpec spec;
 
+        bool open;
+
     public:
         Console(PrimitiveRenderer& prim, FontRenderer& font);
         ~Console();
+
+        void toggle();
+        void update();
 };
 
 #endif

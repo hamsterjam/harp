@@ -13,6 +13,7 @@ void initGlobals() {
     comp_velocity     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
 
+    comp_hidden = harp->createFlagComponentType();
     comp_sprite = harp->createComponentType(sizeof(Sprite*));
     comp_visual = harp->createComponentType(sizeof(VisualSpec));
 
@@ -33,6 +34,7 @@ Component comp_position = 0;
 Component comp_velocity = 0;
 Component comp_acceleration = 0;
 
+Component comp_hidden = 0;
 Component comp_sprite = 0;
 Component comp_visual = 0;
 
