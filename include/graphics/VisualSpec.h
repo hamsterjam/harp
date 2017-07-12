@@ -4,6 +4,7 @@
 #include <vector>
 #include <graphics/Color.h>
 
+class Shader;
 class Sprite;
 class PrimitiveRenderer;
 class FontRenderer;
@@ -35,6 +36,7 @@ class VisualSpec {
             float p1, p2, p3, p4, p5, p6, p7;
 
             // Sprite
+            Shader* shd;
             Sprite* spr;
 
             // Primitives
@@ -44,13 +46,13 @@ class VisualSpec {
             // Text
             FontRenderer* font;
             char* glyph;
-            const char* text;
+            char* text;
         };
 
         std::vector<ElementSpec>::iterator begin();
         std::vector<ElementSpec>::iterator end();
 
-        void addSprite(Sprite& spr, float dx, float dy);
+        void addSprite(Shader& shd, Sprite& spr, float dx, float dy);
 
         void addRectangle(PrimitiveRenderer& prim, float dx, float dy, float w, float h, float lineWidth, Color color);
         void addRoundedRectangle(PrimitiveRenderer& prim, float dx, float dy, float w, float h, float r, float lineWidth, Color color);
@@ -59,7 +61,7 @@ class VisualSpec {
         void addLine(PrimitiveRenderer& prim, float x1, float y1, float x2, float y2, float lineWidth, Color color);
 
         void addGlyph(FontRenderer& font, char& glyph, float dx, float dy);
-        void addText(FontRenderer& font, const char* text, float dx, float dy);
+        void addText(FontRenderer& font, char* text, float dx, float dy);
 };
 
 #endif

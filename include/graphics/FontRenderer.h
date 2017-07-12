@@ -23,7 +23,7 @@ class FontRenderer {
 
         ~FontRenderer();
 
-        void drawString(const char* string, float x, float y);
+        void drawString(char* string, float x, float y);
         void drawGlyph(char glyph, float x, float y);
 };
 

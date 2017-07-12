@@ -43,7 +43,7 @@ FontRenderer::~FontRenderer() {
     }
 }
 
-void FontRenderer::drawString(const char* string, float x, float y) {
+void FontRenderer::drawString(char* string, float x, float y) {
     for (int i = 0; string[i] != 0; ++i) {
         Sprite* currSprite = spriteMap[string[i]];
         shd->batchQueue(*currSprite, x, y);
