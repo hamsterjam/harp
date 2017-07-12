@@ -11,6 +11,8 @@ std::vector<VisualSpec::ElementSpec>::iterator VisualSpec::end() {
     return elements.end();
 }
 
+// These are the most general form of the shape in question
+
 void VisualSpec::addSprite(Shader& shd, Sprite& spr, float dx, float dy) {
     ElementSpec spec;
 
@@ -54,7 +56,7 @@ void VisualSpec::addRoundedRectangle(PrimitiveRenderer& prim, float dx, float dy
     elements.push_back(spec);
 }
 
-void VisualSpec::addElipse(PrimitiveRenderer& prim, float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
+void VisualSpec::addElipseArc(PrimitiveRenderer& prim, float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
     ElementSpec spec;
 
     spec.type  = DrawType::ELIPSE;
@@ -123,4 +125,44 @@ void VisualSpec::addText(FontRenderer& font, char* text, float dx, float dy) {
     spec.text = text;
 
     elements.push_back(spec);
+}
+
+// These functions that call the more general versions
+
+// Rectangles
+void VisualSpec::addRectangleFill(PrimitiveRenderer& prim, float dx, float dy, float w, float h, Color color) {
+    addRectangle(prim, dx, dy, w, h, 0, color);
+}
+void VisualSpec::addRoundedRectangleFill(PrimitiveRenderer& prim, float dx, float dy, float w, float h, float r, Color color) {
+    addRoundedRectangle(prim, dx, dy, w, h, r, 0, color);
+}
+
+// Circles
+void VisualSpec::addCircleFill(PrimitiveRenderer& prim, float dx, float dy, float r, Color color) {
+    addElipseArc(prim, dx, dy, r, r, 0, 360, 0, color);
+}
+void VisualSpec::addCircle(PrimitiveRenderer& prim, float dx, float dy, float r, float lineWidth, Color color) {
+    addElipseArc(prim, dx, dy, r, r, 0, 360, lineWidth, color);
+}
+void VisualSpec::addSegment(PrimitiveRenderer& prim, float dx, float dy, float r, float theta1, float theta2, Color color) {
+    addElipseArc(prim, dx, dy, r, r, theta1, theta2, 0, color);
+}
+void VisualSpec::addArc(PrimitiveRenderer& prim, float dx, float dy, float r, float theta1, float theta2, float lineWidth, Color color) {
+    addElipseArc(prim, dx, dy, r, r, theta1, theta2, lineWidth, color);
+}
+
+// Elipses
+void VisualSpec::addElipseFill(PrimitiveRenderer& prim, float dx, float dy, float rx, float ry, Color color) {
+    addElipseArc(prim, dx, dy, rx, ry, 0, 360, 0, color);
+}
+void VisualSpec::addElipse(PrimitiveRenderer& prim, float dx, float dy, float rx, float ry, float lineWidth, Color color) {
+    addElipseArc(prim, dx, dy, rx, ry, 0, 360, lineWidth, color);
+}
+void VisualSpec::addElipseSegment(PrimitiveRenderer& prim, float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
+    addElipseArc(prim, dx, dy, rx, ry, theta1, theta2, 0, color);
+}
+
+// Triangles
+void VisualSpec::addTriangleFill(PrimitiveRenderer& prim, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
+    addTriangle(prim, x1, y1, x2, y2, x3, y3, 0, color);
 }

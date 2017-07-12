@@ -14,8 +14,8 @@
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     inputBuffer = (char*) malloc(sizeof(char) * 80);
 
-    const char* testString = "Princess Luna proclaims independence!";
-    memcpy(inputBuffer, testString, sizeof(char) * 38);
+    const char* testString = "The quick brown fox jumps over the lazy dog.";
+    memcpy(inputBuffer, testString, sizeof(char) * 45);
 
     // ECS stuff
     id = harp->createEntity();
@@ -23,8 +23,8 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 
     harp->setComponent(id, comp_position, &pos);
 
-    Color hist  = rgbaToColor(0.15, 0.15, 0.15, 0.9);
-    Color input = rgbaToColor(0.20, 0.20, 0.20, 0.9);
+    Color hist  = rgbaToColor(0.05, 0.05, 0.05, 0.9);
+    Color input = rgbaToColor(0.10, 0.10, 0.15, 0.9);
 
     spec.addRectangle(prim, 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT - 50, 0, hist);
     spec.addRectangle(prim, 0, 50-16, SCREEN_WIDTH, 16,  0, input);
