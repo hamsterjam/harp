@@ -34,6 +34,8 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     spec.addRectangle(prim, 0, 0, SCREEN_WIDTH, 16,  0, input);
     spec.addText(font, inputBuffer, 3, 3-2);
     harp->setComponent(id, comp_visual, &spec);
+
+    harp->setFlagComponent(id, comp_hidden, true);
 }
 
 Console::~Console() {
