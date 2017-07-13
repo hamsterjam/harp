@@ -25,7 +25,6 @@ enum GameMode {
 
 const unsigned int FRAME_RATE = 60;
 
-static bool shouldExit = false;
 static GameMode mode = GAME;
 
 static SDL_Window *window = NULL;

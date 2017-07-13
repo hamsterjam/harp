@@ -33,8 +33,6 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     harp->setComponent(id, comp_visual, &spec);
 
     harp->setFlag(id, flag_hidden, true);
-
-    harp->updateComponents();
 }
 
 Console::~Console() {
@@ -78,6 +76,8 @@ void Console::clear() {
 }
 
 void Console::process() {
-    // Just delete the string for now
+    if (inputBuffer == "exit") {
+        shouldExit = true;
+    }
     clear();
 }

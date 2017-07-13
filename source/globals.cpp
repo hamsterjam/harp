@@ -15,10 +15,9 @@ void initGlobals() {
     comp_position     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_velocity     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
-
-    flag_hidden = harp->createFlagType();
-    comp_sprite = harp->createComponentType(sizeof(Sprite*));
-    comp_visual = harp->createComponentType(sizeof(VisualSpec));
+    flag_hidden       = harp->createFlagType();
+    comp_sprite       = harp->createComponentType(sizeof(Sprite*));
+    comp_visual       = harp->createComponentType(sizeof(VisualSpec));
 
     defaultShader = new Shader();
     defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);
@@ -28,7 +27,6 @@ void initGlobals() {
     consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
 
     console = new Console(*defaultPrim, *consoleFont);
-
 }
 
 void cleanupGlobals() {
@@ -63,3 +61,5 @@ FontRenderer*      consoleFont = 0;
 
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 480;
+
+bool shouldExit = false;
