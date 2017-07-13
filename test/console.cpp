@@ -12,9 +12,6 @@
 
 #include <systems.h>
 #include <Console.h>
-#include <graphics/TextureAtlas.h>
-#include <graphics/FontRenderer.h>
-#include <graphics/PrimitiveRenderer.h>
 
 using namespace std;
 

@@ -20,8 +20,6 @@ using namespace std;
 
 const unsigned int FRAME_RATE = 60;
 
-static bool shouldExit = false;
-
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
