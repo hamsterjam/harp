@@ -17,7 +17,6 @@ extern ECS* harp;
 extern Component comp_position;
 extern Component comp_velocity;
 extern Component comp_acceleration;
-
 extern Component flag_hidden;
 extern Component comp_sprite;
 extern Component comp_visual;
