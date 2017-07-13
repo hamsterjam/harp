@@ -31,19 +31,31 @@ static GameMode mode = GAME;
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
-PrimitiveRenderer* consolePrim;
-FontRenderer* consoleFont;
-Console* console;
-
 void init() {
     initGlobals();
-    TextureAtlas fontAtlas("res/testfont.png", 8, 12, 0, 0);
-    consolePrim = new PrimitiveRenderer();
-    consoleFont = new FontRenderer(fontAtlas, ' ', '~');
+}
 
-    console = new Console(*consolePrim, *consoleFont);
+void update(unsigned int deltaT) {
+    console->update();
+    system_kinematics(deltaT);
 
     harp->updateComponents();
+}
+
+void draw() {
+    SDL_GL_MakeCurrent(window, gl_context);
+
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    system_draw();
+
+    SDL_GL_SwapWindow(window);
+}
+
+void cleanup() {
+    destroyTextures();
+    cleanupGlobals();
 }
 
 void gameModeEvent(SDL_Event e);
@@ -113,33 +125,6 @@ void consoleModeEvent(SDL_Event e) {
             console->append(e.text.text);
             break;
     }
-}
-
-void update(unsigned int deltaT) {
-    console->update();
-    system_kinematics(deltaT);
-
-    harp->updateComponents();
-}
-
-void draw() {
-    SDL_GL_MakeCurrent(window, gl_context);
-
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    system_draw();
-
-    SDL_GL_SwapWindow(window);
-}
-
-void cleanup() {
-    delete consoleFont;
-    delete consolePrim;
-    delete console;
-
-    destroyTextures();
-    cleanupGlobals();
 }
 
 int main(int argc, char** argv) {

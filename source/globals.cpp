@@ -1,9 +1,12 @@
 #include <globals.h>
 #include <ECS.h>
+#include <Console.h>
 #include <harpMath.h>
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
+#include <graphics/TextureAtlas.h>
 #include <graphics/PrimitiveRenderer.h>
+#include <graphics/FontRenderer.h>
 #include <graphics/VisualSpec.h>
 
 void initGlobals() {
@@ -19,10 +22,22 @@ void initGlobals() {
 
     defaultShader = new Shader();
     defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);
+
+    defaultPrim = new PrimitiveRenderer();
+    TextureAtlas consoleFontAtlas("res/testfont.png", 8, 12, 0, 0);
+    consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
+
+    console = new Console(*defaultPrim, *consoleFont);
+
 }
 
 void cleanupGlobals() {
+    delete console;
+
     delete harp;
+
+    delete defaultPrim;
+    delete consoleFont;
 
     delete defaultShader;
     delete defaultPrimitiveShader;
@@ -38,8 +53,13 @@ Component flag_hidden = 0;
 Component comp_sprite = 0;
 Component comp_visual = 0;
 
+Console* console = 0;
+
 Shader* defaultShader = 0;
 Shader* defaultPrimitiveShader = 0;
+
+PrimitiveRenderer* defaultPrim = 0;
+FontRenderer*      consoleFont = 0;
 
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 480;

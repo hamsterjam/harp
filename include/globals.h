@@ -4,7 +4,10 @@
 #include <ECS.h> // For Component typedef
 
 class ECS;
+class Console;
 class Shader;
+class PrimitiveRenderer;
+class FontRenderer;
 
 void initGlobals();
 void cleanupGlobals();
@@ -19,8 +22,13 @@ extern Component flag_hidden;
 extern Component comp_sprite;
 extern Component comp_visual;
 
+extern Console* console;
+
 extern Shader* defaultShader;
 extern Shader* defaultPrimitiveShader;
+
+extern PrimitiveRenderer* defaultPrim;
+extern FontRenderer*      consoleFont;
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;

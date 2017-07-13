@@ -33,6 +33,8 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     harp->setComponent(id, comp_visual, &spec);
 
     harp->setFlag(id, flag_hidden, true);
+
+    harp->updateComponents();
 }
 
 Console::~Console() {
