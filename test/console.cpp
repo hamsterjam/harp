@@ -33,6 +33,7 @@ static SDL_GLContext gl_context;
 
 void init() {
     initGlobals();
+    harp->updateComponents();
 }
 
 void update(unsigned int deltaT) {
@@ -140,6 +141,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    // Apparently SDL inits with text input active, We don't want that
+    SDL_StopTextInput();
     window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 
     gl_context = SDL_GL_CreateContext(window);
