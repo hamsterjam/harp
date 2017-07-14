@@ -38,10 +38,10 @@ class Console {
         void update();
 
         void log(std::string message);
+        void process();
 
         void appendToInput(std::string text);
         void backspace();
-        void process();
 };
 
 #endif
