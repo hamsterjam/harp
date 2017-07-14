@@ -13,6 +13,10 @@
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     inputBuffer = "";
 
+    for (int i = 0; i < logLines; ++i) {
+        logBuffer[i] = "";
+    }
+
     open = false;
 
     // ECS stuff
@@ -27,9 +31,12 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     Color hist  = rgbaToColor(0.06, 0.06, 0.04, 0.9);
     Color input = rgbaToColor(0.10, 0.10, 0.15, 0.9);
 
-    spec.addRectangle(prim, 0, 16, SCREEN_WIDTH, SCREEN_HEIGHT - 50, 0, hist);
+    spec.addRectangle(prim, 0, 16, SCREEN_WIDTH, logLines*12 + 2, 0, hist);
     spec.addRectangle(prim, 0, 0, SCREEN_WIDTH, 16,  0, input);
     spec.addText(font, inputBuffer, 3, 3-2);
+    for (int i = 0; i < logLines; ++i) {
+        spec.addText(font, logBuffer[i], 3, 16 + 12*i);
+    }
     harp->setComponent(id, comp_visual, &spec);
 
     harp->setFlag(id, flag_hidden, true);
@@ -49,7 +56,7 @@ void Console::update() {
     auto& vel = * (Vector<2, double>*) harp->getComponent(id, comp_velocity);
 
     auto tarPos = zeroVector<2, double>();
-    tarPos[1] = (open) ? 50 : SCREEN_HEIGHT;
+    tarPos[1] = (open) ? SCREEN_HEIGHT - (logLines*12 + 2) - 16 : SCREEN_HEIGHT;
 
     if (tarPos == pos) return;
 
@@ -62,7 +69,15 @@ void Console::update() {
     }
 }
 
-void Console::append(std::string text) {
+void Console::log(std::string message) {
+    for (int i = logLines-2; i>= 0; --i) {
+        logBuffer[i+1] = logBuffer[i];
+    }
+
+    logBuffer[0] = message;
+}
+
+void Console::appendToInput(std::string text) {
     inputBuffer += text;
 }
 
@@ -71,13 +86,10 @@ void Console::backspace() {
     inputBuffer.pop_back();
 }
 
-void Console::clear() {
-    inputBuffer = "";
-}
-
 void Console::process() {
     if (inputBuffer == "exit") {
         shouldExit = true;
     }
-    clear();
+    log(inputBuffer);
+    inputBuffer = "";
 }

@@ -19,10 +19,13 @@
 class PrimitiveRenderer;
 class FontRenderer;
 
+const unsigned int logLines = 35;
+
 class Console {
     private:
         Entity id;
         std::string inputBuffer;
+        std::string logBuffer[logLines];
         VisualSpec spec;
 
         bool open;
@@ -34,10 +37,10 @@ class Console {
         void toggle();
         void update();
 
-        void append(std::string text);
-        void backspace();
+        void log(std::string message);
 
-        void clear();
+        void appendToInput(std::string text);
+        void backspace();
         void process();
 };
 

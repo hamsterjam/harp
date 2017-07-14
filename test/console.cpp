@@ -119,7 +119,7 @@ void consoleModeEvent(SDL_Event e) {
             break;
 
         case SDL_TEXTINPUT:
-            console->append(e.text.text);
+            console->appendToInput(e.text.text);
             break;
     }
 }
