@@ -24,7 +24,7 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     Vector<2, double> vel = zeroVector<2, double>();
     harp->setComponent(id, comp_velocity, &vel);
 
-    Color hist  = rgbaToColor(0.06, 0.06, 0.05, 0.9);
+    Color hist  = rgbaToColor(0.06, 0.06, 0.04, 0.9);
     Color input = rgbaToColor(0.10, 0.10, 0.15, 0.9);
 
     spec.addRectangle(prim, 0, 16, SCREEN_WIDTH, SCREEN_HEIGHT - 50, 0, hist);

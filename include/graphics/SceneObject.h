@@ -1,3 +1,15 @@
+/*
+ * HARP
+ * graphics/SceneObject.h
+ *
+ * This is a wrapper on a Uniform Buffer Object. It is supposed to be a nicer
+ * way to set the uniforms in your shader program without having to interface
+ * with OpenGL directly every time
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_SCENE_OBJECT_H
 #define HARP_SCENE_OBJECT_H
 

@@ -1,8 +1,21 @@
+/*
+ * HARP
+ * graphics/FontRenderer.h
+ *
+ * This is a class that stores a Sprite for each glyph in a font as well as a
+ * Shader to draw those glyphs. It allows you to pass a string to it and it
+ * will batch draw the glyphs with the proper order and spacing.
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_FONT_MANAGER_H
 #define HARP_FONT_MANAGER_H
 
 #include <map>
 #include <string>
+
 
 class TextureAtlas;
 class Sprite;

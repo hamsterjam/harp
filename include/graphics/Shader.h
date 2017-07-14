@@ -1,3 +1,22 @@
+/*
+ * HARP
+ * graphics/Shader.h
+ *
+ * This is a wrapper on an OpenGL shader program. For the various draw
+ * functions to work correctly a few uniforms and attributes are required in
+ * your shader program sources. They are as follows:
+ *
+ * Vertex Shader:
+ *     attribute vec2 aVertPos
+ *     attribute vec2 aTexCoord
+ *
+ * Fragment Shader:
+ *     uniform sampler2D uTexture
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_SHADER_H
 #define HARP_SHADER_H
 
@@ -8,7 +27,6 @@
 
 class Sprite;
 class SceneObject;
-
 
 class Shader {
     private:

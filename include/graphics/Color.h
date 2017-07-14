@@ -1,3 +1,14 @@
+/*
+ * HARP
+ * graphics/Color.h
+ *
+ * This is just a simple struct to represent a colour as well as some functions
+ * to build it based on common color spaces
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_COLOR_H
 #define HARP_COLOR_H
 

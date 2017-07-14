@@ -1,3 +1,17 @@
+/*
+ * HARP
+ * graphics/Sprite.h
+ *
+ * This is the abstraction of a image that items will actually draw to the
+ * screen. It contains a set of Texture Specifiers that each store a pointer to
+ * a Texture and some UV coordinates so you can crop it to a subimage. A Sprite
+ * can hold multiple of these as a Shader could have multiple samplers per
+ * draw. It also contains a SceneObject so you can set uniforms from here also.
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_SPRITE_H
 #define HARP_SPRITE_H
 

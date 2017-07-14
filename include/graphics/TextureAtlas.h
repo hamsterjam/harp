@@ -1,3 +1,15 @@
+/*
+ * HARP
+ * graphics/TextureAtlas.h
+ *
+ * This is essentially just a Texture with some extra information that allows
+ * you to automatically make sprites out of a sprite sheet (sometimes called
+ * a texture atlas)
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_TEXTURE_ATLAS_H
 #define HARP_TEXTURE_ATLAS_H
 

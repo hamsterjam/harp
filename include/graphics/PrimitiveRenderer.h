@@ -1,3 +1,38 @@
+/*
+ * HARP
+ * graphics/PrimitiveRenderer.h
+ *
+ * A class for drawing primitives to the screen. This requires a Shader with
+ * more uniforms than defaultShader so it provides its own default Shader. Here
+ * is a list of all the attributes and uniforms you need:
+ *
+ * Vertex Shader:
+ *     attribute vec2 aVertPos
+ *
+ * Fragment Shader:
+ *     uniform allPrims {
+ *         uint uShape
+ *         vec4 uColor
+ *     }
+ *     uniform elipse {
+ *         vec2  uCenter
+ *         float uRadiusX
+ *         float uRadiusY
+ *         float uTheta1
+ *         float uTheta2
+ *         float uLineWidthE
+ *     }
+ *     uniform roundRect {
+ *         vec2  uRoundPoint1
+ *         vec2  uRoundPoint2
+ *         float uRadius
+ *         float uLineWidthRR
+ *     }
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_PRIMITIVE_RENDERER_H
 #define HARP_PRIMITIVE_RENDERER_H
 
