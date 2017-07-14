@@ -90,6 +90,6 @@ void Console::process() {
     if (inputBuffer == "exit") {
         shouldExit = true;
     }
-    log(inputBuffer);
+    log("--> " + inputBuffer);
     inputBuffer = "";
 }
