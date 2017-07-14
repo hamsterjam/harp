@@ -28,16 +28,30 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     Vector<2, double> vel = zeroVector<2, double>();
     harp->setComponent(id, comp_velocity, &vel);
 
-    Color hist  = rgbaToColor(0.06, 0.06, 0.04, 0.9);
-    Color input = rgbaToColor(0.10, 0.10, 0.15, 0.9);
+    auto histColor = rgbaToColor(0.06, 0.06, 0.04, 0.9);
+    auto histSpec  = getRectangleFillSpec(prim, 0, 16, SCREEN_WIDTH, logLines*12 + 2, histColor);
+    harp->setComponent(id, comp_visual, &histSpec);
 
-    spec.addRectangle(prim, 0, 16, SCREEN_WIDTH, logLines*12 + 2, 0, hist);
-    spec.addRectangle(prim, 0, 0, SCREEN_WIDTH, 16,  0, input);
-    spec.addText(font, inputBuffer, 3, 3-2);
+    inputBoxID = harp->createEntity();
+    harp->setComponent(inputBoxID, comp_parent, &id);
+    harp->setComponent(inputBoxID, comp_position, &pos);
+    auto inputColor = rgbaToColor(0.10, 0.10, 0.15, 0.9);
+    auto inputSpec  = getRectangleFillSpec(prim, 0, 0, SCREEN_WIDTH, 16, inputColor);
+    harp->setComponent(inputBoxID, comp_visual, &inputSpec);
+
+    inputID = harp->createEntity();
+    harp->setComponent(inputID, comp_parent, &inputBoxID);
+    harp->setComponent(inputID, comp_position, &pos);
+    auto inputTextSpec = getTextSpec(font, inputBuffer, 3, 3-2);
+    harp->setComponent(inputID, comp_visual, &inputTextSpec);
+
     for (int i = 0; i < logLines; ++i) {
-        spec.addText(font, logBuffer[i], 3, 16 + 12*i);
+        logLineID[i] = harp->createEntity();
+        harp->setComponent(logLineID[i], comp_parent,   &id);
+        harp->setComponent(logLineID[i], comp_position, &pos);
+        auto spec = getTextSpec(font, logBuffer[i], 3, 16 + 12*i);
+        harp->setComponent(logLineID[i], comp_visual, &spec);
     }
-    harp->setComponent(id, comp_visual, &spec);
 
     harp->setFlag(id, flag_hidden, true);
 }

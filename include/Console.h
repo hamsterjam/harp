@@ -24,9 +24,14 @@ const unsigned int logLines = 35;
 class Console {
     private:
         Entity id;
+
+        Entity inputBoxID;
+
+        Entity inputID;
+        Entity logLineID[logLines];
+
         std::string inputBuffer;
         std::string logBuffer[logLines];
-        VisualSpec spec;
 
         bool open;
 

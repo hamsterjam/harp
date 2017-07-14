@@ -12,11 +12,11 @@
 void initGlobals() {
     harp = new ECS(32, 8, 128);
 
+    comp_parent       = harp->createComponentType(sizeof(Entity));
     comp_position     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_velocity     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
     flag_hidden       = harp->createFlagType();
-    comp_sprite       = harp->createComponentType(sizeof(Sprite*));
     comp_visual       = harp->createComponentType(sizeof(VisualSpec));
 
     defaultShader = new Shader();
@@ -43,12 +43,11 @@ void cleanupGlobals() {
 
 ECS* harp = 0;
 
+Component comp_parent = 0;
 Component comp_position = 0;
 Component comp_velocity = 0;
 Component comp_acceleration = 0;
-
 Component flag_hidden = 0;
-Component comp_sprite = 0;
 Component comp_visual = 0;
 
 Console* console = 0;

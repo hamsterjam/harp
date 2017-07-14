@@ -30,12 +30,19 @@ static SDL_GLContext gl_context;
 void init() {
     initGlobals();
     harp->updateComponents();
+
+    system_parent(*harp);
+    harp->updateComponents();
 }
 
 void update(unsigned int deltaT) {
     console->update();
     system_kinematics(*harp, deltaT);
 
+    harp->updateComponents();
+
+    // Parenting needs to be done after everything is updated
+    system_parent(*harp);
     harp->updateComponents();
 }
 
