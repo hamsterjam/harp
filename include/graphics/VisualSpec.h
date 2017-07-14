@@ -2,11 +2,9 @@
  * HARP
  * graphics/VisualSpec.h
  *
- * This is my way of storing a general drawing operation data only in an ECS.
- * The important thing is, because it uses dynamicly allocated memory (this
- * isn't really how an ECS should work... But most things only need a Sprite)
- * it is important that the object that creates it has ownership so that the
- * memory allocated by the vector isn't freed.
+ * This stores all the information you need to make a single draw call from
+ * either a Shader, a PrimitiveRenderer, or a FontRenderer, and packages it all
+ * together so you can store it in an ECS (allowing for a draw system)
  *
  * - Callum Nicholson (hamsterjam)
  *
