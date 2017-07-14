@@ -1,8 +1,50 @@
+/*
+ * HARP
+ * systems.h
+ *
+ * These are the forward declares for functions that act as Systems for the
+ * entity component system.
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_SYSTEM_DRAW_H
 #define HARP_SYSTEM_DRAW_H
 
+/*
+ * This is a function that draws things to the screen. It will not perform any
+ * action with an Entity with flag_hidden set to true.
+ *
+ * Operates on any Entity with:
+ *
+ *     comp_position
+ *     comp_visual
+ *
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
 void system_draw();
 
+/*
+ * This is a function that performs very simple kinematics, that is, it moves
+ * each Entity around based on its velocity and acceleration.
+ *
+ * Operates on any Entity with:
+ *
+ *     comp_position
+ *     comp_velocity
+ *
+ * and any Entity with:
+ *
+ *     comp_velocity
+ *     comp_acceleration
+ *
+ *
+ * - Callum Nicholsons (hamsterjam)
+ *
+ */
 void system_kinematics(unsigned int deltaT);
 
 #endif

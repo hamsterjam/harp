@@ -1,3 +1,13 @@
+/*
+ * HARP
+ * globals.h
+ *
+ * This just defines some global variables, that's all
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_GLOBALS_H
 #define HARP_GLOBALS_H
 

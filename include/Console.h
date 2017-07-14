@@ -1,3 +1,13 @@
+/*
+ * HARP
+ * Console.h
+ *
+ * This is a console like the ones you find in a lot of games when you hit the
+ * back tick (`) key. It doesn't do anything besides a really ghetto exit
+ * function for now.
+ *
+ */
+
 #ifndef HARP_CONSOLE_H
 #define HARP_CONSOLE_H
 

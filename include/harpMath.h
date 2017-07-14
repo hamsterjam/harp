@@ -1,3 +1,31 @@
+/*
+ * HARP
+ * harpMath.h
+ *
+ * This defines 3 useful linear algebra template classes as well as the various
+ * arithemetic operators and standard functions associated with them.
+ *
+ * The classes defined are:
+ *
+ * Vector<N, T>
+ *     a vector (as in a math vector) of dimension N that stores type T. This
+ *     is memory equivalent to an array T[N]
+ *
+ * Matrix<M, N, T>
+ *     a matrix of dimension M*N that stores type T. This is memory equivalent
+ *     to an array in row major order. This is actually equivalent to a
+ *     Vector<M, Vector<N, T>> so it inherits arithematic from Vector
+ *
+ * Quaternion<T>
+ *     a quaternion of type T. This is just a Vector<4, T> with a special
+ *     quaternion multiplication defined. The component order is
+ *     {i, j, k, r} to make it easy to convert between aa Vector<3, T> and the
+ *     quaternion that it represents.
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_MATH_H
 #define HARP_MATH_H
 

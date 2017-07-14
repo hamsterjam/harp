@@ -1,3 +1,20 @@
+/*
+ * HARP
+ * ECS.h
+ *
+ * This is my implementation of an Entity Component System pattern. For each
+ * Entity it assigns enough space to store one of each Component. Because it
+ * assigns space for ALL components, it is probably a good idea to use a
+ * seperate ECS for entities of different functions (for example, you could
+ * have one for UI elements, and one for game elements). Changes are cached (in
+ * a DynamicPoolAllocator) and only actually updated when updateComponents() is
+ * called. This means you can run systems on the data in any order you like and
+ * it should be easy to make thread safe if I want to (which I probably do)
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+
 #ifndef HARP_ECS_H
 #define HARP_ECS_H
 #include <cstddef>
