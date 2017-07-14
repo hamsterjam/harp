@@ -34,7 +34,7 @@ void init() {
 
 void update(unsigned int deltaT) {
     console->update();
-    system_kinematics(deltaT);
+    system_kinematics(*harp, deltaT);
 
     harp->updateComponents();
 }
@@ -45,7 +45,7 @@ void draw() {
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    system_draw();
+    system_draw(*harp);
 
     SDL_GL_SwapWindow(window);
 }

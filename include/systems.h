@@ -12,6 +12,8 @@
 #ifndef HARP_SYSTEM_DRAW_H
 #define HARP_SYSTEM_DRAW_H
 
+class ECS;
+
 /*
  * This is a function that draws things to the screen. It will not perform any
  * action with an Entity with flag_hidden set to true.
@@ -25,7 +27,7 @@
  * - Callum Nicholson (hamsterjam)
  *
  */
-void system_draw();
+void system_draw(ECS& ecs);
 
 /*
  * This is a function that performs very simple kinematics, that is, it moves
@@ -45,6 +47,6 @@ void system_draw();
  * - Callum Nicholsons (hamsterjam)
  *
  */
-void system_kinematics(unsigned int deltaT);
+void system_kinematics(ECS& ecs, unsigned int deltaT);
 
 #endif

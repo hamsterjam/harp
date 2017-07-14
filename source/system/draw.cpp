@@ -10,15 +10,15 @@
 #include <graphics/PrimitiveRenderer.h>
 #include <graphics/FontRenderer.h>
 
-void system_draw() {
-    for (auto it = harp->begin({comp_position, comp_visual}); it != harp->end(); ++it) {
+void system_draw(ECS& ecs) {
+    for (auto it = ecs.begin({comp_position, comp_visual}); it != ecs.end(); ++it) {
         Entity e = *it;
 
         // If it is hidden, do nothing
-        if (harp->getFlag(e, flag_hidden)) continue;
+        if (ecs.getFlag(e, flag_hidden)) continue;
 
-        auto& pos  = * (Vector<2, double>*) harp->getComponent(e, comp_position);
-        auto& spec = * (VisualSpec*) harp->getComponent(e, comp_visual);
+        auto& pos  = * (Vector<2, double>*) ecs.getComponent(e, comp_position);
+        auto& spec = * (VisualSpec*) ecs.getComponent(e, comp_visual);
 
         for (auto jt = spec.begin(); jt != spec.end(); ++jt) {
             auto& ele = *jt;
