@@ -16,7 +16,7 @@ CFLAGS = -std=gnu++11
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
 	CXX = g++
-	LFLAGS = -I$(HEADER_DIR) -I/usr/include/SDL2 `pkg-config --libs sdl2 gl glew`
+	LFLAGS = -I$(HEADER_DIR) -I/usr/include/SDL2 `pkg-config --libs lua sdl2 gl glew`
 else
 	CXX = mingw32-g++
 	LFLAGS = -I$(HEADER_DIR) -Ilibraries/SDL2/include -Ilibraries/glew/include -Llibraries/SDL2/lib/x86 -Llibraries/OpenGL -Llibraries/glew/lib/Release/Win32 -lmingw32 -lSDL2main -lSDL2 -lglew32 -lglu32 -lgdi32 -lopengl32

@@ -13,6 +13,10 @@
 
 #include <string>
 
+extern "C" {
+#include <lua.h>
+}
+
 #include <ECS.h>
 #include <graphics/VisualSpec.h>
 
@@ -34,6 +38,8 @@ class Console {
         std::string logBuffer[logLines];
 
         bool open;
+
+        lua_State* L;
 
     public:
         Console(PrimitiveRenderer& prim, FontRenderer& font);
