@@ -295,7 +295,7 @@ ECS::EntityIterator ECS::EntityIterator::operator++() {
         bool exit = true;
 
         for (Component c: this->comps) {
-            if (!par->hasComp[c][e]) {
+            if (!par->hasComponent(e, c)) {
                 exit = false;
                 break;
             }

@@ -204,17 +204,20 @@ int main() {
         Component intComp = ecs.createComponentType(sizeof(int));
 
         Entity parent = ecs.createEntity();
-        Entity child  = ecs.createEntity();
-        ecs.setParent(child, parent);
+        Entity child1 = ecs.createEntity();
+        Entity child2 = ecs.createEntity();
+        ecs.setParent(child1, parent);
+        ecs.setParent(child2, parent);
 
         int val1 = 5;
         ecs.setComponent(parent, intComp, &val1);
 
         int val2 = 9;
-        ecs.setComponent(child, intComp, &val2);
+        ecs.setComponent(child1, intComp, &val2);
 
         ecs.updateComponents();
 
+        int count = 0;
         for (auto it = ecs.begin({intComp}); it != ecs.end(); ++it) {
             Entity e = *it;
             int parentVal = * (int*) ecs.getComponent(e, intComp);
@@ -223,7 +226,10 @@ int main() {
             assert(parentVal == 5);
             if (childVal != parentVal) assert(childVal == 9);
             else                       assert(childVal == 5);
+
+            ++count;
         }
+        assert(count == 3);
     }
 
     // Could probably be more exhaustive, but that's enough I think.
