@@ -218,7 +218,7 @@ int main() {
         ecs.updateComponents();
 
         int count = 0;
-        for (auto it = ecs.begin({intComp}); it != ecs.end(); ++it) {
+        for (auto it = ecs.beginParented({intComp}); it != ecs.end(); ++it) {
             Entity e = *it;
             int parentVal = * (int*) ecs.getComponent(e, intComp);
             int childVal  = * (int*) ecs.getComponent(e, intComp);

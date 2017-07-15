@@ -239,31 +239,17 @@ bool ECS::getChildFlag(Entity ent, Component flag) {
 //
 
 ECS::EntityIterator ECS::begin(initializer_list<Component> comps) {
-    EntityIterator ret(comps, nextEnt, this);
+    EntityIterator ret(comps, nextEnt, false, this);
+    return ++ret;
+}
 
-    // Iterate through till you find an entity with the right components
-    for (Entity e = 0; e < nextEnt; ++e) {
-
-        bool exit = true;
-
-        for (Component c : ret.comps) {
-            if (!hasComponent(e,c)) {
-                exit = false;
-                break;
-            }
-        }
-
-        if (exit) {
-            ret.ent = e;
-            break;
-        }
-    }
-
-    return ret;
+ECS::EntityIterator ECS::beginParented(initializer_list<Component> comps) {
+    EntityIterator ret(comps, nextEnt, true, this);
+    return ++ret;
 }
 
 ECS::EntityIterator ECS::end() {
-    EntityIterator ret({}, nextEnt, this);
+    EntityIterator ret({}, nextEnt, false, this);
     return ret;
 }
 
@@ -271,10 +257,11 @@ ECS::EntityIterator ECS::end() {
 // EntityIterator
 //
 
-ECS::EntityIterator::EntityIterator(initializer_list<Component> compList, Entity ent, ECS* par):
+ECS::EntityIterator::EntityIterator(initializer_list<Component> compList, Entity ent, bool parented, ECS* par):
     comps(compList)
 {
     this->ent = ent;
+    this->parented = parented;
     this->par = par;
 }
 
@@ -285,17 +272,16 @@ bool ECS::EntityIterator::operator==(EntityIterator rhs) {
 
 ECS::EntityIterator ECS::EntityIterator::operator++() {
     // Just iterate through to find the next one
-    // I know I'm reusing code here, but fuck it
 
-    Entity currEnt = this->ent;
+    Entity checkFrom = (this->ent == par->nextEnt) ? 0 : this->ent + 1;
     this->ent = par->nextEnt;
 
-    for (Entity e = currEnt + 1; e < par->nextEnt; ++e) {
+    for (Entity e = checkFrom; e < par->nextEnt; ++e) {
 
         bool exit = true;
 
         for (Component c: this->comps) {
-            if (!par->hasComponent(e, c)) {
+            if ((parented) ? !par->hasComponent(e, c) : !par->hasComp[c][e]) {
                 exit = false;
                 break;
             }

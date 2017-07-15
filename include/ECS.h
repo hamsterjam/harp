@@ -60,10 +60,12 @@ class ECS {
                 friend class ECS;
 
                 std::vector<Component> comps;
+
                 Entity ent;
-                ECS* par;
+                ECS*   par;
+                bool   parented;
             public:
-                EntityIterator(std::initializer_list<Component> compList, Entity ent, ECS* par);
+                EntityIterator(std::initializer_list<Component> compList, Entity ent, bool parented, ECS* par);
                 bool operator==(EntityIterator rhs);
                 bool operator!=(EntityIterator rhs) {return !((*this)==rhs);}
                 EntityIterator operator++();    // Prefix
@@ -104,6 +106,7 @@ class ECS {
         bool  getChildFlag(Entity ent, Component flag);
 
         EntityIterator begin(std::initializer_list<Component> comps);
+        EntityIterator beginParented(std::initializer_list<Component> comps);
         EntityIterator end();
 };
 
