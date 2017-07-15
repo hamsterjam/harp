@@ -7,6 +7,14 @@
 
 using namespace std;
 
+bool ECS::hasComponent(Entity ent, Component comp) {
+    if (hasComp[comp][ent]) return true;
+
+    // Otherwise go up the parent chain looking for one
+    if (parent[ent] == ent) return false;
+    return hasComponent(parent[ent], comp);
+}
+
 ECS::ECS(unsigned int entVecLength, unsigned int compVecLength, size_t poolSize):
         changePool(poolSize) {
     this->entVecLength  = entVecLength;
@@ -17,18 +25,20 @@ ECS::ECS(unsigned int entVecLength, unsigned int compVecLength, size_t poolSize)
 
     // Allocate arrays
     compSize = (size_t*) malloc(sizeof(size_t) * compVecLength);
-    hasComp = (bool**) malloc(sizeof(bool*) * compVecLength);
-    data = (void**) malloc(sizeof(void*) * compVecLength);
+    hasComp  = (bool**)  malloc(sizeof(bool*)  * compVecLength);
+    parent   = (Entity*) malloc(sizeof(Entity) * entVecLength);
+    data     = (void**)  malloc(sizeof(void*)  * compVecLength);
 
     for (int i=0; i < compVecLength; ++i) {
         hasComp[i] = (bool*) malloc(sizeof(bool) * entVecLength);
     }
 
-    // hasComp will be init'd by createEntity
+    // hasComp will be init'd by createEntity, as will parent
 }
 
 ECS::~ECS() {
     free(compSize);
+    free(parent);
 
     for (int i=0; i < nextComp; ++i) {
         free(hasComp[i]);
@@ -56,6 +66,8 @@ Entity ECS::createEntity() {
     // Resize arrays if we need to
     if (nextEnt >= entVecLength) {
         entVecLength *= 2;
+
+        parent = (Entity*) realloc(parent, sizeof(Entity) * entVecLength);
         for(int i=0; i < nextComp; ++i) {
             hasComp[i] = (bool*) realloc(hasComp[i], sizeof(bool) * entVecLength);
             data[i] = realloc(data[i], compSize[i] * entVecLength);
@@ -67,14 +79,18 @@ Entity ECS::createEntity() {
         hasComp[i][nextEnt] = false;
     }
 
+    // init the parent (to itself)
+    parent[nextEnt] = nextEnt;
+
     return nextEnt++;
 }
 
 void ECS::deleteEntity(Entity ent) {
-    // Just setting it to having no components should be good enough
+    // Just setting it to have no components and no parent
     for (int i=0; i < nextComp; ++i) {
         hasComp[i][ent] = false;
     }
+    parent[ent] = ent;
 
     // Add the entity to the recycle queue
     entRecycleQueue.push(ent);
@@ -129,13 +145,15 @@ void ECS::setComponent(Entity ent, Component comp, void* val) {
 
 void* ECS::getComponent(Entity ent, Component comp) {
     // First thing to do is to check to see if it actually HAS the comp
-    if (!hasComp[comp][ent]) {
+    if (!hasComponent(ent, comp)) {
         return NULL;
     }
+    if (parent[ent] != ent) return getComponent(parent[ent], comp);
+
     size_t size = compSize[comp];
 
     // Cast to char to do clean pointer arithmetic
-    return ((char*) data[comp]) + size * ent;
+    return (char*) data[comp] + size * ent;
 }
 
 void ECS::removeComponent(Entity ent, Component comp) {
@@ -168,7 +186,32 @@ void ECS::updateComponents() {
     changePool.freeAll();
 }
 
-// Zero sized components
+//
+// Parents
+//
+
+void ECS::setParent(Entity ent, Entity par) {
+    parent[ent] = par;
+}
+
+void ECS::removeParent(Entity ent) {
+    parent[ent] = ent;
+}
+
+void* ECS::getChildComponent(Entity ent, Component comp) {
+    // Make sure we check the entry for ent WITHOUT going up the parent chain
+    if (!hasComp[comp][ent]) {
+        return NULL;
+    }
+
+    size_t size = compSize[comp];
+    // Cast to char* to do clean pointer arithmetic!
+    return (char*) data[comp] + size * ent;
+}
+
+//
+// Zero sized components (Flags)
+//
 
 Component ECS::createFlagType() {
     return createComponentType(0);
@@ -200,7 +243,7 @@ ECS::EntityIterator ECS::begin(initializer_list<Component> comps) {
         bool exit = true;
 
         for (Component c : ret.comps) {
-            if (!hasComp[c][e]) {
+            if (!hasComponent(e,c)) {
                 exit = false;
                 break;
             }

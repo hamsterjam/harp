@@ -60,7 +60,7 @@ Console::~Console() {
     harp->deleteEntity(id);
     harp->deleteEntity(inputBoxID);
     harp->deleteEntity(inputID);
-    for (int i = 0; i < logLines: ++i) harp->deleteEntity(logLineID[i]);
+    for (int i = 0; i < logLines; ++i) harp->deleteEntity(logLineID[i]);
 }
 
 void Console::toggle() {

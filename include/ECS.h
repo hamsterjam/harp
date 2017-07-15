@@ -48,8 +48,11 @@ class ECS {
         DynamicPoolAllocator changePool;
 
         std::size_t* compSize;
-        bool** hasComp;
-        void** data;
+        bool**       hasComp;
+        Entity*      parent;
+        void**       data;
+
+        bool hasComponent(Entity ent, Component comp);
 
     public:
         class EntityIterator {
@@ -80,6 +83,14 @@ class ECS {
         void* getComponent(Entity ent, Component comp);
         void  removeComponent(Entity ent, Component comp);
 
+        void  updateComponents();
+
+        // Parents
+
+        void  setParent(Entity ent, Entity par);
+        void  removeParent(Entity ent);
+        void* getChildComponent(Entity ent, Component comp);
+
         // Zero sized components
         //
         // Technically these work by passing in NULL for the value and 0 for the size, but
@@ -88,8 +99,6 @@ class ECS {
         Component createFlagType();
         void setFlag(Entity ent, Component flag, bool val);
         bool getFlag(Entity ent, Component flag);
-
-        void  updateComponents();
 
         EntityIterator begin(std::initializer_list<Component> comps);
         EntityIterator end();

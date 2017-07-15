@@ -44,7 +44,7 @@ int main() {
         // have to cast and dereference yourself, thats all I'm doing
         //
         // While I'm on the subject, it's a good idea to check that it doesn't return null.
-        int output = *((int*) ecs.getComponent(ent1, intComp));
+        int output = * (int*) ecs.getComponent(ent1, intComp);
 
         assert(input == output);
     }
@@ -196,6 +196,34 @@ int main() {
         ecs.updateComponents();
 
         assert(!ecs.getFlag(ent1, flag));
+    }
+
+    // Parents
+    {
+        // A new one so we dont get all the other test ents
+        Component intComp = ecs.createComponentType(sizeof(int));
+
+        Entity parent = ecs.createEntity();
+        Entity child  = ecs.createEntity();
+        ecs.setParent(child, parent);
+
+        int val1 = 5;
+        ecs.setComponent(parent, intComp, &val1);
+
+        int val2 = 9;
+        ecs.setComponent(child, intComp, &val2);
+
+        ecs.updateComponents();
+
+        for (auto it = ecs.begin({intComp}); it != ecs.end(); ++it) {
+            Entity e = *it;
+            int parentVal = * (int*) ecs.getComponent(e, intComp);
+            int childVal  = * (int*) ecs.getComponent(e, intComp);
+
+            assert(parentVal == 5);
+            if (childVal != parentVal) assert(childVal == 9);
+            else                       assert(childVal == 5);
+        }
     }
 
     // Could probably be more exhaustive, but that's enough I think.
