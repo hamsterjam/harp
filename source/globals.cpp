@@ -12,7 +12,6 @@
 void initGlobals() {
     harp = new ECS(32, 8, 128);
 
-    comp_parent       = harp->createComponentType(sizeof(Entity));
     comp_position     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_velocity     = harp->createComponentType(sizeof(Vector<2, double>));
     comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
@@ -43,7 +42,6 @@ void cleanupGlobals() {
 
 ECS* harp = 0;
 
-Component comp_parent = 0;
 Component comp_position = 0;
 Component comp_velocity = 0;
 Component comp_acceleration = 0;

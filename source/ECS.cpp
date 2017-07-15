@@ -148,7 +148,10 @@ void* ECS::getComponent(Entity ent, Component comp) {
     if (!hasComponent(ent, comp)) {
         return NULL;
     }
-    if (parent[ent] != ent) return getComponent(parent[ent], comp);
+    if (parent[ent] != ent) {
+        void* ret = getComponent(parent[ent], comp);
+        if (ret) return ret;
+    }
 
     size_t size = compSize[comp];
 

@@ -11,14 +11,19 @@
 #include <graphics/FontRenderer.h>
 
 void system_draw(ECS& ecs) {
-    for (auto it = ecs.begin({comp_position, comp_visual}); it != ecs.end(); ++it) {
+    for (auto it = ecs.beginParented({comp_position, comp_visual}); it != ecs.end(); ++it) {
         Entity e = *it;
 
         // If it is hidden, do nothing
         if (ecs.getFlag(e, flag_hidden)) continue;
 
+        // Use the local visual spec, (but position is inherited)
+        void* s = ecs.getChildComponent(e, comp_visual);
+        if (!s) continue;
+
+        auto& spec = * (VisualSpec*) s;
+
         auto& pos  = * (Vector<2, double>*) ecs.getComponent(e, comp_position);
-        auto& spec = * (VisualSpec*) ecs.getComponent(e, comp_visual);
 
         switch (spec.type) {
             case (DrawType::SPRITE):

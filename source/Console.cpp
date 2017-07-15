@@ -33,22 +33,19 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     harp->setComponent(id, comp_visual, &histSpec);
 
     inputBoxID = harp->createEntity();
-    harp->setComponent(inputBoxID, comp_parent, &id);
-    harp->setComponent(inputBoxID, comp_position, &pos);
+    harp->setParent(inputBoxID, id);
     auto inputColor = rgbaToColor(0.10, 0.10, 0.15, 0.9);
     auto inputSpec  = getRectangleFillSpec(prim, 0, 0, SCREEN_WIDTH, 16, inputColor);
     harp->setComponent(inputBoxID, comp_visual, &inputSpec);
 
     inputID = harp->createEntity();
-    harp->setComponent(inputID, comp_parent, &inputBoxID);
-    harp->setComponent(inputID, comp_position, &pos);
+    harp->setParent(inputID, id);
     auto inputTextSpec = getTextSpec(font, inputBuffer, 3, 3-2);
     harp->setComponent(inputID, comp_visual, &inputTextSpec);
 
     for (int i = 0; i < logLines; ++i) {
         logLineID[i] = harp->createEntity();
-        harp->setComponent(logLineID[i], comp_parent,   &id);
-        harp->setComponent(logLineID[i], comp_position, &pos);
+        harp->setParent(logLineID[i], id);
         auto spec = getTextSpec(font, logBuffer[i], 3, 16 + 12*i);
         harp->setComponent(logLineID[i], comp_visual, &spec);
     }
@@ -58,6 +55,7 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 
 Console::~Console() {
     harp->deleteEntity(id);
+    harp->deleteEntity(logBoxID);
     harp->deleteEntity(inputBoxID);
     harp->deleteEntity(inputID);
     for (int i = 0; i < logLines; ++i) harp->deleteEntity(logLineID[i]);
