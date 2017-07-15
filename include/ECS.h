@@ -85,12 +85,6 @@ class ECS {
 
         void  updateComponents();
 
-        // Parents
-
-        void  setParent(Entity ent, Entity par);
-        void  removeParent(Entity ent);
-        void* getChildComponent(Entity ent, Component comp);
-
         // Zero sized components
         //
         // Technically these work by passing in NULL for the value and 0 for the size, but
@@ -99,6 +93,15 @@ class ECS {
         Component createFlagType();
         void setFlag(Entity ent, Component flag, bool val);
         bool getFlag(Entity ent, Component flag);
+
+        //
+        // Parents
+        //
+
+        void  setParent(Entity ent, Entity par);
+        void  removeParent(Entity ent);
+        void* getChildComponent(Entity ent, Component comp);
+        bool  getChildFlag(Entity ent, Component flag);
 
         EntityIterator begin(std::initializer_list<Component> comps);
         EntityIterator end();

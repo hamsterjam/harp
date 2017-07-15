@@ -187,6 +187,27 @@ void ECS::updateComponents() {
 }
 
 //
+// Zero sized components (Flags)
+//
+
+Component ECS::createFlagType() {
+    return createComponentType(0);
+}
+
+void ECS::setFlag(Entity ent, Component flag, bool val) {
+    if (val) {
+        setComponent(ent, flag, NULL);
+    }
+    else {
+        removeComponent(ent, flag);
+    }
+}
+
+bool ECS::getFlag(Entity ent, Component flag) {
+    return getComponent(ent, flag);
+}
+
+//
 // Parents
 //
 
@@ -209,25 +230,8 @@ void* ECS::getChildComponent(Entity ent, Component comp) {
     return (char*) data[comp] + size * ent;
 }
 
-//
-// Zero sized components (Flags)
-//
-
-Component ECS::createFlagType() {
-    return createComponentType(0);
-}
-
-void ECS::setFlag(Entity ent, Component flag, bool val) {
-    if (val) {
-        setComponent(ent, flag, NULL);
-    }
-    else {
-        removeComponent(ent, flag);
-    }
-}
-
-bool ECS::getFlag(Entity ent, Component flag) {
-    return getComponent(ent, flag);
+bool ECS::getChildFlag(Entity ent, Component flag) {
+    return getChildComponent(ent, flag);
 }
 
 //
