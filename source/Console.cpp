@@ -17,23 +17,6 @@ extern "C" {
 #include <graphics/VisualSpec.h>
 #include <globals.h>
 
-// Lua functions
-
-static std::string outputBuffer;
-static bool needsLog = false;
-
-static int l_print(lua_State* L) {
-    const char* message = luaL_checkstring(L, 1);
-    outputBuffer = std::string(message);
-    needsLog = true;
-    return 0;
-}
-
-static int l_exit(lua_State* L) {
-    shouldExit = true;
-    return 0;
-}
-
 Console* Console::instance = 0;
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
@@ -77,33 +60,13 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     }
 
     harp->setFlag(id, flag_hidden, true);
-
-    //
-    // Lua
-    //
-    L = luaL_newstate();
-
-    // modules
-    luaopen_base(L);
-    luaopen_coroutine(L);
-    luaopen_table(L);
-    luaopen_string(L);
-    luaopen_math(L);
-
-    // functions
-    lua_pushcfunction(L, l_print);              lua_setglobal(L, "print");
-    lua_pushcfunction(L, l_exit);               lua_setglobal(L, "exit");
 }
 
 Console::~Console() {
-    // ECS
     harp->deleteEntity(id);
     harp->deleteEntity(inputBoxID);
     harp->deleteEntity(inputID);
     for (int i = 0; i < logLines; ++i) harp->deleteEntity(logLineID[i]);
-
-    // Lua
-    lua_close(L);
 }
 
 void Console::init(PrimitiveRenderer& prim, FontRenderer& font) {
@@ -170,9 +133,5 @@ void Console::process() {
         const char* errorMessage = lua_tostring(L, -1);
         log(std::string(errorMessage));
         lua_pop(L, 1);
-    }
-    if (needsLog) {
-        log("<- " + outputBuffer);
-        needsLog = false;
     }
 }

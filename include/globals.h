@@ -11,6 +11,10 @@
 #ifndef HARP_GLOBALS_H
 #define HARP_GLOBALS_H
 
+extern "C" {
+#include <lua.h>
+}
+
 #include <ECS.h> // For Component typedef
 
 class ECS;
@@ -21,6 +25,8 @@ class FontRenderer;
 
 void initGlobals();
 void cleanupGlobals();
+
+extern lua_State* L;
 
 extern ECS* harp;
 
@@ -38,8 +44,8 @@ extern Shader* defaultPrimitiveShader;
 extern PrimitiveRenderer* defaultPrim;
 extern FontRenderer*      consoleFont;
 
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
 
 extern bool shouldExit;
 

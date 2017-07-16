@@ -39,8 +39,6 @@ class Console {
 
         bool open;
 
-        lua_State* L;
-
         Console(PrimitiveRenderer& prim, FontRenderer& font);
         ~Console();
 
