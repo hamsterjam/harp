@@ -22,6 +22,10 @@
  *     {i, j, k, r} to make it easy to convert between aa Vec<3, T> and the
  *     quaternion that it represents.
  *
+ * It's probably worth mentioning that I had to call it Vec instead of Vector
+ * to avoid the name collision with std::vector. God dammit Alex Stepanov, I
+ * blame you for this! Why std::vector is nothing like a vector?!
+ *
  * - Callum Nicholson (hamsterjam)
  *
  */
