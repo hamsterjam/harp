@@ -27,10 +27,10 @@ const unsigned int logLines = 35;
 
 class Console {
     private:
+        static Console* instance;
+
         Entity id;
-
         Entity inputBoxID;
-
         Entity inputID;
         Entity logLineID[logLines];
 
@@ -41,9 +41,16 @@ class Console {
 
         lua_State* L;
 
-    public:
         Console(PrimitiveRenderer& prim, FontRenderer& font);
         ~Console();
+
+    public:
+        static void init(PrimitiveRenderer& prim, FontRenderer& font);
+        static void cleanup();
+        static Console& getInstance();
+
+        Console(Console const&)        = delete;
+        void operator=(Console const&) = delete;
 
         void toggle();
         void update();

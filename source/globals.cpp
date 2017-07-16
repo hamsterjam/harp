@@ -25,11 +25,12 @@ void initGlobals() {
     TextureAtlas consoleFontAtlas("res/testfont.png", 8, 12, 0, 0);
     consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
 
-    console = new Console(*defaultPrim, *consoleFont);
+    Console::init(*defaultPrim, *consoleFont);
+    console = &Console::getInstance();
 }
 
 void cleanupGlobals() {
-    delete console;
+    Console::cleanup();
 
     delete harp;
 

@@ -1,5 +1,6 @@
 #include <Console.h>
 
+#include <cassert>
 #include <string>
 
 extern "C" {
@@ -32,6 +33,8 @@ static int l_exit(lua_State* L) {
     shouldExit = true;
     return 0;
 }
+
+Console* Console::instance = 0;
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     inputBuffer = "";
@@ -101,6 +104,21 @@ Console::~Console() {
 
     // Lua
     lua_close(L);
+}
+
+void Console::init(PrimitiveRenderer& prim, FontRenderer& font) {
+    assert(!instance);
+    instance = new Console(prim, font);
+}
+
+void Console::cleanup() {
+    if (instance) {
+        delete instance;
+    }
+}
+
+Console& Console::getInstance() {
+    return *instance;
 }
 
 void Console::toggle() {
