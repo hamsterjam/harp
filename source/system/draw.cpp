@@ -23,7 +23,7 @@ void system_draw(ECS& ecs) {
 
         auto& spec = * (VisualSpec*) s;
 
-        auto& pos  = * (Vector<2, double>*) ecs.getComponent(e, comp_position);
+        auto& pos  = * (Vec<2, double>*) ecs.getComponent(e, comp_position);
 
         switch (spec.type) {
             case (DrawType::SPRITE):

@@ -81,11 +81,11 @@ int main(int argc, char** argv) {
         assert(resMat2[0][0] ==  76 && resMat2[0][1] == 100);
         assert(resMat2[1][0] == 103 && resMat2[1][1] == 136);
 
-        Vector<2, int> testVec;
+        Vec<2, int> testVec;
         testVec[0] = 7;
         testVec[1] = 8;
 
-        Vector<3, int> resVec = testMat1 * testVec;
+        Vec<3, int> resVec = testMat1 * testVec;
 
         assert(resVec[0] == 23 && resVec[1] == 53 && resVec[2] == 83);
     }

@@ -333,7 +333,7 @@ void Shader::drawPoint(float x, float y) {
 
 void Shader::batchQueue(Sprite& spr, float x, float y) {
     batchSprites.push_back(&spr);
-    Vector<2, float> pos;
+    Vec<2, float> pos;
     pos[0] = x;
     pos[1] = y;
     batchPositions.push_back(pos);

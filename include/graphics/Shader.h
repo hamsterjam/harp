@@ -54,7 +54,7 @@ class Shader {
 
         // Batched drawing
         std::vector<Sprite*> batchSprites;
-        std::vector<Vector<2, float> >  batchPositions;
+        std::vector<Vec<2, float> >  batchPositions;
 
         void bindTextures(Sprite& spr);
         void draw(DrawMode mode, unsigned int numElements);

@@ -47,11 +47,11 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 
     // ECS stuff
     id = harp->createEntity();
-    Vector<2, double> pos = zeroVector<2, double>();
+    Vec<2, double> pos = zeroVec<2, double>();
     pos[1] = SCREEN_HEIGHT;
     harp->setComponent(id, comp_position, &pos);
 
-    Vector<2, double> vel = zeroVector<2, double>();
+    Vec<2, double> vel = zeroVec<2, double>();
     harp->setComponent(id, comp_velocity, &vel);
 
     auto histColor = rgbaToColor(0.06, 0.06, 0.04, 0.9);
@@ -127,10 +127,10 @@ void Console::toggle() {
 }
 
 void Console::update() {
-    auto& pos = * (Vector<2, double>*) harp->getComponent(id, comp_position);
-    auto& vel = * (Vector<2, double>*) harp->getComponent(id, comp_velocity);
+    auto& pos = * (Vec<2, double>*) harp->getComponent(id, comp_position);
+    auto& vel = * (Vec<2, double>*) harp->getComponent(id, comp_velocity);
 
-    auto tarPos = zeroVector<2, double>();
+    auto tarPos = zeroVec<2, double>();
     tarPos[1] = (open) ? SCREEN_HEIGHT - (logLines*12 + 2) - 16 : SCREEN_HEIGHT;
 
     if (tarPos == pos) return;
@@ -139,7 +139,7 @@ void Console::update() {
 
     if (dot(vel, vel) < 0.1) {
         pos = tarPos;
-        vel = zeroVector<2, double>();
+        vel = zeroVec<2, double>();
         if (!open) harp->setFlag(id, flag_hidden, true);
     }
 }

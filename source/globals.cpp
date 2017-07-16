@@ -12,9 +12,9 @@
 void initGlobals() {
     harp = new ECS(32, 8, 128);
 
-    comp_position     = harp->createComponentType(sizeof(Vector<2, double>));
-    comp_velocity     = harp->createComponentType(sizeof(Vector<2, double>));
-    comp_acceleration = harp->createComponentType(sizeof(Vector<2, double>));
+    comp_position     = harp->createComponentType(sizeof(Vec<2, double>));
+    comp_velocity     = harp->createComponentType(sizeof(Vec<2, double>));
+    comp_acceleration = harp->createComponentType(sizeof(Vec<2, double>));
     flag_hidden       = harp->createFlagType();
     comp_visual       = harp->createComponentType(sizeof(VisualSpec));
 

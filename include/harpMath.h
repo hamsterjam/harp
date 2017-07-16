@@ -7,19 +7,19 @@
  *
  * The classes defined are:
  *
- * Vector<N, T>
+ * Vec<N, T>
  *     a vector (as in a math vector) of dimension N that stores type T. This
  *     is memory equivalent to an array T[N]
  *
  * Matrix<M, N, T>
  *     a matrix of dimension M*N that stores type T. This is memory equivalent
  *     to an array in row major order. This is actually equivalent to a
- *     Vector<M, Vector<N, T>> so it inherits arithematic from Vector
+ *     Vec<M, Vec<N, T>> so it inherits arithematic from Vec
  *
  * Quaternion<T>
- *     a quaternion of type T. This is just a Vector<4, T> with a special
+ *     a quaternion of type T. This is just a Vec<4, T> with a special
  *     quaternion multiplication defined. The component order is
- *     {i, j, k, r} to make it easy to convert between aa Vector<3, T> and the
+ *     {i, j, k, r} to make it easy to convert between aa Vec<3, T> and the
  *     quaternion that it represents.
  *
  * - Callum Nicholson (hamsterjam)
@@ -33,13 +33,13 @@
 #include <cstring> // memcpy
 
 template <unsigned int N, typename T>
-class Vector {
+class Vec {
     public:
         T data[N];
 
-        Vector<N, T>() {}
+        Vec<N, T>() {}
 
-        Vector<N, T>(T val[N]) {
+        Vec<N, T>(T val[N]) {
             for (int i = 0; i < N; ++i) {
                 data[i] = val[i];
             }
@@ -50,7 +50,7 @@ class Vector {
         }
 
         template<typename T2>
-        Vector<N, T>& operator*=(T2 scalar) {
+        Vec<N, T>& operator*=(T2 scalar) {
             for (int i = 0; i < N; ++i) {
                 data[i] *= scalar;
             }
@@ -58,7 +58,7 @@ class Vector {
         }
 
         template<typename T2>
-        Vector<N, T>& operator/=(T2 scalar) {
+        Vec<N, T>& operator/=(T2 scalar) {
             for (int i = 0; i < N; ++i) {
                 data[i] /= scalar;
             }
@@ -66,7 +66,7 @@ class Vector {
         }
 
         template<unsigned int N2, typename T2>
-        Vector<N, T>& operator+=(Vector<N2, T2> rhs) {
+        Vec<N, T>& operator+=(Vec<N2, T2> rhs) {
             for (int i = 0; i < N && i < N2; ++i) {
                 data[i] += rhs[i];
             }
@@ -74,7 +74,7 @@ class Vector {
         }
 
         template<unsigned int N2, typename T2>
-        Vector<N, T>& operator-=(Vector<N2, T2> rhs) {
+        Vec<N, T>& operator-=(Vec<N2, T2> rhs) {
             for (int i = 0; i < N && i < N2; ++i) {
                 data[i] -= rhs[i];
             }
@@ -83,7 +83,7 @@ class Vector {
 };
 
 template<unsigned int M, unsigned int N, typename T>
-class Matrix : public Vector<M, Vector<N, T> > {
+class Matrix : public Vec<M, Vec<N, T> > {
     public:
         Matrix<M, N, T>() {}
 
@@ -95,8 +95,8 @@ class Matrix : public Vector<M, Vector<N, T> > {
             }
         }
 
-        Matrix<M, N, T>(Vector<M, Vector<N, T> > clone) {
-            std::memcpy((void*) &(this->data), (void*) &(clone.data), M * sizeof(Vector<N, T>));
+        Matrix<M, N, T>(Vec<M, Vec<N, T> > clone) {
+            std::memcpy((void*) &(this->data), (void*) &(clone.data), M * sizeof(Vec<N, T>));
         }
 
         // This uses the binary * which is defined later
@@ -107,13 +107,13 @@ class Matrix : public Vector<M, Vector<N, T> > {
 };
 
 template<typename T>
-class Quaternion : public Vector<4, T> {
+class Quaternion : public Vec<4, T> {
     public:
         Quaternion<T>() {}
 
-        Quaternion<T>(T val[4]) : Vector<4, T>(val) {}
+        Quaternion<T>(T val[4]) : Vec<4, T>(val) {}
 
-        Quaternion<T>(Vector<4, T> clone) {
+        Quaternion<T>(Vec<4, T> clone) {
             std::memcpy((void*) &(this->data), (void*) &(clone.data), sizeof(T) * 4);
         }
 
@@ -138,7 +138,7 @@ class Quaternion : public Vector<4, T> {
 };
 
 /********************
- * Vector Functions *
+ * Vec Functions *
  ********************/
 
 //
@@ -146,8 +146,8 @@ class Quaternion : public Vector<4, T> {
 //
 
 template<unsigned int N, typename T>
-Vector<N, T> onesVector() {
-    Vector<N, T> ret;
+Vec<N, T> onesVec() {
+    Vec<N, T> ret;
     for (int i = 0; i < N; ++i) {
         ret[i] = 1;
     }
@@ -155,8 +155,8 @@ Vector<N, T> onesVector() {
 }
 
 template<unsigned int N, typename T>
-Vector<N, T> zeroVector() {
-    Vector<N, T> ret;
+Vec<N, T> zeroVec() {
+    Vec<N, T> ret;
     for (int i = 0; i < N; ++i) {
         ret[i] = 0;
     }
@@ -168,7 +168,7 @@ Vector<N, T> zeroVector() {
 //
 
 template<unsigned int N, typename T>
-bool operator==(Vector<N, T> lhs, Vector<N, T> rhs) {
+bool operator==(Vec<N, T> lhs, Vec<N, T> rhs) {
     for (int i = 0; i < N; ++i) {
         if (lhs[i] != rhs[i]) {
             return false;
@@ -178,7 +178,7 @@ bool operator==(Vector<N, T> lhs, Vector<N, T> rhs) {
 }
 
 template<unsigned int N, typename T>
-bool operator!=(Vector<N, T> lhs, Vector<N, T> rhs) {
+bool operator!=(Vec<N, T> lhs, Vec<N, T> rhs) {
     return !(lhs == rhs);
 }
 
@@ -187,39 +187,39 @@ bool operator!=(Vector<N, T> lhs, Vector<N, T> rhs) {
 //
 
 template<unsigned int N, typename T, typename T2>
-Vector<N, T> operator*(T2 scalar, Vector<N, T> vec) {
+Vec<N, T> operator*(T2 scalar, Vec<N, T> vec) {
     vec *= scalar;
     return vec;
 }
 
 template<unsigned int N, typename T, typename T2>
-Vector<N, T> operator*(Vector<N, T> vec, T2 scalar) {
+Vec<N, T> operator*(Vec<N, T> vec, T2 scalar) {
     return scalar*vec;
 }
 
 template<unsigned int N, typename T, typename T2>
-Vector<N, T> operator/(Vector<N, T> vec, T2 scalar) {
+Vec<N, T> operator/(Vec<N, T> vec, T2 scalar) {
     vec /= scalar;
     return vec;
 }
 
 template<unsigned int N, typename T>
-Vector<N, T> operator-(Vector<N, T> op) {
+Vec<N, T> operator-(Vec<N, T> op) {
     return (T) -1 * op;
 }
 
 //
-// Vector Addition
+// Vec Addition
 //
 
 template<unsigned int N, unsigned int N2, typename T, typename T2>
-Vector<N, T> operator+(Vector<N, T> lhs, Vector<N2, T2> rhs) {
+Vec<N, T> operator+(Vec<N, T> lhs, Vec<N2, T2> rhs) {
     lhs += rhs;
     return lhs;
 }
 
 template<unsigned int N, unsigned int N2, typename T, typename T2>
-Vector<N, T> operator-(Vector<N, T> lhs, Vector<N2, T2> rhs) {
+Vec<N, T> operator-(Vec<N, T> lhs, Vec<N2, T2> rhs) {
     lhs -= rhs;
     return lhs;
 }
@@ -229,7 +229,7 @@ Vector<N, T> operator-(Vector<N, T> lhs, Vector<N2, T2> rhs) {
 //
 
 template<unsigned int N, typename T>
-T dot(Vector<N, T> lhs, Vector<N, T> rhs) {
+T dot(Vec<N, T> lhs, Vec<N, T> rhs) {
     T ret = lhs[0] * rhs[0];
     for (int i = 1; i < N; ++i) {
         ret += lhs[i] * rhs[i];
@@ -238,8 +238,8 @@ T dot(Vector<N, T> lhs, Vector<N, T> rhs) {
 }
 
 template<typename T>
-Vector<2, T> perp(Vector<2, T> op) {
-    Vector<2, T> ret;
+Vec<2, T> perp(Vec<2, T> op) {
+    Vec<2, T> ret;
     ret[0] = -op[1];
     ret[1] =  op[0];
 
@@ -247,8 +247,8 @@ Vector<2, T> perp(Vector<2, T> op) {
 }
 
 template<typename T>
-Vector<3, T> cross(Vector<3, T> lhs, Vector<3, T> rhs) {
-    Vector<3, T> ret;
+Vec<3, T> cross(Vec<3, T> lhs, Vec<3, T> rhs) {
+    Vec<3, T> ret;
     ret[0] = lhs[1]*rhs[2] - lhs[2]*rhs[1];
     ret[1] = lhs[2]*rhs[0] - lhs[0]*rhs[2];
     ret[2] = lhs[0]*rhs[1] - lhs[1]*rhs[0];
@@ -258,7 +258,7 @@ Vector<3, T> cross(Vector<3, T> lhs, Vector<3, T> rhs) {
 
 // This uses det and minorMatrix which are defined later
 template<unsigned int N, typename T>
-Vector<N, T> wedge(Vector<N, T> args[N-1]) {
+Vec<N, T> wedge(Vec<N, T> args[N-1]) {
     // You should look this up if your confused.
     // You build up a matrix of all the vectors, the components of the new vector
     // are minors of this matrix
@@ -269,7 +269,7 @@ Vector<N, T> wedge(Vector<N, T> args[N-1]) {
     }
     // row 0 is always going to be deleted by minorMatrix so its all good
 
-    Vector<N, T> ret;
+    Vec<N, T> ret;
     for (int i = 0; i < N; ++i) {
         T sign = (i % 2 == 0) ? (T) 1 : (T) -1;
 
@@ -280,17 +280,17 @@ Vector<N, T> wedge(Vector<N, T> args[N-1]) {
 }
 
 template<unsigned int N, typename T>
-T norm(Vector<N, T> op) {
+T norm(Vec<N, T> op) {
     return sqrt(dot(op,op));
 }
 
 template<unsigned int N, typename T>
-Vector<N, T> normalize(Vector<N, T> op) {
+Vec<N, T> normalize(Vec<N, T> op) {
     return op/norm(op);
 }
 
 template<unsigned int N, typename T>
-Vector<N, T> proj(Vector<N, T> lhs, Vector<N, T> rhs) {
+Vec<N, T> proj(Vec<N, T> lhs, Vec<N, T> rhs) {
     return dot(lhs,rhs)*normalize(rhs);
 }
 
@@ -397,8 +397,8 @@ Matrix<M, K, T> operator*(Matrix<M, N, T> lhs, Matrix<N, K, T> rhs) {
 }
 
 template<unsigned int M, unsigned int N, typename T>
-Vector<M, T> operator*(Matrix<M, N, T> mat, Vector<N, T> vec) {
-    Vector<M, T> ret;
+Vec<M, T> operator*(Matrix<M, N, T> mat, Vec<N, T> vec) {
+    Vec<M, T> ret;
     for (int i = 0; i < M; ++i) {
         ret[i] = dot(vec, mat[i]);
     }
@@ -473,9 +473,9 @@ Matrix<N, N, T> inverse(Matrix<N, N, T> op) {
 //
 
 template<typename T>
-Quaternion<T> rotationQuaternion(T angle, Vector<3, T> axis) {
+Quaternion<T> rotationQuaternion(T angle, Vec<3, T> axis) {
     axis *= sin(angle/2);
-    Quaternion<T> ret = zeroVector<4, T>() + axis;
+    Quaternion<T> ret = zeroVec<4, T>() + axis;
     ret[3] = cos(angle/2);
 
     return ret;
