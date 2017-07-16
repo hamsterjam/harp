@@ -32,8 +32,9 @@ class ECS {
         struct ChangeRequest {
             Entity ent;
             Component comp;
-            void* val;
+            ChangeRequest* next;
             bool remove;
+            char val[0];
         };
 
         Entity    nextEnt;
@@ -43,7 +44,8 @@ class ECS {
         unsigned int compVecLength;
 
         std::queue<Entity> entRecycleQueue;
-        std::queue<ChangeRequest> changeQueue;
+        ChangeRequest* changeQueue;
+        ChangeRequest* newestChange;
 
         DynamicPoolAllocator changePool;
 

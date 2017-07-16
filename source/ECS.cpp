@@ -23,6 +23,9 @@ ECS::ECS(unsigned int entVecLength, unsigned int compVecLength, size_t poolSize)
     nextEnt  = 0;
     nextComp = 0;
 
+    changeQueue  = 0;
+    newestChange = 0;
+
     // Allocate arrays
     compSize = (size_t*) malloc(sizeof(size_t) * compVecLength);
     hasComp  = (bool**)  malloc(sizeof(bool*)  * compVecLength);
@@ -130,17 +133,22 @@ void ECS::setComponent(Entity ent, Component comp, void* val) {
     // We need to allocate new memory for the data so we have ownership
 
     size_t size = compSize[comp];
-    void* valCopy = changePool.alloc(size);
-    memcpy((char*) valCopy, val, size);
 
     // Create the change request and add it to the queue
-    ChangeRequest req;
-    req.ent = ent;
-    req.comp = comp;
-    req.val = valCopy;
-    req.remove = false;
+    ChangeRequest* req = (ChangeRequest*) changePool.alloc(sizeof(ChangeRequest) + size);
+    req->ent = ent;
+    req->comp = comp;
+    req->next = 0;
+    req->remove = false;
+    memcpy(&req->val, val, size);
 
-    changeQueue.push(req);
+    if (!changeQueue) {
+        changeQueue = req;
+    }
+    else {
+        newestChange->next = req;
+    }
+    newestChange = req;
 }
 
 void* ECS::getComponent(Entity ent, Component comp) {
@@ -162,17 +170,24 @@ void* ECS::getComponent(Entity ent, Component comp) {
 void ECS::removeComponent(Entity ent, Component comp) {
     // Just set the hasComp to false, don't bother with the data
 
-    ChangeRequest req;
-    req.ent = ent;
-    req.comp = comp;
-    req.remove = true;
+    ChangeRequest* req = (ChangeRequest*) changePool.alloc(sizeof(ChangeRequest));
+    req->ent = ent;
+    req->comp = comp;
+    req->next = 0;
+    req->remove = true;
 
-    changeQueue.push(req);
+    if (!changeQueue) {
+        changeQueue = req;
+    }
+    else {
+        newestChange->next = req;
+    }
+    newestChange = req;
 }
 
 void ECS::updateComponents() {
-    while(!changeQueue.empty()) {
-        ChangeRequest req = changeQueue.front();
+    while(changeQueue) {
+        ChangeRequest& req = *changeQueue;
 
         if (req.remove) {
             hasComp[req.comp][req.ent] = false;
@@ -180,13 +195,16 @@ void ECS::updateComponents() {
         else {
             hasComp[req.comp][req.ent] = true;
             size_t size = compSize[req.comp];
-            memcpy(((char*) data[req.comp]) + size * req.ent, req.val, size);
+            memcpy(((char*) data[req.comp]) + size * req.ent, &req.val, size);
         }
 
-        changeQueue.pop();
+        changeQueue = req.next;
+        // Don't need to free anything, this is a pool allocator
     }
 
     changePool.freeAll();
+    changeQueue  = 0;
+    newestChange = 0;
 }
 
 //
