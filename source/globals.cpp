@@ -32,10 +32,13 @@ static int l_exit(lua_State* L) {
     return 0;
 }
 
-void initGlobals() {
+static int getGlobalInt(const char* global) {
+    lua_getglobal(L, global);
+    return lua_tointeger(L, -1);
+}
 
-    // Lua
-
+// This is seperate because we need it BEFORE all SDL stuff is up
+void initLua() {
     L = luaL_newstate();
 
     // modules
@@ -49,8 +52,31 @@ void initGlobals() {
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
 
-    // ECS
+    // read config.lua
+    if (luaL_loadfile(L, "config.lua") || lua_pcall(L, 0, 0, 0) ) {
+        std::cerr << "Failed to load config.lua" << std::endl;
+        shouldExit = true;
+        return;
+    }
 
+    SCREEN_WIDTH  = getGlobalInt("screenWidth");
+    SCREEN_HEIGHT = getGlobalInt("screenHeight");
+}
+
+void initGlobals() {
+    defaultShader = new Shader();
+    defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);
+
+    // Console
+    defaultPrim = new PrimitiveRenderer();
+    TextureAtlas consoleFontAtlas("res/testfont.png", 8, 12, 0, 0);
+    consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
+
+    Console::init(*defaultPrim, *consoleFont);
+    console = &Console::getInstance();
+}
+
+void initECS() {
     harp = new ECS(32, 8, 128);
 
     comp_position     = harp->createComponentType(sizeof(Vec<2, double>));
@@ -59,19 +85,6 @@ void initGlobals() {
     flag_hidden       = harp->createFlagType();
     comp_visual       = harp->createComponentType(sizeof(VisualSpec));
 
-    // Shaders
-
-    defaultShader = new Shader();
-    defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);
-
-    // Console
-
-    defaultPrim = new PrimitiveRenderer();
-    TextureAtlas consoleFontAtlas("res/testfont.png", 8, 12, 0, 0);
-    consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
-
-    Console::init(*defaultPrim, *consoleFont);
-    console = &Console::getInstance();
 }
 
 void cleanupGlobals() {
@@ -106,7 +119,7 @@ Shader* defaultPrimitiveShader = 0;
 PrimitiveRenderer* defaultPrim = 0;
 FontRenderer*      consoleFont = 0;
 
-int SCREEN_WIDTH  = 640;
-int SCREEN_HEIGHT = 480;
+int SCREEN_WIDTH  = 0;
+int SCREEN_HEIGHT = 0;
 
 bool shouldExit = false;

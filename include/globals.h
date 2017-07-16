@@ -23,7 +23,10 @@ class Shader;
 class PrimitiveRenderer;
 class FontRenderer;
 
+void initLua();
 void initGlobals();
+void initECS();
+
 void cleanupGlobals();
 
 extern lua_State* L;

@@ -28,6 +28,7 @@ static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
 void init() {
+    initECS();
     initGlobals();
     harp->updateComponents();
 }
@@ -125,6 +126,8 @@ void consoleModeEvent(SDL_Event e) {
 }
 
 int main(int argc, char** argv) {
+    initLua();
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
