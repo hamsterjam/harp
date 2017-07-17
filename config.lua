@@ -1,5 +1,4 @@
-
-screenWidth  = 640;
+screenWidth  = 640
 screenHeight = 480
 
 defaultShader = {}

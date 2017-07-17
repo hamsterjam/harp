@@ -28,16 +28,15 @@ static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
 void init() {
-    initECS();
     initGlobals();
-    harp->updateComponents();
+    harp.updateComponents();
 }
 
 void update(unsigned int deltaT) {
-    console->update();
-    system_kinematics(*harp, deltaT);
+    Console::getInstance().update();
+    system_kinematics(harp, deltaT);
 
-    harp->updateComponents();
+    harp.updateComponents();
 }
 
 void draw() {
@@ -46,7 +45,7 @@ void draw() {
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    system_draw(*harp);
+    system_draw(harp);
 
     SDL_GL_SwapWindow(window);
 }
@@ -86,7 +85,7 @@ void gameModeEvent(SDL_Event e) {
             switch (e.key.keysym.sym) {
 
                 case SDLK_CARET:
-                    console->toggle();
+                    Console::getInstance().toggle();
                     SDL_StartTextInput();
                     mode = CONSOLE;
                     break;
@@ -100,33 +99,34 @@ void gameModeEvent(SDL_Event e) {
 }
 
 void consoleModeEvent(SDL_Event e) {
+    Console& console = Console::getInstance();
     switch (e.type) {
         case SDL_KEYDOWN:
             switch (e.key.keysym.sym) {
                 case SDLK_CARET:
-                    console->toggle();
+                    console.toggle();
                     SDL_StopTextInput();
                     mode = GAME;
                     break;
 
                 case SDLK_BACKSPACE:
-                    console->backspace();
+                    console.backspace();
                     break;
 
                 case SDLK_RETURN:
-                    console->process();
+                    console.process();
                     break;
             }
             break;
 
         case SDL_TEXTINPUT:
-            console->appendToInput(e.text.text);
+            console.appendToInput(e.text.text);
             break;
     }
 }
 
 int main(int argc, char** argv) {
-    initLua();
+    readConfig();
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);

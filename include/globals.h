@@ -23,23 +23,19 @@ class Shader;
 class PrimitiveRenderer;
 class FontRenderer;
 
-void initLua();
+void readConfig();
 void initGlobals();
-void initECS();
-
 void cleanupGlobals();
 
 extern lua_State* L;
 
-extern ECS* harp;
+extern ECS harp;
 
 extern Component comp_position;
 extern Component comp_velocity;
 extern Component comp_acceleration;
 extern Component flag_hidden;
 extern Component comp_visual;
-
-extern Console* console;
 
 extern Shader* defaultShader;
 extern Shader* defaultPrimitiveShader;

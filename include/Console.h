@@ -29,15 +29,16 @@ class Console {
     private:
         static Console* instance;
 
-        Entity id;
-        Entity inputBoxID;
-        Entity inputID;
-        Entity logLineID[logLines];
+        lua_State* L;
+        bool open;
 
         std::string inputBuffer;
         std::string logBuffer[logLines];
 
-        bool open;
+        Entity id;
+        Entity inputBoxID;
+        Entity inputID;
+        Entity logLineID[logLines];
 
         Console(PrimitiveRenderer& prim, FontRenderer& font);
         ~Console();
