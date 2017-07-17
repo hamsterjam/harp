@@ -11,10 +11,11 @@ VisualSpec getSpriteSpec(Shader& shd, Sprite& spr, float dx, float dy) {
     VisualSpec spec;
 
     spec.type = DrawType::SPRITE;
-    spec.p1   = dx;
-    spec.p2   = dy;
-    spec.shd  = &shd;
-    spec.spr  = &spr;
+
+    spec.sprite.x   = dx;
+    spec.sprite.y   = dy;
+    spec.sprite.shd = &shd;
+    spec.sprite.spr = &spr;
 
     return spec;
 }
@@ -22,14 +23,15 @@ VisualSpec getSpriteSpec(Shader& shd, Sprite& spr, float dx, float dy) {
 VisualSpec getRectangleSpec(PrimitiveRenderer& prim, float dx, float dy, float w, float h, float lineWidth, Color color) {
     VisualSpec spec;
 
-    spec.type  = DrawType::RECTANGLE;
-    spec.p1    = dx;
-    spec.p2    = dy;
-    spec.p3    = w;
-    spec.p4    = h;
-    spec.p5    = lineWidth;
-    spec.prim  = &prim;
-    spec.color = color;
+    spec.type = DrawType::RECTANGLE;
+
+    spec.prim.p1    = dx;
+    spec.prim.p2    = dy;
+    spec.prim.p3    = w;
+    spec.prim.p4    = h;
+    spec.prim.p5    = lineWidth;
+    spec.prim.prim  = &prim;
+    spec.prim.color = color;
 
     return spec;
 }
@@ -37,15 +39,16 @@ VisualSpec getRectangleSpec(PrimitiveRenderer& prim, float dx, float dy, float w
 VisualSpec getRoundedRectangleSpec(PrimitiveRenderer& prim, float dx, float dy, float w, float h, float r, float lineWidth, Color color) {
     VisualSpec spec;
 
-    spec.type  = DrawType::ROUNDED_RECTANGLE;
-    spec.p1    = dx;
-    spec.p2    = dy;
-    spec.p3    = w;
-    spec.p4    = h;
-    spec.p5    = r;
-    spec.p6    = lineWidth;
-    spec.prim  = &prim;
-    spec.color = color;
+    spec.type = DrawType::ROUNDED_RECTANGLE;
+
+    spec.prim.p1    = dx;
+    spec.prim.p2    = dy;
+    spec.prim.p3    = w;
+    spec.prim.p4    = h;
+    spec.prim.p5    = r;
+    spec.prim.p6    = lineWidth;
+    spec.prim.prim  = &prim;
+    spec.prim.color = color;
 
     return spec;
 }
@@ -53,16 +56,17 @@ VisualSpec getRoundedRectangleSpec(PrimitiveRenderer& prim, float dx, float dy, 
 VisualSpec getElipseArcSpec(PrimitiveRenderer& prim, float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color) {
     VisualSpec spec;
 
-    spec.type  = DrawType::ELIPSE;
-    spec.p1    = dx;
-    spec.p2    = dy;
-    spec.p3    = rx;
-    spec.p4    = ry;
-    spec.p5    = theta1;
-    spec.p6    = theta2;
-    spec.p7    = lineWidth;
-    spec.prim  = &prim;
-    spec.color = color;
+    spec.type = DrawType::ELIPSE;
+
+    spec.prim.p1    = dx;
+    spec.prim.p2    = dy;
+    spec.prim.p3    = rx;
+    spec.prim.p4    = ry;
+    spec.prim.p5    = theta1;
+    spec.prim.p6    = theta2;
+    spec.prim.p7    = lineWidth;
+    spec.prim.prim  = &prim;
+    spec.prim.color = color;
 
     return spec;
 }
@@ -70,16 +74,17 @@ VisualSpec getElipseArcSpec(PrimitiveRenderer& prim, float dx, float dy, float r
 VisualSpec getTriangleSpec(PrimitiveRenderer& prim, float x1, float y1, float x2, float y2, float x3, float y3, float lineWidth, Color color) {
     VisualSpec spec;
 
-    spec.type  = DrawType::TRIANGLE;
-    spec.p1    = x1;
-    spec.p2    = y1;
-    spec.p3    = x2;
-    spec.p4    = y2;
-    spec.p5    = x3;
-    spec.p6    = y3;
-    spec.p7    = lineWidth;
-    spec.prim  = &prim;
-    spec.color = color;
+    spec.type = DrawType::TRIANGLE;
+
+    spec.prim.p1    = x1;
+    spec.prim.p2    = y1;
+    spec.prim.p3    = x2;
+    spec.prim.p4    = y2;
+    spec.prim.p5    = x3;
+    spec.prim.p6    = y3;
+    spec.prim.p7    = lineWidth;
+    spec.prim.prim  = &prim;
+    spec.prim.color = color;
 
     return spec;
 }
@@ -87,14 +92,15 @@ VisualSpec getTriangleSpec(PrimitiveRenderer& prim, float x1, float y1, float x2
 VisualSpec getLineSpec(PrimitiveRenderer& prim, float x1, float y1, float x2, float y2, float lineWidth, Color color) {
     VisualSpec spec;
 
-    spec.type  = DrawType::LINE;
-    spec.p1    = x1;
-    spec.p2    = y1;
-    spec.p3    = x2;
-    spec.p4    = y2;
-    spec.p5    = lineWidth;
-    spec.prim  = &prim;
-    spec.color = color;
+    spec.type = DrawType::LINE;
+
+    spec.prim.p1    = x1;
+    spec.prim.p2    = y1;
+    spec.prim.p3    = x2;
+    spec.prim.p4    = y2;
+    spec.prim.p5    = lineWidth;
+    spec.prim.prim  = &prim;
+    spec.prim.color = color;
 
     return spec;
 }
@@ -102,9 +108,12 @@ VisualSpec getLineSpec(PrimitiveRenderer& prim, float x1, float y1, float x2, fl
 VisualSpec getGlyphSpec(FontRenderer& font, char& glyph, float dx, float dy) {
     VisualSpec spec;
 
-    spec.type  = DrawType::GLYPH;
-    spec.font  = &font;
-    spec.glyph = &glyph;
+    spec.type = DrawType::GLYPH;
+
+    spec.text.x     = dx;
+    spec.text.y     = dy;
+    spec.text.font  = &font;
+    spec.text.glyph = &glyph;
 
     return spec;
 }
@@ -113,10 +122,11 @@ VisualSpec getTextSpec(FontRenderer& font, std::string& text, float dx, float dy
     VisualSpec spec;
 
     spec.type = DrawType::TEXT;
-    spec.p1   = dx;
-    spec.p2   = dy;
-    spec.font = &font;
-    spec.text = &text;
+
+    spec.text.x    = dx;
+    spec.text.y    = dy;
+    spec.text.font = &font;
+    spec.text.text = &text;
 
     return spec;
 }

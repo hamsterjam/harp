@@ -35,23 +35,32 @@ enum class DrawType{
     TEXT
 };
 
-struct VisualSpec {
-    // General Parameters
-    DrawType type;
+struct PrimitiveSpec {
+    PrimitiveRenderer* prim;
     float p1, p2, p3, p4, p5, p6, p7;
+    Color color;
+};
 
-    // Sprite
+struct SpriteSpec {
     Shader* shd;
     Sprite* spr;
+    float x, y;
+};
 
-    // Primitives
-    PrimitiveRenderer* prim;
-    Color color;
-
-    // Text
+struct TextSpec {
     FontRenderer* font;
     char* glyph;
     std::string* text;
+    float x, y;
+};
+
+struct VisualSpec {
+    DrawType type;
+    union {
+        PrimitiveSpec prim;
+        SpriteSpec sprite;
+        TextSpec text;
+    };
 };
 
 VisualSpec getSpriteSpec(Shader& shd, Sprite& spr, float dx, float dy);
