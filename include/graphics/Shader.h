@@ -61,7 +61,6 @@ class Shader {
 
     public:
         // This will compile a default shader
-        Shader();
         Shader(const char* vertSource, const char* fragSource);
         ~Shader();
 

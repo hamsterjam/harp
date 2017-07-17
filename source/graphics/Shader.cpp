@@ -15,36 +15,6 @@
 #include <globals.h>
 #include <harpMath.h>
 
-static const char* defaultVertSource = R"(
-attribute vec2 aVertPos;
-attribute vec2 aTexCoord;
-
-varying vec2 vTexCoord;
-
-void main(void) {
-    vTexCoord = aTexCoord;
-    gl_Position = vec4(aVertPos, 0.0, 1.0);
-}
-)";
-
-static const char* defaultFragSource = R"(
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-uniform sampler2D uTexture;
-
-varying vec2 vTexCoord;
-
-void main(void) {
-    gl_FragColor = texture2D(uTexture, vTexCoord);
-}
-)";
-
-Shader::Shader() : Shader(defaultVertSource, defaultFragSource) {
-    // That's all
-}
-
 Shader::Shader(const char* vertSource, const char* fragSource) {
     lineWidth = 0;
 

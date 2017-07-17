@@ -18,12 +18,17 @@ extern "C" {
 #include <graphics/FontRenderer.h>
 #include <graphics/VisualSpec.h>
 
+static const char* defVertSrc = "";
+static const char* defFragSrc = "";
+
+static const char* primVertSrc = "";
+static const char* primFragSrc = "";
+
 // Lua functions
 
 static int l_print(lua_State* L) {
-    std::cout << "Hello!" << std::endl;
     const char* message = luaL_checkstring(L, 1);
-    Console::getInstance().log(std::string(message));
+    Console::getInstance().log("<- " + std::string(message));
     return 0;
 }
 
@@ -32,9 +37,33 @@ static int l_exit(lua_State* L) {
     return 0;
 }
 
+// Lua helper functions
+
 static int getGlobalInt(const char* global) {
     lua_getglobal(L, global);
+    if (!lua_isinteger(L, -1)) {
+        std::cerr << "\"" << global << "\" is not an integer." << std::endl;
+        shouldExit = true;
+        return 0;
+    }
     return lua_tointeger(L, -1);
+}
+
+static const char * getTableString(const char* table, const char* key) {
+    lua_getglobal(L, table);
+    if (!lua_istable(L, -1)) {
+        std::cerr << "\"" << table << "\" is not a table." << std::endl;
+        shouldExit = true;
+        return 0;
+    }
+    lua_pushstring(L, key);
+    lua_gettable(L, -2);
+    if (!lua_isstring(L, -1)) {
+        std::cerr << "\"" << table << "." << key << "\" is not a string." << std::endl;
+        shouldExit = true;
+        return 0;
+    }
+    return lua_tostring(L, -1);
 }
 
 // This is seperate because we need it BEFORE all SDL stuff is up
@@ -42,11 +71,7 @@ void initLua() {
     L = luaL_newstate();
 
     // modules
-    luaopen_base(L);
-    luaopen_coroutine(L);
-    luaopen_table(L);
-    luaopen_string(L);
-    luaopen_math(L);
+    luaL_openlibs(L);
 
     // functions
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
@@ -61,11 +86,17 @@ void initLua() {
 
     SCREEN_WIDTH  = getGlobalInt("screenWidth");
     SCREEN_HEIGHT = getGlobalInt("screenHeight");
+
+    defVertSrc = getTableString("defaultShader", "vertSrc");
+    defFragSrc = getTableString("defaultShader", "fragSrc");
+
+    primVertSrc = getTableString("primShader", "vertSrc");
+    primFragSrc = getTableString("primShader", "fragSrc");
 }
 
 void initGlobals() {
-    defaultShader = new Shader();
-    defaultPrimitiveShader = new Shader(defaultPrimitiveVertSource, defaultPrimitiveFragSource);
+    defaultShader = new Shader(defVertSrc, defFragSrc);
+    defaultPrimitiveShader = new Shader(primVertSrc, primFragSrc);
 
     // Console
     defaultPrim = new PrimitiveRenderer();
@@ -100,6 +131,10 @@ void cleanupGlobals() {
     delete defaultShader;
     delete defaultPrimitiveShader;
 }
+
+//
+// Default Values
+//
 
 lua_State* L = 0;
 
