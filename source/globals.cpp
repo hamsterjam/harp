@@ -28,7 +28,6 @@ static const char* primFragSrc = "";
 
 void readConfig() {
     luaL_openlibs(L);
-    openHarp(L);
 
     if (luaL_loadfile(L, "config.lua") || lua_pcall(L, 0, 0, 0)) {
         std::cerr << "Failed to load config.lua" << std::endl;
@@ -43,6 +42,10 @@ void readConfig() {
 
     primVertSrc = getTableString(L, "primShader", "vertSrc");
     primFragSrc = getTableString(L, "primShader", "fragSrc");
+
+    // Adding in the harp functions after loading the config ensures that the
+    // config file can't do anything to the state of the actual program
+    openHarp(L);
 }
 
 void initGlobals() {
