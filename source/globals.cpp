@@ -39,6 +39,33 @@ static int l_exit(lua_State* L) {
 
 // Lua helper functions
 
+static void dumpStack() {
+    int i;
+    int top = lua_gettop(L);
+    for (i = 0; i <= top; ++i) {
+        int t = lua_type(L, i);
+        switch(t) {
+            case LUA_TSTRING:
+                std::cout << "\"" << lua_tostring(L, i) << "\"";
+                break;
+
+            case LUA_TBOOLEAN:
+                std::cout << ((lua_toboolean(L, i)) ? "true" : "false");
+                break;
+
+            case LUA_TNUMBER:
+                std::cout << lua_tonumber(L, i);
+                break;
+
+            default:
+                std::cout << lua_typename(L, i);
+                break;
+        }
+        std::cout << " : ";
+    }
+    std::cout << std::endl;
+}
+
 static int getGlobalInt(const char* global) {
     lua_getglobal(L, global);
     if (!lua_isinteger(L, -1)) {
@@ -46,7 +73,9 @@ static int getGlobalInt(const char* global) {
         shouldExit = true;
         return 0;
     }
-    return lua_tointeger(L, -1);
+    int ret = lua_tointeger(L, -1);
+    lua_pop(L, -1);
+    return ret;
 }
 
 static const char * getTableString(const char* table, const char* key) {
@@ -63,7 +92,9 @@ static const char * getTableString(const char* table, const char* key) {
         shouldExit = true;
         return 0;
     }
-    return lua_tostring(L, -1);
+    const char* ret = lua_tostring(L, -1);
+    lua_pop(L, 2);
+    return ret;
 }
 
 // This is seperate because we need it BEFORE all SDL stuff is up
