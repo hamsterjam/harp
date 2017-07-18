@@ -29,7 +29,6 @@ class Console {
     private:
         static Console* instance;
 
-        lua_State* L;
         bool open;
 
         std::string inputBuffer;

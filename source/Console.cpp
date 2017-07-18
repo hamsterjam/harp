@@ -21,10 +21,6 @@ extern "C" {
 Console* Console::instance = 0;
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
-    L = luaL_newstate();
-    luaL_openlibs(L);
-    luaopen_harp(L);
-
     open = false;
 
     inputBuffer = "";
@@ -68,8 +64,6 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 }
 
 Console::~Console() {
-    lua_close(L);
-
     harp.deleteEntity(id);
     harp.deleteEntity(inputBoxID);
     harp.deleteEntity(inputID);
