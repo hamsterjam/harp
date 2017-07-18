@@ -225,7 +225,7 @@ void ECS::setFlag(Entity ent, Component flag, bool val) {
 }
 
 bool ECS::getFlag(Entity ent, Component flag) {
-    return getComponent(ent, flag);
+    return hasComponent(ent, flag);
 }
 
 //
