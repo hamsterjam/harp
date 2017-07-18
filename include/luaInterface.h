@@ -1,18 +1,11 @@
 /*
  * HARP
- * LuaInterface.h
+ * luaInterface.h
  *
  * This is 2 things, some boilerplate to more easily access global Lua
  * variables, and the place where the Lua functions that interface with the C++
- * code are defined, defined functions are:
- *
- * print(message)
- *      logs the string message to the Console
- *
- * exit()
- *      exits the program (I might make this only accesible from the console)
- *      this does a "soft" exit by setting shouldExit to true.
- *
+ * code are defined. See luaFunctions.md to see the functions that are defined
+ * (or rather, will be defined)
  *
  * - Callum Nicholson (hamsterjam)
  *

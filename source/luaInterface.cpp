@@ -10,11 +10,46 @@ extern "C" {
 }
 
 #include <globals.h>
+#include <harpMath.h>
 #include <Console.h>
 
 //
 // Harp Lua Functions
 //
+
+static int l_createEntity(lua_State* L) {
+    Entity ent = harp.createEntity();
+    lua_pushinteger(L, ent);
+    return 1;
+}
+
+static int l_setComponent(lua_State* L) {
+    Entity ent = luaL_checkinteger(L, 1);
+    Component comp = luaL_checkinteger(L, 2); //TODO// Change this to accept a string instead
+    void* data = lua_touserdata(L, 3);
+
+    harp.setComponent(ent, comp, data);
+
+    return 0;
+}
+
+static int l_setParent(lua_State* L) {
+    Entity ent = luaL_checkinteger(L, 1);
+    Entity par = luaL_checkinteger(L, 2);
+
+    harp.setParent(ent, par);
+
+    return 0;
+}
+
+static int l_getVec2Double(lua_State* L) {
+    double val1 = luaL_checknumber(L, 1);
+    double val2 = luaL_checknumber(L, 2);
+    auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
+    ret->data[0] = val1;
+    ret->data[1] = val2;
+    return 1;
+}
 
 static int l_print(lua_State* L) {
     const char* message = luaL_checkstring(L, 1);
@@ -44,6 +79,12 @@ static void readyTable(lua_State* L, const char* table) {
 //
 
 void openHarp(lua_State* L) {
+    lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
+    lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
+    lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
+
+    lua_pushcfunction(L, l_getVec2Double); lua_setglobal(L, "getVec2Double");
+
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
 }

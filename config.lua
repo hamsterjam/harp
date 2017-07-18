@@ -1,4 +1,4 @@
-function readFile(src)
+readFile = function(src)
     io.input(src)
     return io.read("a")
 end
