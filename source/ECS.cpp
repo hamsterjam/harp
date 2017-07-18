@@ -252,7 +252,7 @@ void* ECS::getChildComponent(Entity ent, Component comp) {
 }
 
 bool ECS::getChildFlag(Entity ent, Component flag) {
-    return getChildComponent(ent, flag);
+    return hasComp[flag][ent];
 }
 
 //
