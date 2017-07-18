@@ -23,7 +23,7 @@ Console* Console::instance = 0;
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     L = luaL_newstate();
     luaL_openlibs(L);
-    openHarp(L);
+    luaopen_harp(L);
 
     open = false;
 

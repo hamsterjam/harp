@@ -78,7 +78,7 @@ static void readyTable(lua_State* L, const char* table) {
 // Exported Functions
 //
 
-void openHarp(lua_State* L) {
+void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");

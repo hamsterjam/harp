@@ -17,7 +17,7 @@ extern "C" {
 #include <lua.h>
 }
 
-void openHarp(lua_State* L);
+void luaopen_harp(lua_State* L);
 
 int         getGlobalInt   (lua_State* L, const char* global);
 double      getGlobalFloat (lua_State* L, const char* global);

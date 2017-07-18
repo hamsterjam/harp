@@ -45,7 +45,7 @@ void readConfig() {
 
     // Adding in the harp functions after loading the config ensures that the
     // config file can't do anything to the state of the actual program
-    openHarp(L);
+    luaopen_harp(L);
 }
 
 void initGlobals() {
