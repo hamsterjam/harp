@@ -13,6 +13,10 @@ extern "C" {
 #include <harpMath.h>
 #include <Console.h>
 
+#include <graphics/Texture.h>
+#include <graphics/TextureAtlas.h>
+#include <graphics/Sprite.h>
+
 //
 // Harp Lua Functions
 //
@@ -41,6 +45,145 @@ static int l_setParent(lua_State* L) {
     harp.setParent(ent, par);
 
     return 0;
+}
+
+static int l_newSprite(lua_State* L) {
+    Sprite* spr = new Sprite(); //TODO// This is never freed
+
+    luaL_checktype(L, 1, LUA_TTABLE);
+    int n = luaL_len(L, 1);
+
+    // Populate the Sprite
+    for (int i=1; i <= n; ++i) {
+        const char* filename;
+        const char* texUniform = 0;
+        const char* UVAttrib = 0;
+
+        lua_geti(L, 1, i);
+        luaL_checktype(L, -1, LUA_TTABLE);
+
+        // Get the strings that specify our image
+        lua_pushstring(L, "filename");
+        lua_gettable(L, -2);
+        filename = luaL_checkstring(L, -1);
+        lua_pop(L, 1);
+
+        lua_pushstring(L, "uniform");
+        lua_gettable(L, -2);
+        if (!lua_isnil(L, -1)) texUniform = luaL_checkstring(L, -1);
+        lua_pop(L, 1);
+
+        lua_pushstring(L, "UVAttrib");
+        lua_gettable(L, -2);
+        if (!lua_isnil(L, -1)) UVAttrib = luaL_checkstring(L, -1);
+        lua_pop(L, 1);
+
+        // Test if we are using a texture atlas or not
+        lua_pushstring(L, "tileW");
+        lua_rawget(L, -2);
+        bool usesAtlas = !lua_isnoneornil(L, -1);
+        lua_pop(L, 1);
+        if (usesAtlas) {
+            // Use a texture atlas!
+            int tileW, tileH;
+            int tileX, tileY;
+
+            lua_pushstring(L, "tileW");
+            lua_gettable(L, -2);
+            tileW = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, "tileH");
+            lua_gettable(L, -2);
+            tileH = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, "tileX");
+            lua_gettable(L, -2);
+            tileX = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, "tileY");
+            lua_gettable(L, -2);
+            tileY = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            TextureAtlas atlas(filename, tileW, tileH, 0, 0);
+
+            if (texUniform && UVAttrib) {
+                atlas.addTextureToSprite(*spr, texUniform, UVAttrib, tileX, tileY);
+            }
+            else {
+                atlas.addTextureToSprite(*spr, tileX, tileY);
+            }
+
+            // Make sure you pop the table
+            lua_pop(L, 1);
+            continue;
+        }
+
+        // Check if we have custom UV coordinates
+        lua_pushstring(L, "x");
+        lua_rawget(L, -2);
+        bool usesUV = !lua_isnoneornil(L, -1);
+        lua_pop(L, 1);
+
+        if (usesUV) {
+            // Grab the custom UV coordinates
+            unsigned int x, y;
+            int w, h;
+
+            lua_pushstring(L, "x");
+            lua_gettable(L, -2);
+            x = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, "y");
+            lua_gettable(L, -2);
+            y = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, "w");
+            lua_gettable(L, -2);
+            w = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, "h");
+            lua_gettable(L, -2);
+            h = luaL_checkinteger(L, -1);
+            lua_pop(L, 1);
+
+            if (texUniform && UVAttrib) {
+                spr->addSubImage(filename, texUniform, UVAttrib, x, y, w, h);
+            }
+            else {
+                spr->addSubImage(filename, x, y, w, h);
+            }
+
+            // Again, remember to pop the table from the stack
+            lua_pop(L, 1);
+            continue;
+        }
+
+        // Otherwise we just want to put the whole image on
+        if (texUniform && UVAttrib) {
+            spr->addImage(filename, texUniform, UVAttrib);
+        }
+        else {
+            spr->addImage(filename);
+        }
+
+        lua_pop(L, -1);
+    }
+
+    // The userdata stores a pointer to the sprite so we can
+    // properly call destructors when we need to (so we dont leak memory)
+    auto ret = (Sprite**) lua_newuserdata(L, sizeof(Sprite*));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+    *ret = spr;
+
+    return 1;
 }
 
 static int l_getVec2Double(lua_State* L) {
@@ -88,6 +231,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 
+    lua_pushcfunction(L, l_newSprite);     lua_setglobal(L, "newSprite");
     lua_pushcfunction(L, l_getVec2Double); lua_setglobal(L, "getVec2Double");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");

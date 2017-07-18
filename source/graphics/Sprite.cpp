@@ -100,6 +100,23 @@ int Sprite::getWidth() {
     return w;
 }
 
+// Functions with default texUniform and UVAttrib
+
+void Sprite::addImage(const char* filename) {
+    addImage(filename, DEFAULT_TEXTURE_UNIFORM, DEFAULT_UV_ATTRIBUTE);
+}
+void Sprite::addTexture(Texture* tex) {
+    addTexture(tex, DEFAULT_TEXTURE_UNIFORM, DEFAULT_UV_ATTRIBUTE);
+}
+void Sprite::addSubImage(const char* filename, unsigned int x, unsigned int y, int w, int h) {
+    addSubImage(filename, DEFAULT_TEXTURE_UNIFORM, DEFAULT_UV_ATTRIBUTE, x, y, w, h);
+}
+void Sprite::addSubTexture(Texture* tex, unsigned int x, unsigned int y, int w, int h) {
+    addSubTexture(tex, DEFAULT_TEXTURE_UNIFORM, DEFAULT_UV_ATTRIBUTE, x, y, w, h);
+}
+
+// Functions with specified texUniform and UVAttrib
+
 void Sprite::addImage(const char* filename, const char* texUniform, const char* UVAttrib) {
     addTexture(createTexture(filename), texUniform, UVAttrib);
 }
@@ -158,6 +175,11 @@ void Sprite::addSubTexture(Texture* tex, const char* texUniform, const char* UVA
     spec.v2 = v2;
 
     textures.push_back(spec);
+
+    if (w == 0 && h == 0) {
+        w = spec.tex->w;
+        h = spec.tex->h;
+    }
 
     needsBufferUpdates = true;
 }

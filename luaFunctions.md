@@ -20,7 +20,7 @@ Types
 Creates a new Sprite. The parameter def is an array, each element of which represents a texture. Each texture is a table with the following possible values:
     * `filename`: a string containing the filename of the image.
     * `uniform`: a string containing the name of the sampler2D uniform to use for the texture.
-    * `UVattrib`: a string containing the name of the attribute to use for the UV coordinates.
+    * `UVAttrib`: a string containing the name of the attribute to use for the UV coordinates.
     * `tileW`: an integer representing the tile width in pixels if this is to be treated as a texture atlas.
     * `tileH`: an integer representing the tile height in pixels if this is to be treated as a texture atlas.
     * `tileX`: an integer representing the x coordinate in units of tiles.

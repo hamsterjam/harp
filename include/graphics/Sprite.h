@@ -64,13 +64,18 @@ class Sprite {
         int getWidth();
         int getHeight();
 
+        void addImage(const char* filename);
         void addImage(const char* filename, const char* texUniform, const char* UVAttrib);
+
+        void addTexture(Texture* tex);
         void addTexture(Texture* tex, const char* texUniform, const char* UVAttrib);
 
         // Note that these explicitly allow negative widths and heights
+        void addSubImage(const char* filename, unsigned int x, unsigned int y, int w, int h);
         void addSubImage(const char* filename, const char* texUniform, const char* UVAttrib,
                          unsigned int x, unsigned int y, int w, int h);
 
+        void addSubTexture(Texture* tex, unsigned int x, unsigned int y, int w, int h);
         void addSubTexture(Texture* tex, const char* texUniform, const char* UVAttrib,
                            unsigned int x, unsigned int y, int w, int h);
 
