@@ -26,6 +26,7 @@ static int l_createEntity(lua_State* L) {
 static int l_setComponent(lua_State* L) {
     Entity ent = luaL_checkinteger(L, 1);
     Component comp = luaL_checkinteger(L, 2); //TODO// Change this to accept a string instead
+    luaL_checkudata(L, 3, "harp.blob");
     void* data = lua_touserdata(L, 3);
 
     harp.setComponent(ent, comp, data);
@@ -46,6 +47,8 @@ static int l_getVec2Double(lua_State* L) {
     double val1 = luaL_checknumber(L, 1);
     double val2 = luaL_checknumber(L, 2);
     auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
     ret->data[0] = val1;
     ret->data[1] = val2;
     return 1;
@@ -79,6 +82,8 @@ static void readyTable(lua_State* L, const char* table) {
 //
 
 void luaopen_harp(lua_State* L) {
+    luaL_newmetatable(L, "harp.blob");
+
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
