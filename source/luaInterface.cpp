@@ -48,7 +48,7 @@ static int l_setParent(lua_State* L) {
 }
 
 static int l_newSprite(lua_State* L) {
-    Sprite* spr = new Sprite(); //TODO// This is never freed
+    Sprite* spr = new Sprite();
 
     luaL_checktype(L, 1, LUA_TTABLE);
     int n = luaL_len(L, 1);
@@ -179,7 +179,7 @@ static int l_newSprite(lua_State* L) {
     // The userdata stores a pointer to the sprite so we can
     // properly call destructors when we need to (so we dont leak memory)
     auto ret = (Sprite**) lua_newuserdata(L, sizeof(Sprite*));
-    luaL_getmetatable(L, "harp.blob");
+    luaL_getmetatable(L, "harp.blob.sprite");
     lua_setmetatable(L, -2);
     *ret = spr;
 
@@ -209,6 +209,18 @@ static int l_exit(lua_State* L) {
 }
 
 //
+// Destructors
+//
+
+static int l_callSpriteDestructor(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.blob.sprite");
+    auto spr = (Sprite**) lua_touserdata(L, 1);
+    delete *spr;
+
+    return 0;
+}
+
+//
 // Helper Functions
 //
 
@@ -226,6 +238,12 @@ static void readyTable(lua_State* L, const char* table) {
 
 void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.blob");
+    luaL_newmetatable(L, "harp.blob.sprite");
+
+    luaL_getmetatable(L, "harp.blob.sprite");
+    lua_pushstring(L, "__gc");
+    lua_pushcfunction(L, l_callSpriteDestructor);
+    lua_settable(L, -3);
 
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
