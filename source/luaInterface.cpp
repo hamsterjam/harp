@@ -63,18 +63,15 @@ static int l_newSprite(lua_State* L) {
         luaL_checktype(L, -1, LUA_TTABLE);
 
         // Get the strings that specify our image
-        lua_pushstring(L, "filename");
-        lua_gettable(L, -2);
+        lua_getfield(L, -1, "filename");
         filename = luaL_checkstring(L, -1);
         lua_pop(L, 1);
 
-        lua_pushstring(L, "uniform");
-        lua_gettable(L, -2);
+        lua_getfield(L, -1, "uniform");
         if (!lua_isnil(L, -1)) texUniform = luaL_checkstring(L, -1);
         lua_pop(L, 1);
 
-        lua_pushstring(L, "UVAttrib");
-        lua_gettable(L, -2);
+        lua_getfield(L, -1, "UVAttrib");
         if (!lua_isnil(L, -1)) UVAttrib = luaL_checkstring(L, -1);
         lua_pop(L, 1);
 
@@ -88,23 +85,19 @@ static int l_newSprite(lua_State* L) {
             int tileW, tileH;
             int tileX, tileY;
 
-            lua_pushstring(L, "tileW");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "tileW");
             tileW = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
-            lua_pushstring(L, "tileH");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "tileH");
             tileH = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
-            lua_pushstring(L, "tileX");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "tileX");
             tileX = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
-            lua_pushstring(L, "tileY");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "tileY");
             tileY = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
@@ -133,23 +126,19 @@ static int l_newSprite(lua_State* L) {
             unsigned int x, y;
             int w, h;
 
-            lua_pushstring(L, "x");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "x");
             x = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
-            lua_pushstring(L, "y");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "y");
             y = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
-            lua_pushstring(L, "w");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "w");
             w = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
-            lua_pushstring(L, "h");
-            lua_gettable(L, -2);
+            lua_getfield(L, -1, "h");
             h = luaL_checkinteger(L, -1);
             lua_pop(L, 1);
 
@@ -304,8 +293,7 @@ const char* getGlobalString(lua_State* L, const char* global) {
 int getTableInt(lua_State* L, const char* table, const char* key) {
     readyTable(L, table);
 
-    lua_pushstring(L, key);
-    lua_gettable(L, -2);
+    lua_getfield(L, -1, key);
     if (!lua_isinteger(L, -1)) {
         std::cerr << "\"" << table << "." << key << "\" is not an integer." << std::endl;
         std::exit(1);
@@ -318,8 +306,7 @@ int getTableInt(lua_State* L, const char* table, const char* key) {
 double getTableFloat(lua_State* L, const char* table, const char* key) {
     readyTable(L, table);
 
-    lua_pushstring(L, key);
-    lua_gettable(L, -2);
+    lua_getfield(L, -1, key);
     if (!lua_isnumber(L, -1)) {
         std::cerr << "\"" << table << "." << key << "\" is not a number." << std::endl;
         std::exit(1);
@@ -332,8 +319,7 @@ double getTableFloat(lua_State* L, const char* table, const char* key) {
 bool getTableBool(lua_State* L, const char* table, const char* key) {
     readyTable(L, table);
 
-    lua_pushstring(L, key);
-    lua_gettable(L, -2);
+    lua_getfield(L, -1, key);
     if (!lua_isboolean(L, -1)) {
         std::cerr << "\"" << table << "." << key << "\" is not an boolean." << std::endl;
         std::exit(1);
@@ -346,8 +332,7 @@ bool getTableBool(lua_State* L, const char* table, const char* key) {
 const char* getTableString(lua_State* L, const char* table, const char* key) {
     readyTable(L, table);
 
-    lua_pushstring(L, key);
-    lua_gettable(L, -2);
+    lua_getfield(L, -1, key);
     if (!lua_isstring(L, -1)) {
         std::cerr << "\"" << table << "." << key << "\" is not an string." << std::endl;
         std::exit(1);
