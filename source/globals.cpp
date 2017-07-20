@@ -57,6 +57,10 @@ void initGlobals() {
     TextureAtlas consoleFontAtlas("res/testfont.png", 8, 12, 0, 0);
     consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
 
+    // Call the Lua init function
+    lua_getglobal(L, "init");
+    lua_call(L, 0, 0);
+
     Console::init(*defaultPrim, *consoleFont);
 }
 

@@ -15,3 +15,22 @@ primShader = {
     vertSrc = readFile("shader/defaultPrim.vert"),
     fragSrc = readFile("shader/defaultPrim.frag")
 }
+
+function init()
+    sprMiku = Sprite({
+        {
+            filename = "res/test.png",
+        }
+    })
+
+    local function makeMiku(x, y)
+        local e = createEntity()
+        local pos = Vec2Double(x, y)
+        local vis = getSpriteSpecDef(sprMiku, 0, 0)
+
+        setComponent(e, 0, pos)
+        setComponent(e, 4, vis)
+    end
+
+    makeMiku(200, 200)
+end
