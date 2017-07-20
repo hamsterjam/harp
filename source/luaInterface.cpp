@@ -372,6 +372,7 @@ void luaopen_harp(lua_State* L) {
     lua_setglobal(L, "flag");
 
     setFlagGlobal(L, "hidden", flag_hidden);
+    setFlagGlobal(L, "frozen", flag_frozen);
 }
 
 int getGlobalInt(lua_State* L, const char* global) {
