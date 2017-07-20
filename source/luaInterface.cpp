@@ -13,9 +13,11 @@ extern "C" {
 #include <harpMath.h>
 #include <Console.h>
 
+#include <graphics/Shader.h>
 #include <graphics/Texture.h>
 #include <graphics/TextureAtlas.h>
 #include <graphics/Sprite.h>
+#include <graphics/VisualSpec.h>
 
 //
 // Harp Lua Functions
@@ -47,7 +49,7 @@ static int l_setParent(lua_State* L) {
     return 0;
 }
 
-static int l_newSprite(lua_State* L) {
+static int l_Sprite(lua_State* L) {
     Sprite* spr = new Sprite();
 
     luaL_checktype(L, 1, LUA_TTABLE);
@@ -168,14 +170,33 @@ static int l_newSprite(lua_State* L) {
     // The userdata stores a pointer to the sprite so we can
     // properly call destructors when we need to (so we dont leak memory)
     auto ret = (Sprite**) lua_newuserdata(L, sizeof(Sprite*));
-    luaL_getmetatable(L, "harp.blob.sprite");
+    luaL_getmetatable(L, "harp.sprite");
     lua_setmetatable(L, -2);
     *ret = spr;
 
     return 1;
 }
 
-static int l_getVec2Double(lua_State* L) {
+static int l_getSpriteSpecDef(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.sprite");
+    Sprite& spr = ** (Sprite**) lua_touserdata(L, 1);
+    int dx = luaL_checkinteger(L, 2);
+    int dy = luaL_checkinteger(L, 3);
+
+    VisualSpec* ret = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *ret = getSpriteSpec(*defaultShader, spr, dx, dy);
+
+    return 1;
+}
+
+//
+// Auxiliary
+//
+
+static int l_Vec2Double(lua_State* L) {
     double val1 = luaL_checknumber(L, 1);
     double val2 = luaL_checknumber(L, 2);
     auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
@@ -202,9 +223,17 @@ static int l_exit(lua_State* L) {
 //
 
 static int l_callSpriteDestructor(lua_State* L) {
-    luaL_checkudata(L, 1, "harp.blob.sprite");
+    luaL_checkudata(L, 1, "harp.sprite");
     auto spr = (Sprite**) lua_touserdata(L, 1);
     delete *spr;
+
+    return 0;
+}
+
+static int l_callShaderDestructor(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.shader");
+    auto shd = (Shader**) lua_touserdata(L, 1);
+    delete *shd;
 
     return 0;
 }
@@ -227,19 +256,29 @@ static void readyTable(lua_State* L, const char* table) {
 
 void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.blob");
-    luaL_newmetatable(L, "harp.blob.sprite");
+    luaL_newmetatable(L, "harp.sprite");
+    luaL_newmetatable(L, "harp.shader");
 
-    luaL_getmetatable(L, "harp.blob.sprite");
+    luaL_getmetatable(L, "harp.sprite");
     lua_pushstring(L, "__gc");
     lua_pushcfunction(L, l_callSpriteDestructor);
     lua_settable(L, -3);
+
+    luaL_getmetatable(L, "harp.shader");
+    lua_pushstring(L, "__gc");
+    lua_pushcfunction(L, l_callShaderDestructor);
+    lua_settable(L, -3);
+
+    lua_pop(L, 2);
 
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 
-    lua_pushcfunction(L, l_newSprite);     lua_setglobal(L, "newSprite");
-    lua_pushcfunction(L, l_getVec2Double); lua_setglobal(L, "getVec2Double");
+    lua_pushcfunction(L, l_Sprite);     lua_setglobal(L, "Sprite");
+    lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
+
+    lua_pushcfunction(L, l_getSpriteSpecDef); lua_setglobal(L, "getSpriteSpecDef");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");

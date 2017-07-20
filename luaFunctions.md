@@ -37,21 +37,21 @@ Creates a new Sprite. The parameter def is an array, each element of which repre
 
 The only required field is filename. If def contains any one of tileW, tileH, tileX, tileY it must contain all of them. Similarly, if a def contains any one of x, y, w, h it must contain all of them. Furthermore, these variables are mutually exclusive with the tile variables
 
-`shd newShader(vertSrc, fragSrc)`
+`shd Shader(vertSrc, fragSrc)`
 
 Creates a new Shader. The paramaters vertSrc and fragSrc are strings containing the source of the vertex and fragment shaders resepctively. Returns a usertype representing the shader.
 
-`val getVec2Double(x, y)`
+`val Vec2Double(x, y)`
 
 Creates a usertype representing a Vector<2, double>. The two arguments x and y are numbers.
 
-`shd getDefaultShader()`
+`spc getSpriteSpecDef(spr, dx, dy)`
 
-Returns a usertype representing the default shader defined in globals.h.
+Returns a usertype representing a VisualSpec for drawing a Sprite spr using the default shader. The two numbers dx and dy represent offsets from the position.
 
-`spec getSpriteSpec(shd, spr)`
+`spec getSpriteSpec(shd, spr, dx, dy)`
 
-Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd.
+Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position.
 
 Auxillary
 ---------
