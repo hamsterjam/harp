@@ -34,5 +34,5 @@ function init()
         return e
     end
 
-    -- miku = makeMiku(200, 200)
+    miku = makeMiku(200, 200)
 end
