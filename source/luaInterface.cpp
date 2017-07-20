@@ -45,7 +45,10 @@ static int l_deleteEntity(lua_State* L) {
 static int l_setComponent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     Entity& ent = * (Entity*) lua_touserdata(L, 1);
-    Component comp = luaL_checkinteger(L, 2); //TODO// Change this to accept a string instead
+
+    luaL_checkudata(L, 2, "harp.component");
+    Component& comp = * (Component*) lua_touserdata(L, 2);
+
     luaL_checkudata(L, 3, "harp.blob");
     void* data = lua_touserdata(L, 3);
 
@@ -264,13 +267,31 @@ static void readyTable(lua_State* L, const char* table) {
     }
 }
 
+static void setComponentGlobal(lua_State* L, const char* name, Component comp) {
+    lua_getglobal(L, "comp");
+    lua_pushstring(L, name);
+
+    Component& ret = * (Component*) lua_newuserdata(L, sizeof(Component));
+    luaL_getmetatable(L, "harp.component");
+    lua_setmetatable(L, -2);
+
+    ret = comp;
+
+    lua_settable(L, -3);
+    lua_pop(L, 1);
+}
+
 //
 // Exported Functions
 //
 
 void luaopen_harp(lua_State* L) {
+
+    // Types
+
     luaL_newmetatable(L, "harp.blob");
     luaL_newmetatable(L, "harp.entity");
+    luaL_newmetatable(L, "harp.component");
     luaL_newmetatable(L, "harp.sprite");
     luaL_newmetatable(L, "harp.shader");
 
@@ -289,8 +310,9 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_callShaderDestructor);
     lua_settable(L, -3);
 
-
     lua_pop(L, 3);
+
+    // Functions
 
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_deleteEntity); lua_setglobal(L, "deleteEntity");
@@ -304,6 +326,16 @@ void luaopen_harp(lua_State* L) {
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
+
+    // Components
+
+    lua_newtable(L);
+    lua_setglobal(L, "comp");
+
+    setComponentGlobal(L, "position", comp_position);
+    setComponentGlobal(L, "velocity", comp_velocity);
+    setComponentGlobal(L, "acceleration", comp_acceleration);
+    setComponentGlobal(L, "visual",   comp_visual);
 }
 
 int getGlobalInt(lua_State* L, const char* global) {

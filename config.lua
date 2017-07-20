@@ -28,11 +28,11 @@ function init()
         local pos = Vec2Double(x, y)
         local vis = getSpriteSpecDef(sprMiku, 0, 0)
 
-        setComponent(e, 0, pos)
-        setComponent(e, 4, vis)
+        setComponent(e, comp.position, pos)
+        setComponent(e, comp.visual, vis)
 
         return e
     end
 
-    miku = makeMiku(200, 200)
+    -- miku = makeMiku(200, 200)
 end
