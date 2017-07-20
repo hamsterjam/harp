@@ -24,13 +24,27 @@ extern "C" {
 //
 
 static int l_createEntity(lua_State* L) {
-    Entity ent = harp.createEntity();
-    lua_pushinteger(L, ent);
+    Entity& ent = * (Entity*) lua_newuserdata(L, sizeof(Entity));
+    luaL_getmetatable(L, "harp.entity");
+    lua_setmetatable(L, -2);
+
+    ent = harp.createEntity();
+
     return 1;
 }
 
+static int l_deleteEntity(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    Entity& ent = * (Entity*) lua_touserdata(L, 1);
+
+    harp.deleteEntity(ent);
+
+    return 0;
+}
+
 static int l_setComponent(lua_State* L) {
-    Entity ent = luaL_checkinteger(L, 1);
+    luaL_checkudata(L, 1, "harp.entity");
+    Entity& ent = * (Entity*) lua_touserdata(L, 1);
     Component comp = luaL_checkinteger(L, 2); //TODO// Change this to accept a string instead
     luaL_checkudata(L, 3, "harp.blob");
     void* data = lua_touserdata(L, 3);
@@ -192,10 +206,6 @@ static int l_getSpriteSpecDef(lua_State* L) {
     return 1;
 }
 
-//
-// Auxiliary
-//
-
 static int l_Vec2Double(lua_State* L) {
     double val1 = luaL_checknumber(L, 1);
     double val2 = luaL_checknumber(L, 2);
@@ -206,6 +216,10 @@ static int l_Vec2Double(lua_State* L) {
     ret->data[1] = val2;
     return 1;
 }
+
+//
+// Auxiliary
+//
 
 static int l_print(lua_State* L) {
     const char* message = luaL_checkstring(L, 1);
@@ -256,8 +270,14 @@ static void readyTable(lua_State* L, const char* table) {
 
 void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.blob");
+    luaL_newmetatable(L, "harp.entity");
     luaL_newmetatable(L, "harp.sprite");
     luaL_newmetatable(L, "harp.shader");
+
+    luaL_getmetatable(L, "harp.entity");
+    lua_pushstring(L, "__gc");
+    lua_pushcfunction(L, l_deleteEntity);
+    lua_settable(L, -3);
 
     luaL_getmetatable(L, "harp.sprite");
     lua_pushstring(L, "__gc");
@@ -269,9 +289,11 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_callShaderDestructor);
     lua_settable(L, -3);
 
-    lua_pop(L, 2);
+
+    lua_pop(L, 3);
 
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
+    lua_pushcfunction(L, l_deleteEntity); lua_setglobal(L, "deleteEntity");
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 

@@ -30,7 +30,9 @@ function init()
 
         setComponent(e, 0, pos)
         setComponent(e, 4, vis)
+
+        return e
     end
 
-    makeMiku(200, 200)
+    miku = makeMiku(200, 200)
 end

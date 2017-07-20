@@ -3,7 +3,11 @@ ECS Interface
 
 `entID createEntity()`
 
-Creates a new Entity and returns its ID as an integer.
+Creates a new Entity and returns its ID as a usertype.
+
+`deleteEntity(entID)`
+
+Deletes the entity entID
 
 `setComponent(entID, compName, val)`
 
