@@ -16,12 +16,14 @@ primShader = {
     fragSrc = readFile("shader/defaultPrim.frag")
 }
 
-function init()
-    sprMiku = Sprite({
+-- This is the kind of thing that you should do in external files...
+-- It's probably best to keep the config file as "value, pair" as possible
+init = (function()
+    local sprMiku = {
         {
             filename = "res/test.png",
         }
-    })
+    }
 
     local function makeMiku(x, y)
         local e = createEntity()
@@ -34,5 +36,9 @@ function init()
         return e
     end
 
-    miku = makeMiku(200, 200)
-end
+    return function()
+        sprMiku = Sprite(sprMiku);
+
+        miku = makeMiku(200, 200)
+    end
+end)()
