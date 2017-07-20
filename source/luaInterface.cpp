@@ -57,6 +57,21 @@ static int l_setComponent(lua_State* L) {
     return 0;
 }
 
+static int l_setFlag(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    Entity& ent = * (Entity*) lua_touserdata(L, 1);
+
+    luaL_checkudata(L, 2, "harp.flag");
+    Component& comp = * (Component*) lua_touserdata(L, 2);
+
+    luaL_checktype(L, 3, LUA_TBOOLEAN);
+    bool val = lua_toboolean(L, 3);
+
+    harp.setFlag(ent, comp, val);
+
+    return 0;
+}
+
 static int l_setParent(lua_State* L) {
     Entity ent = luaL_checkinteger(L, 1);
     Entity par = luaL_checkinteger(L, 2);
@@ -281,6 +296,20 @@ static void setComponentGlobal(lua_State* L, const char* name, Component comp) {
     lua_pop(L, 1);
 }
 
+static void setFlagGlobal(lua_State* L, const char* name, Component flag) {
+    lua_getglobal(L, "flag");
+    lua_pushstring(L, name);
+
+    Component& ret = * (Component*) lua_newuserdata(L, sizeof(Component));
+    luaL_getmetatable(L, "harp.flag");
+    lua_setmetatable(L, -2);
+
+    ret = flag;
+
+    lua_settable(L, -3);
+    lua_pop(L, 1);
+}
+
 //
 // Exported Functions
 //
@@ -292,6 +321,7 @@ void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.blob");
     luaL_newmetatable(L, "harp.entity");
     luaL_newmetatable(L, "harp.component");
+    luaL_newmetatable(L, "harp.flag");
     luaL_newmetatable(L, "harp.sprite");
     luaL_newmetatable(L, "harp.shader");
 
@@ -317,6 +347,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_createEntity); lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_deleteEntity); lua_setglobal(L, "deleteEntity");
     lua_pushcfunction(L, l_setComponent); lua_setglobal(L, "setComponent");
+    lua_pushcfunction(L, l_setFlag);      lua_setglobal(L, "setFlag");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 
     lua_pushcfunction(L, l_Sprite);     lua_setglobal(L, "Sprite");
@@ -332,10 +363,15 @@ void luaopen_harp(lua_State* L) {
     lua_newtable(L);
     lua_setglobal(L, "comp");
 
-    setComponentGlobal(L, "position", comp_position);
-    setComponentGlobal(L, "velocity", comp_velocity);
+    setComponentGlobal(L, "position",     comp_position);
+    setComponentGlobal(L, "velocity",     comp_velocity);
     setComponentGlobal(L, "acceleration", comp_acceleration);
-    setComponentGlobal(L, "visual",   comp_visual);
+    setComponentGlobal(L, "visual",       comp_visual);
+
+    lua_newtable(L);
+    lua_setglobal(L, "flag");
+
+    setFlagGlobal(L, "hidden", flag_hidden);
 }
 
 int getGlobalInt(lua_State* L, const char* global) {
