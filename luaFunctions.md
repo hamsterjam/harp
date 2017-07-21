@@ -49,7 +49,7 @@ Creates a new Shader. The paramaters vertSrc and fragSrc are strings containing 
 
 Creates a usertype representing a Vector<2, double>. The two arguments x and y are numbers.
 
-`spc getSpriteSpecDef(spr, dx, dy)`
+`spc getSpriteSpec(spr, dx, dy)`
 
 Returns a usertype representing a VisualSpec for drawing a Sprite spr using the default shader. The two numbers dx and dy represent offsets from the position.
 

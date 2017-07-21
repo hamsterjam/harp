@@ -179,17 +179,37 @@ static int l_Sprite(lua_State* L) {
     return 1;
 }
 
-static int l_getSpriteSpecDef(lua_State* L) {
-    luaL_checkudata(L, 1, "harp.sprite");
-    Sprite& spr = ** (Sprite**) lua_touserdata(L, 1);
-    int dx = luaL_checkinteger(L, 2);
-    int dy = luaL_checkinteger(L, 3);
+static int l_SpriteVisualSpec(lua_State* L) {
+    Sprite* spr;
+    Shader* shd;
+    int dx, dy;
+
+    int numArgs = lua_gettop(L);
+    if (numArgs == 3) {
+        luaL_checkudata(L, 1, "harp.sprite");
+        spr = * (Sprite**) lua_touserdata(L, 1);
+        dx = luaL_checkinteger(L, 2);
+        dy = luaL_checkinteger(L, 3);
+
+        shd = defaultShader;
+    }
+    else if (numArgs == 4) {
+        luaL_checkudata(L, 1, "harp.shader");
+        shd = * (Shader**) lua_touserdata(L, 1);
+        luaL_checkudata(L, 2, "harp.sprite");
+        spr = * (Sprite**) lua_touserdata(L, 2);
+        dx = luaL_checkinteger(L, 3);
+        dy = luaL_checkinteger(L, 4);
+    }
+    else {
+        luaL_error(L, "SpriteVisualSpec takes either 3 or 4 arguments, found %d", numArgs);
+    }
 
     VisualSpec* ret = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *ret = getSpriteSpec(*defaultShader, spr, dx, dy);
+    *ret = getSpriteSpec(*shd, *spr, dx, dy);
 
     return 1;
 }
@@ -347,7 +367,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_Sprite);     lua_setglobal(L, "Sprite");
     lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
 
-    lua_pushcfunction(L, l_getSpriteSpecDef); lua_setglobal(L, "getSpriteSpecDef");
+    lua_pushcfunction(L, l_SpriteVisualSpec); lua_setglobal(L, "SpriteVisualSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
