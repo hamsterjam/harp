@@ -207,14 +207,14 @@ static int l_Shader(lua_State* L) {
     return 1;
 }
 
-static int l_SpriteVisSpec(lua_State* L) {
+static int l_SpriteSpec(lua_State* L) {
     Shader* shd = defaultShader;
     Sprite* spr;
     float dx, dy;
 
     int numArgs = lua_gettop(L);
     if (!(numArgs == 3 || numArgs == 4)) {
-        luaL_error(L, "SpriteVisSpec takes either 3 or 4 arguments, found %d", numArgs);
+        luaL_error(L, "SpriteSpec takes either 3 or 4 arguments, found %d", numArgs);
     }
     if (numArgs == 4) {
         luaL_checkudata(L, 1, "harp.shader");
@@ -236,14 +236,14 @@ static int l_SpriteVisSpec(lua_State* L) {
     return 1;
 }
 
-static int l_RectangleVisSpec(lua_State* L) {
+static int l_RectangleSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
     float x, y, w, h, lineW;
     Color color;
 
     int numArgs = lua_gettop(L);
     if (!(numArgs == 7 || numArgs != 8)) {
-        luaL_error(L, "RectangleVisSpec takes 6 or 7 arguments, found %d.", numArgs);
+        luaL_error(L, "RectangleSpec takes 6 or 7 arguments, found %d.", numArgs);
     }
     if (numArgs == 7) {
         luaL_checkudata(L, 1, "harp.primitiverenderer");
@@ -269,21 +269,38 @@ static int l_RectangleVisSpec(lua_State* L) {
     return 1;
 }
 
-static int l_RoundedRectangleVisSpec(lua_State* L) {
-    PrimitiveRenderer* prim;
+static int l_RoundedRectangleSpec(lua_State* L) {
+    PrimitiveRenderer* prim = defaultPrim;
     float x, y, w, h, r, lineW;
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (numArgs == 7) {
-        prim = defaultPrim;
+    if (!(numArgs == 7 || numArgs == 8)) {
+        luaL_error(L, "RoundedRectangleSpec takes either 7 or 8 arguments, fount %d.", numArgs);
+    }
+    if (numArgs == 8) {
+        luaL_checkudata(L, 1, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
 
+        lua_remove(L, 1);
     }
-    else if (numArgs == 8) {
-    }
-    else {
-        luaL_error(L, "RoundedRectangleVisSpec takes either 7 or 8 arguments, fount %d.", numArgs);
-    }
+    x = (float) luaL_checknumber(L, 1);
+    y = (float) luaL_checknumber(L, 2);
+    w = (float) luaL_checknumber(L, 3);
+    h = (float) luaL_checknumber(L, 4);
+    r = (float) luaL_checknumber(L, 5);
+    lineW = (float) luaL_checknumber(L, 6);
+
+    luaL_checktype(L, 7, LUA_TTABLE);
+    color = getColor(L, 7);
+
+    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *spec = getRoundedRectangleSpec(*prim, x, y, w, h, r, lineW, color);
+
+    return 1;
 }
 
 //
@@ -468,8 +485,9 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_Shader);     lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
 
-    lua_pushcfunction(L, l_SpriteVisSpec);    lua_setglobal(L, "SpriteVisSpec");
-    lua_pushcfunction(L, l_RectangleVisSpec); lua_setglobal(L, "RectangleVisSpec");
+    lua_pushcfunction(L, l_SpriteSpec);           lua_setglobal(L, "SpriteSpec");
+    lua_pushcfunction(L, l_RectangleSpec);        lua_setglobal(L, "RectangleSpec");
+    lua_pushcfunction(L, l_RoundedRectangleSpec); lua_setglobal(L, "RoundedRectangleSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");

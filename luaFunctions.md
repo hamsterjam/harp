@@ -49,17 +49,17 @@ The only required field is filename. If def contains any one of tileW, tileH, ti
 
 Creates a new Shader. The paramaters vertSrc and fragSrc are strings containing the source of the vertex and fragment shaders resepctively. Returns a usertype representing the shader.
 
-`spc SpriteVisualSpec(spr, dx, dy)`
+`spec SpriteSpec(shd, spr, dx, dy)`
 
-Returns a usertype representing a VisualSpec for drawing a Sprite spr using the default shader. The two numbers dx and dy represent offsets from the position.
+Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position. The first argument may be omited in which case the default Shader will be used.
 
-`spec SpriteVisualSpec(shd, spr, dx, dy)`
+`spec RectangleSpec(prim, dx, dy, w, h, lineW, color)`
 
-Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position.
+Returns a usertype represent a VisualSpec for drawing a rectangle. The first argument may be omited in which case the default PrimitiveRenderer will be used
 
-`spec RectangleVisualSpec(prim, dx, dy, w, h, lineW, color)`
+`spec RoundedRectangleSpec(prim, dx, dy, w, h, r, lineW, color)`
 
-Returns a usertype represent a VisualSpec for drawing a Rectangle.
+Returns a usertype represent a VisualSpec for drawing a rounded rectangle. The first argument may be omited in which case the default PrimitiveRenderer will be used
 
 Auxillary
 ---------
