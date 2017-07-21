@@ -22,6 +22,10 @@ extern "C" {
 #include <graphics/FontRenderer.h>
 #include <graphics/VisualSpec.h>
 
+static const char* checkFieldString(const char* name, int index);
+static int checkFieldInteger(const char* name, int index);
+static Color getColor(lua_State* L, int index);
+
 //
 // Harp Lua Functions
 //
@@ -94,9 +98,6 @@ static int l_Vec2Double(lua_State* L) {
     ret->data[1] = val2;
     return 1;
 }
-
-static const char* checkFieldString(const char* name, int index);
-static int checkFieldInteger(const char* name, int index);
 
 static int l_Sprite(lua_State* L) {
 
@@ -206,31 +207,25 @@ static int l_Shader(lua_State* L) {
     return 1;
 }
 
-static int l_SpriteVisualSpec(lua_State* L) {
+static int l_SpriteVisSpec(lua_State* L) {
+    Shader* shd = defaultShader;
     Sprite* spr;
-    Shader* shd;
     float dx, dy;
 
     int numArgs = lua_gettop(L);
-    if (numArgs == 3) {
-        luaL_checkudata(L, 1, "harp.sprite");
-        spr = * (Sprite**) lua_touserdata(L, 1);
-        dx = (float) luaL_checknumber(L, 2);
-        dy = (float) luaL_checknumber(L, 3);
-
-        shd = defaultShader;
+    if (!(numArgs == 3 || numArgs == 4)) {
+        luaL_error(L, "SpriteVisSpec takes either 3 or 4 arguments, found %d", numArgs);
     }
-    else if (numArgs == 4) {
+    if (numArgs == 4) {
         luaL_checkudata(L, 1, "harp.shader");
         shd = * (Shader**) lua_touserdata(L, 1);
-        luaL_checkudata(L, 2, "harp.sprite");
-        spr = * (Sprite**) lua_touserdata(L, 2);
-        dx = (float) luaL_checknumber(L, 3);
-        dy = (float) luaL_checknumber(L, 4);
+        lua_remove(L, 1);
     }
-    else {
-        luaL_error(L, "SpriteVisualSpec takes either 3 or 4 arguments, found %d", numArgs);
-    }
+
+    luaL_checkudata(L, 1, "harp.sprite");
+    spr = * (Sprite**) lua_touserdata(L, 1);
+    dx = (float) luaL_checknumber(L, 2);
+    dy = (float) luaL_checknumber(L, 3);
 
     VisualSpec* ret = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
     luaL_getmetatable(L, "harp.blob");
@@ -241,49 +236,29 @@ static int l_SpriteVisualSpec(lua_State* L) {
     return 1;
 }
 
-static int l_RectangleVisualSpec(lua_State* L) {
-    PrimitiveRenderer* prim;
+static int l_RectangleVisSpec(lua_State* L) {
+    PrimitiveRenderer* prim = defaultPrim;
     float x, y, w, h, lineW;
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (numArgs == 6) {
-        prim = defaultPrim;
-
-        x = (float) luaL_checknumber(L, 1);
-        y = (float) luaL_checknumber(L, 2);
-        w = (float) luaL_checknumber(L, 3);
-        h = (float) luaL_checknumber(L, 4);
-        lineW = (float) luaL_checknumber(L, 5);
-        luaL_checktype(L, 6, LUA_TTABLE);
+    if (!(numArgs == 7 || numArgs != 8)) {
+        luaL_error(L, "RectangleVisSpec takes 6 or 7 arguments, found %d.", numArgs);
     }
-    else if (numArgs == 7) {
+    if (numArgs == 7) {
         luaL_checkudata(L, 1, "harp.primitiverenderer");
         prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
 
-        x = (float) luaL_checknumber(L, 2);
-        y = (float) luaL_checknumber(L, 3);
-        w = (float) luaL_checknumber(L, 4);
-        h = (float) luaL_checknumber(L, 5);
-        lineW = (float) luaL_checknumber(L, 6);
-        luaL_checktype(L, 7, LUA_TTABLE);
+        lua_remove(L, 1);
+    }
+    x = (float) luaL_checknumber(L, 1);
+    y = (float) luaL_checknumber(L, 2);
+    w = (float) luaL_checknumber(L, 3);
+    h = (float) luaL_checknumber(L, 4);
+    lineW = (float) luaL_checknumber(L, 5);
 
-        lua_insert(L, 6);
-    }
-    else {
-        luaL_error(L, "RectangleVisualSpec takes 6 or 7 arguments, found %d.", numArgs);
-    }
-    // The color table should be in slot 6 in either case
-    lua_getfield(L, 6, "r");
-    lua_getfield(L, 6, "g");
-    lua_getfield(L, 6, "b");
-    lua_getfield(L, 6, "a");
-    float r = (float) lua_tonumber(L, -4);
-    float g = (float) lua_tonumber(L, -3);
-    float b = (float) lua_tonumber(L, -2);
-    float a = (float) lua_tonumber(L, -1);
-    color = rgbaToColor(r, g, b, a);
-    lua_pop(L, 4);
+    luaL_checktype(L, 6, LUA_TTABLE);
+    color = getColor(L, 6);
 
     VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
     luaL_getmetatable(L, "harp.blob");
@@ -292,6 +267,23 @@ static int l_RectangleVisualSpec(lua_State* L) {
     *spec = getRectangleSpec(*prim, x, y, w, h, lineW, color);
 
     return 1;
+}
+
+static int l_RoundedRectangleVisSpec(lua_State* L) {
+    PrimitiveRenderer* prim;
+    float x, y, w, h, r, lineW;
+    Color color;
+
+    int numArgs = lua_gettop(L);
+    if (numArgs == 7) {
+        prim = defaultPrim;
+
+    }
+    else if (numArgs == 8) {
+    }
+    else {
+        luaL_error(L, "RoundedRectangleVisSpec takes either 7 or 8 arguments, fount %d.", numArgs);
+    }
 }
 
 //
@@ -381,6 +373,22 @@ static int checkFieldInteger(const char* name, int index) {
     return ret;
 }
 
+static Color getColor(lua_State* L, int index) {
+    lua_getfield(L, index, "r");
+    lua_getfield(L, index, "g");
+    lua_getfield(L, index, "b");
+    lua_getfield(L, index, "a");
+
+    float r = (float) lua_tonumber(L, -4);
+    float g = (float) lua_tonumber(L, -3);
+    float b = (float) lua_tonumber(L, -2);
+    float a = (float) lua_tonumber(L, -1);
+
+    lua_pop(L, 4);
+
+    return rgbaToColor(r, g, b, a);
+}
+
 static void setComponentGlobal(lua_State* L, const char* name, Component comp) {
     lua_getglobal(L, "comp");
     lua_pushstring(L, name);
@@ -460,8 +468,8 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_Shader);     lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
 
-    lua_pushcfunction(L, l_SpriteVisualSpec);    lua_setglobal(L, "SpriteVisualSpec");
-    lua_pushcfunction(L, l_RectangleVisualSpec); lua_setglobal(L, "RectangleVisualSpec");
+    lua_pushcfunction(L, l_SpriteVisSpec);    lua_setglobal(L, "SpriteVisSpec");
+    lua_pushcfunction(L, l_RectangleVisSpec); lua_setglobal(L, "RectangleVisSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
