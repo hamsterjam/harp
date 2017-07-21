@@ -3,6 +3,8 @@ readFile = function(src)
     return io.read("a")
 end
 
+loadfile("script/harp.lua")()
+
 screenWidth  = 640
 screenHeight = 480
 
