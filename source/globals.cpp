@@ -57,11 +57,15 @@ void initGlobals() {
     TextureAtlas consoleFontAtlas("res/testfont.png", 8, 12, 0, 0);
     consoleFont = new FontRenderer(consoleFontAtlas, ' ', '~');
 
+    Console::init(*defaultPrim, *consoleFont);
+
     // Call the Lua init function
     lua_getglobal(L, "init");
-    lua_call(L, 0, 0);
-
-    Console::init(*defaultPrim, *consoleFont);
+    if (lua_pcall(L, 0, 0, 0)) {
+        const char* errorMessage = lua_tostring(L, -1);
+        std::cerr << errorMessage << std::endl;
+        lua_pop(L, 1);
+    }
 }
 
 void cleanupGlobals() {

@@ -17,6 +17,9 @@ extern "C" {
 #include <graphics/Texture.h>
 #include <graphics/TextureAtlas.h>
 #include <graphics/Sprite.h>
+#include <graphics/Color.h>
+#include <graphics/PrimitiveRenderer.h>
+#include <graphics/FontRenderer.h>
 #include <graphics/VisualSpec.h>
 
 //
@@ -206,14 +209,14 @@ static int l_Shader(lua_State* L) {
 static int l_SpriteVisualSpec(lua_State* L) {
     Sprite* spr;
     Shader* shd;
-    int dx, dy;
+    float dx, dy;
 
     int numArgs = lua_gettop(L);
     if (numArgs == 3) {
         luaL_checkudata(L, 1, "harp.sprite");
         spr = * (Sprite**) lua_touserdata(L, 1);
-        dx = luaL_checkinteger(L, 2);
-        dy = luaL_checkinteger(L, 3);
+        dx = (float) luaL_checknumber(L, 2);
+        dy = (float) luaL_checknumber(L, 3);
 
         shd = defaultShader;
     }
@@ -222,8 +225,8 @@ static int l_SpriteVisualSpec(lua_State* L) {
         shd = * (Shader**) lua_touserdata(L, 1);
         luaL_checkudata(L, 2, "harp.sprite");
         spr = * (Sprite**) lua_touserdata(L, 2);
-        dx = luaL_checkinteger(L, 3);
-        dy = luaL_checkinteger(L, 4);
+        dx = (float) luaL_checknumber(L, 3);
+        dy = (float) luaL_checknumber(L, 4);
     }
     else {
         luaL_error(L, "SpriteVisualSpec takes either 3 or 4 arguments, found %d", numArgs);
@@ -238,6 +241,58 @@ static int l_SpriteVisualSpec(lua_State* L) {
     return 1;
 }
 
+static int l_RectangleVisualSpec(lua_State* L) {
+    PrimitiveRenderer* prim;
+    float x, y, w, h, lineW;
+    Color color;
+
+    int numArgs = lua_gettop(L);
+    if (numArgs == 6) {
+        prim = defaultPrim;
+
+        x = (float) luaL_checknumber(L, 1);
+        y = (float) luaL_checknumber(L, 2);
+        w = (float) luaL_checknumber(L, 3);
+        h = (float) luaL_checknumber(L, 4);
+        lineW = (float) luaL_checknumber(L, 5);
+        luaL_checktype(L, 6, LUA_TTABLE);
+    }
+    else if (numArgs == 7) {
+        luaL_checkudata(L, 1, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+
+        x = (float) luaL_checknumber(L, 2);
+        y = (float) luaL_checknumber(L, 3);
+        w = (float) luaL_checknumber(L, 4);
+        h = (float) luaL_checknumber(L, 5);
+        lineW = (float) luaL_checknumber(L, 6);
+        luaL_checktype(L, 7, LUA_TTABLE);
+
+        lua_insert(L, 6);
+    }
+    else {
+        luaL_error(L, "RectangleVisualSpec takes 6 or 7 arguments, found %d.", numArgs);
+    }
+    // The color table should be in slot 6 in either case
+    lua_getfield(L, 6, "r");
+    lua_getfield(L, 6, "g");
+    lua_getfield(L, 6, "b");
+    lua_getfield(L, 6, "a");
+    float r = (float) lua_tonumber(L, -4);
+    float g = (float) lua_tonumber(L, -3);
+    float b = (float) lua_tonumber(L, -2);
+    float a = (float) lua_tonumber(L, -1);
+    color = rgbaToColor(r, g, b, a);
+    lua_pop(L, 4);
+
+    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *spec = getRectangleSpec(*prim, x, y, w, h, lineW, color);
+
+    return 1;
+}
 
 //
 // Auxiliary
@@ -270,6 +325,22 @@ static int l_callShaderDestructor(lua_State* L) {
     luaL_checkudata(L, 1, "harp.shader");
     auto shd = (Shader**) lua_touserdata(L, 1);
     delete *shd;
+
+    return 0;
+}
+
+static int l_callPrimitiveRendererDestructor(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.primitiverenderer");
+    auto prim = (PrimitiveRenderer**) lua_touserdata(L, 1);
+    delete *prim;
+
+    return 0;
+}
+
+static int l_callFontRendererDestructor(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.fontrenderer");
+    auto font = (FontRenderer**) lua_touserdata(L, 1);
+    delete *font;
 
     return 0;
 }
@@ -352,23 +423,30 @@ void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.flag");
     luaL_newmetatable(L, "harp.sprite");
     luaL_newmetatable(L, "harp.shader");
+    luaL_newmetatable(L, "harp.primitiverenderer");
+    luaL_newmetatable(L, "harp.fontrenderer");
 
     luaL_getmetatable(L, "harp.entity");
-    lua_pushstring(L, "__gc");
     lua_pushcfunction(L, l_deleteEntity);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "__gc");
 
     luaL_getmetatable(L, "harp.sprite");
-    lua_pushstring(L, "__gc");
     lua_pushcfunction(L, l_callSpriteDestructor);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "__gc");
 
     luaL_getmetatable(L, "harp.shader");
-    lua_pushstring(L, "__gc");
     lua_pushcfunction(L, l_callShaderDestructor);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "__gc");
 
-    lua_pop(L, 3);
+    luaL_getmetatable(L, "harp.primitiverenderer");
+    lua_pushcfunction(L, l_callPrimitiveRendererDestructor);
+    lua_setfield(L, -2, "__gc");
+
+    luaL_getmetatable(L, "harp.fontrenderer");
+    lua_pushcfunction(L, l_callFontRendererDestructor);
+    lua_setfield(L, -2, "__gc");
+
+    lua_pop(L, 5);
 
     // Functions
 
@@ -382,8 +460,8 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_Shader);     lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
 
-    lua_pushcfunction(L, l_SpriteVisualSpec); lua_setglobal(L, "SpriteVisualSpec");
-
+    lua_pushcfunction(L, l_SpriteVisualSpec);    lua_setglobal(L, "SpriteVisualSpec");
+    lua_pushcfunction(L, l_RectangleVisualSpec); lua_setglobal(L, "RectangleVisualSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");

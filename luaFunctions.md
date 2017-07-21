@@ -57,6 +57,10 @@ Returns a usertype representing a VisualSpec for drawing a Sprite spr using the 
 
 Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position.
 
+`spec RectangleVisualSpec(prim, dx, dy, w, h, lineW, color)`
+
+Returns a usertype represent a VisualSpec for drawing a Rectangle.
+
 Auxillary
 ---------
 
