@@ -81,7 +81,7 @@ end
 
 function ElipseFillSpec(...)
     local numArgs = #{...}
-    if  numArgs == 5 then
+    if numArgs == 5 then
         local x, y, rx, ry, color = ...
         return ElipseArcSpec(x, y, rx, ry, 0, 360, 0, color);
     elseif numArgs == 6 then
@@ -94,7 +94,7 @@ end
 
 function ElipseSpec(...)
     local numArgs = #{...}
-    if  numArgs == 6 then
+    if numArgs == 6 then
         local x, y, rx, ry, lineW, color = ...
         return ElipseArcSpec(x, y, rx, ry, 0, 360, lineW, color);
     elseif numArgs == 7 then
@@ -107,14 +107,27 @@ end
 
 function ElipseSegmentSpec(...)
     local numArgs = #{...}
-    if  numArgs == 7 then
+    if numArgs == 7 then
         local x, y, rx, ry, theta1, theta2, color = ...
         return ElipseArcSpec(x, y, rx, ry, theta1, theta2, 0, color);
     elseif numArgs == 8 then
         local prim,x, y, rx, ry, theta1, theta2, color = ...
         return ElipseArcSpec(prim, x, y, rx, ry, theta1, theta2, 0, color);
     else
-        error("ElipseFillSpec takes 5 or 6 arguments, found " .. numArgs .. ".")
+        error("ElipseSegmentSpec takes 7 or 8 arguments, found " .. numArgs .. ".")
+    end
+end
+
+function TriangleFillSpec(...)
+    local numArgs = #{...}
+    if numArgs == 7 then
+        local x1, y1, x2, y2, x3, y3, color = ...
+        return TriangleSpec(x1, y1, x2, y2, x3, y3, 0, color)
+    elseif numArgs == 8 then
+        local prim, x1, y1, x2, y2, x3, y3, color = ...
+        return TriangleSpec(prim, x1, y1, x2, y2, x3, y3, 0, color)
+    else
+        error("TriangleSpec takes 7 or 8 arguments, found " .. numArgs .. ".")
     end
 end
 

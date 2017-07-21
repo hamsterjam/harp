@@ -96,7 +96,7 @@ void system_draw(ECS& ecs) {
                 float y1 = pos[1] + spec.prim.p2;
                 float x2 = pos[0] + spec.prim.p3;
                 float y2 = pos[1] + spec.prim.p4;
-                float lineW = spec.prim.p7;
+                float lineW = spec.prim.p5;
                 Color color = spec.prim.color;
 
                 prim.drawLine(x1, y1, x2, y2, lineW, color);

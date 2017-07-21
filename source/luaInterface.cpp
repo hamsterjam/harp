@@ -341,6 +341,76 @@ static int l_ElipseArcSpec(lua_State* L) {
     return 1;
 }
 
+static int l_TriangleSpec(lua_State* L) {
+    PrimitiveRenderer* prim = defaultPrim;
+    float x1, y1, x2, y2, x3, y3, lineW;
+    Color color;
+
+    int numArgs = lua_gettop(L);
+    if (!(numArgs == 8 || numArgs == 9)) {
+        luaL_error(L, "TriangleSpec takes 8 or 9 arguments, found %d.", numArgs);
+    }
+    if (numArgs == 9) {
+        luaL_checkudata(L, 1, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+
+        lua_remove(L, 1);
+    }
+
+    x1    = (float) luaL_checknumber(L, 1);
+    y1    = (float) luaL_checknumber(L, 2);
+    x2    = (float) luaL_checknumber(L, 3);
+    y2    = (float) luaL_checknumber(L, 4);
+    x3    = (float) luaL_checknumber(L, 5);
+    y3    = (float) luaL_checknumber(L, 6);
+    lineW = (float) luaL_checknumber(L, 7);
+
+    luaL_checktype(L, 8, LUA_TTABLE);
+    color = getColor(L, 8);
+
+    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *spec = getTriangleSpec(*prim, x1, y1, x2, y2, x3, y3, lineW, color);
+
+    return 1;
+}
+
+static int l_LineSpec(lua_State* L) {
+    PrimitiveRenderer* prim = defaultPrim;
+    float x1, y1, x2, y2, lineW;
+    Color color;
+
+    int numArgs = lua_gettop(L);
+    if (!(numArgs == 6 || numArgs == 7)) {
+        luaL_error(L, "LineSpec takes 6 or 7 arguments, doun %d.", numArgs);
+    }
+    if (numArgs == 7) {
+        luaL_checkudata(L, 1, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+
+        lua_remove(L, 1);
+    }
+
+    x1    = (float) luaL_checknumber(L, 1);
+    y1    = (float) luaL_checknumber(L, 2);
+    x2    = (float) luaL_checknumber(L, 3);
+    y2    = (float) luaL_checknumber(L, 4);
+    lineW = (float) luaL_checknumber(L, 5);
+
+    luaL_checktype(L, 6, LUA_TTABLE);
+    color = getColor(L, 6);
+
+    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *spec = getLineSpec(*prim, x1, y1, x2, y2, lineW, color);
+
+    return 1;
+}
+
 //
 // Auxiliary
 //
@@ -527,6 +597,8 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_RectangleSpec);        lua_setglobal(L, "RectangleSpec");
     lua_pushcfunction(L, l_RoundedRectangleSpec); lua_setglobal(L, "RoundedRectangleSpec");
     lua_pushcfunction(L, l_ElipseArcSpec);        lua_setglobal(L, "ElipseArcSpec");
+    lua_pushcfunction(L, l_TriangleSpec);         lua_setglobal(L, "TriangleSpec");
+    lua_pushcfunction(L, l_LineSpec);             lua_setglobal(L, "LineSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
