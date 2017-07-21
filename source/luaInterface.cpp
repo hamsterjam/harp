@@ -214,7 +214,7 @@ static int l_SpriteSpec(lua_State* L) {
 
     int numArgs = lua_gettop(L);
     if (!(numArgs == 3 || numArgs == 4)) {
-        luaL_error(L, "SpriteSpec takes either 3 or 4 arguments, found %d", numArgs);
+        luaL_error(L, "SpriteSpec takes 3 or 4 arguments, found %d", numArgs);
     }
     if (numArgs == 4) {
         luaL_checkudata(L, 1, "harp.shader");
@@ -251,10 +251,11 @@ static int l_RectangleSpec(lua_State* L) {
 
         lua_remove(L, 1);
     }
-    x = (float) luaL_checknumber(L, 1);
-    y = (float) luaL_checknumber(L, 2);
-    w = (float) luaL_checknumber(L, 3);
-    h = (float) luaL_checknumber(L, 4);
+
+    x     = (float) luaL_checknumber(L, 1);
+    y     = (float) luaL_checknumber(L, 2);
+    w     = (float) luaL_checknumber(L, 3);
+    h     = (float) luaL_checknumber(L, 4);
     lineW = (float) luaL_checknumber(L, 5);
 
     luaL_checktype(L, 6, LUA_TTABLE);
@@ -276,7 +277,7 @@ static int l_RoundedRectangleSpec(lua_State* L) {
 
     int numArgs = lua_gettop(L);
     if (!(numArgs == 7 || numArgs == 8)) {
-        luaL_error(L, "RoundedRectangleSpec takes either 7 or 8 arguments, fount %d.", numArgs);
+        luaL_error(L, "RoundedRectangleSpec takes 7 or 8 arguments, fount %d.", numArgs);
     }
     if (numArgs == 8) {
         luaL_checkudata(L, 1, "harp.primitiverenderer");
@@ -284,11 +285,12 @@ static int l_RoundedRectangleSpec(lua_State* L) {
 
         lua_remove(L, 1);
     }
-    x = (float) luaL_checknumber(L, 1);
-    y = (float) luaL_checknumber(L, 2);
-    w = (float) luaL_checknumber(L, 3);
-    h = (float) luaL_checknumber(L, 4);
-    r = (float) luaL_checknumber(L, 5);
+
+    x     = (float) luaL_checknumber(L, 1);
+    y     = (float) luaL_checknumber(L, 2);
+    w     = (float) luaL_checknumber(L, 3);
+    h     = (float) luaL_checknumber(L, 4);
+    r     = (float) luaL_checknumber(L, 5);
     lineW = (float) luaL_checknumber(L, 6);
 
     luaL_checktype(L, 7, LUA_TTABLE);
@@ -299,6 +301,42 @@ static int l_RoundedRectangleSpec(lua_State* L) {
     lua_setmetatable(L, -2);
 
     *spec = getRoundedRectangleSpec(*prim, x, y, w, h, r, lineW, color);
+
+    return 1;
+}
+
+static int l_ElipseArcSpec(lua_State* L) {
+    PrimitiveRenderer* prim = defaultPrim;
+    float x, y, rx, ry, theta1, theta2, lineW;
+    Color color;
+
+    int numArgs = lua_gettop(L);
+    if (!(numArgs == 8 || numArgs == 9)) {
+        luaL_error(L, "ElipseArcSpec takes 8 or 9 arguments, found %d.", numArgs);
+    }
+    if (numArgs == 9) {
+        luaL_checkudata(L, 1, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+
+        lua_remove(L, 1);
+    }
+
+    x      = (float) luaL_checknumber(L, 1);
+    y      = (float) luaL_checknumber(L, 2);
+    rx     = (float) luaL_checknumber(L, 3);
+    ry     = (float) luaL_checknumber(L, 4);
+    theta1 = (float) luaL_checknumber(L, 5);
+    theta2 = (float) luaL_checknumber(L, 6);
+    lineW  = (float) luaL_checknumber(L, 7);
+
+    luaL_checktype(L, 8, LUA_TTABLE);
+    color = getColor(L, 8);
+
+    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *spec = getElipseArcSpec(*prim, x, y, rx, ry, theta1, theta2, lineW, color);
 
     return 1;
 }
@@ -488,6 +526,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_SpriteSpec);           lua_setglobal(L, "SpriteSpec");
     lua_pushcfunction(L, l_RectangleSpec);        lua_setglobal(L, "RectangleSpec");
     lua_pushcfunction(L, l_RoundedRectangleSpec); lua_setglobal(L, "RoundedRectangleSpec");
+    lua_pushcfunction(L, l_ElipseArcSpec);        lua_setglobal(L, "ElipseArcSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
