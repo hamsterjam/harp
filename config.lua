@@ -21,7 +21,7 @@ primShader = {
 init = (function()
     local sprMiku = {
         {
-            filename = "res/test.png",
+            filename = "res/test.png";
         }
     }
 

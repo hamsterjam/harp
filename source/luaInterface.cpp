@@ -81,7 +81,11 @@ static int l_setParent(lua_State* L) {
     return 0;
 }
 
+static const char* checkFieldString(const char* name, int index);
+static int checkFieldInteger(const char* name, int index);
+
 static int l_Sprite(lua_State* L) {
+
     Sprite* spr = new Sprite();
 
     luaL_checktype(L, 1, LUA_TTABLE);
@@ -97,17 +101,11 @@ static int l_Sprite(lua_State* L) {
         luaL_checktype(L, -1, LUA_TTABLE);
 
         // Get the strings that specify our image
-        lua_getfield(L, -1, "filename");
-        filename = luaL_checkstring(L, -1);
-        lua_pop(L, 1);
+        filename   = checkFieldString("filename", i);
+        texUniform = checkFieldString("uniform",  i);
+        UVAttrib   = checkFieldString("UVAttrib", i);
 
-        lua_getfield(L, -1, "uniform");
-        if (!lua_isnil(L, -1)) texUniform = luaL_checkstring(L, -1);
-        lua_pop(L, 1);
-
-        lua_getfield(L, -1, "UVAttrib");
-        if (!lua_isnil(L, -1)) UVAttrib = luaL_checkstring(L, -1);
-        lua_pop(L, 1);
+        if (!filename) luaL_error(L, "No filename in member #%d", i);
 
         // Test if we are using a texture atlas or not
         lua_pushstring(L, "tileW");
@@ -116,24 +114,10 @@ static int l_Sprite(lua_State* L) {
         lua_pop(L, 1);
         if (usesAtlas) {
             // Use a texture atlas!
-            int tileW, tileH;
-            int tileX, tileY;
-
-            lua_getfield(L, -1, "tileW");
-            tileW = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
-
-            lua_getfield(L, -1, "tileH");
-            tileH = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
-
-            lua_getfield(L, -1, "tileX");
-            tileX = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
-
-            lua_getfield(L, -1, "tileY");
-            tileY = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
+            int tileW = checkFieldInteger("tileW", i);
+            int tileH = checkFieldInteger("tileH", i);
+            int tileX = checkFieldInteger("tileX", i);
+            int tileY = checkFieldInteger("tileY", i);
 
             TextureAtlas atlas(filename, tileW, tileH, 0, 0);
 
@@ -157,24 +141,10 @@ static int l_Sprite(lua_State* L) {
 
         if (usesUV) {
             // Grab the custom UV coordinates
-            unsigned int x, y;
-            int w, h;
-
-            lua_getfield(L, -1, "x");
-            x = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
-
-            lua_getfield(L, -1, "y");
-            y = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
-
-            lua_getfield(L, -1, "w");
-            w = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
-
-            lua_getfield(L, -1, "h");
-            h = luaL_checkinteger(L, -1);
-            lua_pop(L, 1);
+            unsigned int x = checkFieldInteger("x", i);
+            unsigned int y = checkFieldInteger("y", i);
+            int w = checkFieldInteger("w", i);
+            int h = checkFieldInteger("h", i);
 
             if (texUniform && UVAttrib) {
                 spr->addSubImage(filename, texUniform, UVAttrib, x, y, w, h);
@@ -280,6 +250,30 @@ static void readyTable(lua_State* L, const char* table) {
         std::cerr << "\"" << table << "\" is not a table." << std::endl;
         std::exit(1);
     }
+}
+
+static const char* checkFieldString(const char* name, int index) {
+    lua_getfield(L, -1, name);
+    if (lua_isnil(L, -1)) {
+        lua_pop(L, 1);
+        return 0;
+    }
+    if (!lua_isstring(L, -1)) {
+        luaL_error(L, "In member #%d, %s is a %s, expected a string", index, name, lua_typename(L, -1));
+    }
+    const char* ret  = lua_tostring(L, -1);
+    lua_pop(L, 1);
+    return ret;
+}
+
+static int checkFieldInteger(const char* name, int index) {
+    lua_getfield(L, -1, name);
+    if (!lua_isinteger(L, -1)) {
+        luaL_error(L, "In member #%d, %s is a %s, expected a integer", index, name, lua_typename(L, -1));
+    }
+    int ret  = lua_tointeger(L, -1);
+    lua_pop(L, 1);
+    return ret;
 }
 
 static void setComponentGlobal(lua_State* L, const char* name, Component comp) {
