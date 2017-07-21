@@ -21,7 +21,7 @@ primShader = {
 init = (function()
     local sprMiku = {
         {
-            filename = "res/test.png";
+            filename = "res/test.png"
         }
     }
 
@@ -37,7 +37,7 @@ init = (function()
     end
 
     return function()
-        sprMiku = Sprite(sprMiku);
+        sprMiku = Sprite(sprMiku)
 
         miku = makeMiku(200, 200)
     end
