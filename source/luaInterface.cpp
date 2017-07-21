@@ -81,6 +81,17 @@ static int l_setParent(lua_State* L) {
     return 0;
 }
 
+static int l_Vec2Double(lua_State* L) {
+    double val1 = luaL_checknumber(L, 1);
+    double val2 = luaL_checknumber(L, 2);
+    auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+    ret->data[0] = val1;
+    ret->data[1] = val2;
+    return 1;
+}
+
 static const char* checkFieldString(const char* name, int index);
 static int checkFieldInteger(const char* name, int index);
 
@@ -179,6 +190,19 @@ static int l_Sprite(lua_State* L) {
     return 1;
 }
 
+static int l_Shader(lua_State* L) {
+    const char* vertSrc = luaL_checkstring(L, 1);
+    const char* fragSrc = luaL_checkstring(L, 2);
+
+    auto ret = (Shader**) lua_newuserdata(L, sizeof(Sprite*));
+    luaL_getmetatable(L, "harp.shader");
+    lua_setmetatable(L, -2);
+
+    *ret = new Shader(vertSrc, fragSrc);
+
+    return 1;
+}
+
 static int l_SpriteVisualSpec(lua_State* L) {
     Sprite* spr;
     Shader* shd;
@@ -214,16 +238,6 @@ static int l_SpriteVisualSpec(lua_State* L) {
     return 1;
 }
 
-static int l_Vec2Double(lua_State* L) {
-    double val1 = luaL_checknumber(L, 1);
-    double val2 = luaL_checknumber(L, 2);
-    auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
-    luaL_getmetatable(L, "harp.blob");
-    lua_setmetatable(L, -2);
-    ret->data[0] = val1;
-    ret->data[1] = val2;
-    return 1;
-}
 
 //
 // Auxiliary
@@ -365,9 +379,11 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 
     lua_pushcfunction(L, l_Sprite);     lua_setglobal(L, "Sprite");
+    lua_pushcfunction(L, l_Shader);     lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
 
     lua_pushcfunction(L, l_SpriteVisualSpec); lua_setglobal(L, "SpriteVisualSpec");
+
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");

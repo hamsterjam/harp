@@ -24,7 +24,11 @@ Sets the parent of Entity entID to the Entity parID.
 Types
 -----
 
-`spr newSprite(def)`
+`val Vec2Double(x, y)`
+
+Creates a usertype representing a Vector<2, double>. The two arguments x and y are numbers.
+
+`spr Sprite(def)`
 
 Creates a new Sprite. The parameter def is an array, each element of which represents a texture. Each texture is a table with the following possible values:
 * `filename`: a string containing the filename of the image.
@@ -45,15 +49,11 @@ The only required field is filename. If def contains any one of tileW, tileH, ti
 
 Creates a new Shader. The paramaters vertSrc and fragSrc are strings containing the source of the vertex and fragment shaders resepctively. Returns a usertype representing the shader.
 
-`val Vec2Double(x, y)`
-
-Creates a usertype representing a Vector<2, double>. The two arguments x and y are numbers.
-
-`spc getSpriteSpec(spr, dx, dy)`
+`spc SpriteVisualSpec(spr, dx, dy)`
 
 Returns a usertype representing a VisualSpec for drawing a Sprite spr using the default shader. The two numbers dx and dy represent offsets from the position.
 
-`spec getSpriteSpec(shd, spr, dx, dy)`
+`spec SpriteVisualSpec(shd, spr, dx, dy)`
 
 Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position.
 
