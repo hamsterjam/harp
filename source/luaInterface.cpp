@@ -455,6 +455,26 @@ static int l_GlyphSpec(lua_State* L) {
     return 1;
 }
 
+static int l_TextSpec(lua_State* L) {
+    FontRenderer* font;
+    float x, y;
+    const char* text;
+
+    text = luaL_checkstring(L, 1);
+    x = (float) luaL_checknumber(L, 2);
+    y = (float) luaL_checknumber(L, 3);
+    luaL_checkudata(L, 4, "harp.fontrenderer");
+    font = * (FontRenderer**) lua_touserdata(L, 4);
+
+    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *spec = getTextSpec(text, x, y, *font);
+
+    return 1;
+}
+
 //
 // Auxiliary
 //
@@ -645,6 +665,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_TriangleSpec);         lua_setglobal(L, "TriangleSpec");
     lua_pushcfunction(L, l_LineSpec);             lua_setglobal(L, "LineSpec");
     lua_pushcfunction(L, l_GlyphSpec);            lua_setglobal(L, "GlyphSpec");
+    lua_pushcfunction(L, l_TextSpec);             lua_setglobal(L, "TextSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
