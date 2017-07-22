@@ -109,6 +109,7 @@ void system_draw(ECS& ecs) {
                 char glyph = spec.text.glyph;
 
                 font.drawGlyph(glyph, x, y);
+                break;
             }
             case (DrawType::TEXT): {
                 FontRenderer& font = *spec.text.font;

@@ -48,7 +48,10 @@ void FontRenderer::drawText(const char* text, float x, float y) {
     if (!text[0]) return;
 
     for (int i = 0; text[i] != 0; ++i) {
-        Sprite* currSprite = spriteMap[text[i]];
+        auto it = spriteMap.find(text[i]);
+        if (it == spriteMap.end()) continue;
+
+        Sprite* currSprite = (*it).second;
         shd->batchQueue(*currSprite, x, y);
         x += (float) currSprite->getWidth();
     }
