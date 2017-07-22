@@ -213,13 +213,12 @@ static int l_SpriteSpec(lua_State* L) {
     float dx, dy;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 3 || numArgs == 4)) {
-        luaL_error(L, "SpriteSpec takes 3 or 4 arguments, found %d", numArgs);
+    if (numArgs < 3) {
+        luaL_error(L, "SpriteSpec takes at least 3 arguments, found %d", numArgs);
     }
-    if (numArgs == 4) {
-        luaL_checkudata(L, 1, "harp.shader");
+    if (numArgs >= 4) {
+        luaL_checkudata(L, 4, "harp.shader");
         shd = * (Shader**) lua_touserdata(L, 1);
-        lua_remove(L, 1);
     }
 
     luaL_checkudata(L, 1, "harp.sprite");
@@ -231,7 +230,7 @@ static int l_SpriteSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *ret = getSpriteSpec(*shd, *spr, dx, dy);
+    *ret = getSpriteSpec(*spr, dx, dy, *shd);
 
     return 1;
 }
@@ -242,14 +241,12 @@ static int l_RectangleSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 7 || numArgs != 8)) {
+    if (!(numArgs == 7 || numArgs == 6)) {
         luaL_error(L, "RectangleSpec takes 6 or 7 arguments, found %d.", numArgs);
     }
     if (numArgs == 7) {
-        luaL_checkudata(L, 1, "harp.primitiverenderer");
-        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
-
-        lua_remove(L, 1);
+        luaL_checkudata(L, 7, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 7);
     }
 
     x     = (float) luaL_checknumber(L, 1);
@@ -265,7 +262,7 @@ static int l_RectangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getRectangleSpec(*prim, x, y, w, h, lineW, color);
+    *spec = getRectangleSpec(x, y, w, h, lineW, color, *prim);
 
     return 1;
 }
@@ -280,10 +277,8 @@ static int l_RoundedRectangleSpec(lua_State* L) {
         luaL_error(L, "RoundedRectangleSpec takes 7 or 8 arguments, fount %d.", numArgs);
     }
     if (numArgs == 8) {
-        luaL_checkudata(L, 1, "harp.primitiverenderer");
-        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
-
-        lua_remove(L, 1);
+        luaL_checkudata(L, 8, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 8);
     }
 
     x     = (float) luaL_checknumber(L, 1);
@@ -300,7 +295,7 @@ static int l_RoundedRectangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getRoundedRectangleSpec(*prim, x, y, w, h, r, lineW, color);
+    *spec = getRoundedRectangleSpec(x, y, w, h, r, lineW, color, *prim);
 
     return 1;
 }
@@ -315,8 +310,8 @@ static int l_ElipseArcSpec(lua_State* L) {
         luaL_error(L, "ElipseArcSpec takes 8 or 9 arguments, found %d.", numArgs);
     }
     if (numArgs == 9) {
-        luaL_checkudata(L, 1, "harp.primitiverenderer");
-        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+        luaL_checkudata(L, 9, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 9);
 
         lua_remove(L, 1);
     }
@@ -336,7 +331,7 @@ static int l_ElipseArcSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getElipseArcSpec(*prim, x, y, rx, ry, theta1, theta2, lineW, color);
+    *spec = getElipseArcSpec(x, y, rx, ry, theta1, theta2, lineW, color, *prim);
 
     return 1;
 }
@@ -351,8 +346,8 @@ static int l_TriangleSpec(lua_State* L) {
         luaL_error(L, "TriangleSpec takes 8 or 9 arguments, found %d.", numArgs);
     }
     if (numArgs == 9) {
-        luaL_checkudata(L, 1, "harp.primitiverenderer");
-        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+        luaL_checkudata(L, 9, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 9);
 
         lua_remove(L, 1);
     }
@@ -372,7 +367,7 @@ static int l_TriangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getTriangleSpec(*prim, x1, y1, x2, y2, x3, y3, lineW, color);
+    *spec = getTriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, *prim);
 
     return 1;
 }
@@ -387,8 +382,8 @@ static int l_LineSpec(lua_State* L) {
         luaL_error(L, "LineSpec takes 6 or 7 arguments, doun %d.", numArgs);
     }
     if (numArgs == 7) {
-        luaL_checkudata(L, 1, "harp.primitiverenderer");
-        prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+        luaL_checkudata(L, 7, "harp.primitiverenderer");
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 7);
 
         lua_remove(L, 1);
     }
@@ -406,7 +401,7 @@ static int l_LineSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getLineSpec(*prim, x1, y1, x2, y2, lineW, color);
+    *spec = getLineSpec(x1, y1, x2, y2, lineW, color, *prim);
 
     return 1;
 }

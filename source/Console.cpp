@@ -39,24 +39,24 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     harp.setComponent(id, comp_velocity, &vel);
 
     auto histColor = rgbaToColor(0.06, 0.06, 0.04, 0.9);
-    auto histSpec  = getRectangleFillSpec(prim, 0, 16, SCREEN_WIDTH, logLines*12 + 2, histColor);
+    auto histSpec  = getRectangleFillSpec(0, 16, SCREEN_WIDTH, logLines*12 + 2, histColor, prim);
     harp.setComponent(id, comp_visual, &histSpec);
 
     inputBoxID = harp.createEntity();
     harp.setParent(inputBoxID, id);
     auto inputColor = rgbaToColor(0.10, 0.10, 0.15, 0.9);
-    auto inputSpec  = getRectangleFillSpec(prim, 0, 0, SCREEN_WIDTH, 16, inputColor);
+    auto inputSpec  = getRectangleFillSpec(0, 0, SCREEN_WIDTH, 16, inputColor, prim);
     harp.setComponent(inputBoxID, comp_visual, &inputSpec);
 
     inputID = harp.createEntity();
     harp.setParent(inputID, id);
-    auto inputTextSpec = getTextSpec(font, inputBuffer, 3, 3-2);
+    auto inputTextSpec = getTextSpec(inputBuffer, 3, 3-2, font);
     harp.setComponent(inputID, comp_visual, &inputTextSpec);
 
     for (int i = 0; i < logLines; ++i) {
         logLineID[i] = harp.createEntity();
         harp.setParent(logLineID[i], id);
-        auto spec = getTextSpec(font, logBuffer[i], 3, 16 + 12*i);
+        auto spec = getTextSpec(logBuffer[i], 3, 16 + 12*i, font);
         harp.setComponent(logLineID[i], comp_visual, &spec);
     }
 
