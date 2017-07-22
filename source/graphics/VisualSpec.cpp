@@ -1,5 +1,3 @@
-#include <string>
-
 #include <graphics/VisualSpec.h>
 #include <graphics/PrimitiveRenderer.h>
 #include <graphics/FontRenderer.h>
@@ -105,7 +103,7 @@ VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, 
     return spec;
 }
 
-VisualSpec getGlyphSpec(char& glyph, float dx, float dy, FontRenderer& font) {
+VisualSpec getGlyphSpec(char glyph, float dx, float dy, FontRenderer& font) {
     VisualSpec spec;
 
     spec.type = DrawType::GLYPH;
@@ -113,12 +111,12 @@ VisualSpec getGlyphSpec(char& glyph, float dx, float dy, FontRenderer& font) {
     spec.text.x     = dx;
     spec.text.y     = dy;
     spec.text.font  = &font;
-    spec.text.glyph = &glyph;
+    spec.text.glyph = glyph;
 
     return spec;
 }
 
-VisualSpec getTextSpec(std::string& text, float dx, float dy, FontRenderer& font) {
+VisualSpec getTextSpec(const char* text, float dx, float dy, FontRenderer& font) {
     VisualSpec spec;
 
     spec.type = DrawType::TEXT;
@@ -126,7 +124,7 @@ VisualSpec getTextSpec(std::string& text, float dx, float dy, FontRenderer& font
     spec.text.x    = dx;
     spec.text.y    = dy;
     spec.text.font = &font;
-    spec.text.text = &text;
+    spec.text.text = text;
 
     return spec;
 }

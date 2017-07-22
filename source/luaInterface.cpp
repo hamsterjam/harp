@@ -207,6 +207,35 @@ static int l_Shader(lua_State* L) {
     return 1;
 }
 
+static int l_FontRenderer(lua_State* L) {
+    int numArgs = lua_gettop(L);
+
+    const char* filename = luaL_checkstring(L, 1);
+    int tileW = luaL_checkinteger(L, 2);
+    int tileH = luaL_checkinteger(L, 3);
+
+    TextureAtlas fontAtlas(filename, tileW, tileH, 0, 0);
+    FontRenderer* font = * (FontRenderer**) lua_newuserdata(L, sizeof(FontRenderer));
+    luaL_getmetatable(L, "harp.fontrenderer");
+    lua_setmetatable(L, -2);
+
+    if (numArgs < 4) {
+        luaL_error(L, "FontRenderer takes at least 4 arguments, found %d", numArgs);
+    }
+    if (numArgs >= 5) {
+        char firstChar = luaL_checkstring(L, 4)[0];
+        char lastChar  = luaL_checkstring(L, 5)[0];
+
+        font = new FontRenderer(fontAtlas, firstChar, lastChar);
+    }
+    else {
+        const char* charDef = luaL_checkstring(L, 4);
+        font = new FontRenderer(fontAtlas, charDef);
+    }
+
+    return 1;
+}
+
 static int l_SpriteSpec(lua_State* L) {
     Shader* shd = defaultShader;
     Sprite* spr;
@@ -241,8 +270,8 @@ static int l_RectangleSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 7 || numArgs == 6)) {
-        luaL_error(L, "RectangleSpec takes 6 or 7 arguments, found %d.", numArgs);
+    if (numArgs < 6) {
+        luaL_error(L, "RectangleSpec takes at least 6 arguments, found %d.", numArgs);
     }
     if (numArgs == 7) {
         luaL_checkudata(L, 7, "harp.primitiverenderer");
@@ -273,8 +302,8 @@ static int l_RoundedRectangleSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 7 || numArgs == 8)) {
-        luaL_error(L, "RoundedRectangleSpec takes 7 or 8 arguments, fount %d.", numArgs);
+    if (numArgs < 7) {
+        luaL_error(L, "RoundedRectangleSpec takes at least 7 arguments, found %d.", numArgs);
     }
     if (numArgs == 8) {
         luaL_checkudata(L, 8, "harp.primitiverenderer");
@@ -306,8 +335,8 @@ static int l_ElipseArcSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 8 || numArgs == 9)) {
-        luaL_error(L, "ElipseArcSpec takes 8 or 9 arguments, found %d.", numArgs);
+    if (numArgs < 8) {
+        luaL_error(L, "ElipseArcSpec takes at least 8 arguments, found %d.", numArgs);
     }
     if (numArgs == 9) {
         luaL_checkudata(L, 9, "harp.primitiverenderer");
@@ -342,8 +371,8 @@ static int l_TriangleSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 8 || numArgs == 9)) {
-        luaL_error(L, "TriangleSpec takes 8 or 9 arguments, found %d.", numArgs);
+    if (numArgs < 8) {
+        luaL_error(L, "TriangleSpec takes at least 8 arguments, found %d.", numArgs);
     }
     if (numArgs == 9) {
         luaL_checkudata(L, 9, "harp.primitiverenderer");
@@ -378,8 +407,8 @@ static int l_LineSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (!(numArgs == 6 || numArgs == 7)) {
-        luaL_error(L, "LineSpec takes 6 or 7 arguments, doun %d.", numArgs);
+    if (numArgs == 6) {
+        luaL_error(L, "LineSpec takes at least 6 arguments, found %d.", numArgs);
     }
     if (numArgs == 7) {
         luaL_checkudata(L, 7, "harp.primitiverenderer");
@@ -584,9 +613,10 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_setFlag);      lua_setglobal(L, "setFlag");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 
-    lua_pushcfunction(L, l_Sprite);     lua_setglobal(L, "Sprite");
-    lua_pushcfunction(L, l_Shader);     lua_setglobal(L, "Shader");
-    lua_pushcfunction(L, l_Vec2Double); lua_setglobal(L, "Vec2Double");
+    lua_pushcfunction(L, l_Vec2Double);   lua_setglobal(L, "Vec2Double");
+    lua_pushcfunction(L, l_Sprite);       lua_setglobal(L, "Sprite");
+    lua_pushcfunction(L, l_Shader);       lua_setglobal(L, "Shader");
+    lua_pushcfunction(L, l_FontRenderer); lua_setglobal(L, "FontRenderer");
 
     lua_pushcfunction(L, l_SpriteSpec);           lua_setglobal(L, "SpriteSpec");
     lua_pushcfunction(L, l_RectangleSpec);        lua_setglobal(L, "RectangleSpec");

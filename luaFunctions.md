@@ -3,7 +3,7 @@ ECS Interface
 
 `entID createEntity()`
 
-Creates a new Entity and returns its ID as a usertype.
+Creates a new Entity and returns its ID as a userdata.
 
 `deleteEntity(entID)`
 
@@ -11,7 +11,7 @@ Deletes the entity entID
 
 `setComponent(entID, compName, val)`
 
-Sets the Component compName of Entity entID to the usertype val.
+Sets the Component compName of Entity entID to the userdata val.
 
 `setFlag(entID, compName, val)`
 
@@ -26,7 +26,7 @@ Types
 
 `val Vec2Double(x, y)`
 
-Creates a usertype representing a Vector<2, double>. The two arguments x and y are numbers.
+Creates a userdata representing a Vector<2, double>. The two arguments x and y are numbers.
 
 `spr Sprite(def)`
 
@@ -43,23 +43,39 @@ Creates a new Sprite. The parameter def is an array, each element of which repre
 * `w`: an integer representing the width of the subimage to use in pixels.
 * `h`: an integer representing the height of the subimage to use in pixels.
 
-The only required field is filename. If def contains any one of tileW, tileH, tileX, tileY it must contain all of them. Similarly, if a def contains any one of x, y, w, h it must contain all of them. Furthermore, these variables are mutually exclusive with the tile variables
+The only required field is filename. If def contains any one of tileW, tileH, tileX, tileY it must contain all of them. Similarly, if a def contains any one of x, y, w, h it must contain all of them. Furthermore, these variables are mutually exclusive with the tile variables..
 
 `shd Shader(vertSrc, fragSrc)`
 
-Creates a new Shader. The paramaters vertSrc and fragSrc are strings containing the source of the vertex and fragment shaders resepctively. Returns a usertype representing the shader.
+Creates a new Shader. The paramaters vertSrc and fragSrc are strings containing the source of the vertex and fragment shaders resepctively. Returns a userdata representing the shader.
 
-`spec SpriteSpec(shd, spr, dx, dy)`
+`font FontRenderer(src, firstChar, lastChar)`
 
-Returns a usertype representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position. The first argument may be omited in which case the default Shader will be used.
+Returns a new FontRenderer as a userdata.
 
-`spec RectangleSpec(prim, dx, dy, w, h, lineW, color)`
+`spec SpriteSpec(spr, dx, dy, shd)`
 
-Returns a usertype represent a VisualSpec for drawing a rectangle. The first argument may be omited in which case the default PrimitiveRenderer will be used
+Returns a userdata representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position. The last argument may be omited in which case the default Shader will be used.
 
-`spec RoundedRectangleSpec(prim, dx, dy, w, h, r, lineW, color)`
+`spec RectangleSpec(dx, dy, w, h, lineW, color, prim)`
 
-Returns a usertype represent a VisualSpec for drawing a rounded rectangle. The first argument may be omited in which case the default PrimitiveRenderer will be used
+Returns a userdata representing a VisualSpec for drawing a rectangle. The last argument may be omited in which case the default PrimitiveRenderer will be used.
+
+`spec RoundedRectangleSpec(dx, dy, w, h, r, lineW, color, prim)`
+
+Returns a userdata representing a VisualSpec for drawing a rounded rectangle. The last argument may be omited in which case the default PrimitiveRenderer will be used.
+
+`spec ElipseArcSpec(dx, dy, rx, ry, theta1, theta2, lineW, color, prim)`
+
+Returns a userdata representing a VisualSpec for drawing an eliptical arc. The last argument may be omited in which case the default PrimitiveRenderer will be used.
+
+`spec TriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, prim)`
+
+Returns a userdata representing a VisualSpec for drawing a triangle. The last argument may be omited in which case the default PrimitiveRenderer will be used.
+
+`spec LineSpec(x1, y1, x2, y2, lineW, color, prim)`
+
+Returns a userdata representing a VisualSpec for drawing a line. The last argument may be omited in which case the default PrimitiveRenderer will be used.
 
 Auxillary
 ---------

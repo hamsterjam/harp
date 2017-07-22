@@ -14,7 +14,6 @@
 #define HARP_VISUAL_SPEC_H
 
 #include <vector>
-#include <string>
 #include <graphics/Color.h>
 
 class Shader;
@@ -49,8 +48,8 @@ struct SpriteSpec {
 
 struct TextSpec {
     FontRenderer* font;
-    char* glyph;
-    std::string* text;
+    char glyph;
+    const char* text;
     float x, y;
 };
 
@@ -85,7 +84,7 @@ VisualSpec getTriangleSpec(float x1, float y1, float x2, float y2, float x3, flo
 
 VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, Color color, PrimitiveRenderer& prim);
 
-VisualSpec getGlyphSpec(char& glyph, float dx, float dy, FontRenderer& font);
-VisualSpec getTextSpec(std::string& text, float dx, float dy, FontRenderer& font);
+VisualSpec getGlyphSpec(char glyph, float dx, float dy, FontRenderer& font);
+VisualSpec getTextSpec(const char* text, float dx, float dy, FontRenderer& font);
 
 #endif

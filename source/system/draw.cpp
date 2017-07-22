@@ -106,7 +106,7 @@ void system_draw(ECS& ecs) {
                 FontRenderer& font = *spec.text.font;
                 float x = pos[0] + spec.text.x;
                 float y = pos[1] + spec.text.y;
-                char& glyph = *spec.text.glyph;
+                char glyph = spec.text.glyph;
 
                 font.drawGlyph(glyph, x, y);
             }
@@ -114,7 +114,7 @@ void system_draw(ECS& ecs) {
                 FontRenderer& font = *spec.text.font;
                 float x = pos[0] + spec.text.x;
                 float y = pos[1] + spec.text.y;
-                std::string& text = *spec.text.text;
+                const char* text = spec.text.text;
 
                 font.drawText(text, x, y);
                 break;

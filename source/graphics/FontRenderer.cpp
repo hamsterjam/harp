@@ -1,5 +1,4 @@
 #include <map>
-#include <string>
 #include <utility>
 
 #include <globals.h>
@@ -44,18 +43,19 @@ FontRenderer::~FontRenderer() {
     }
 }
 
-void FontRenderer::drawText(std::string text, float x, float y) {
-    /*
-     * This is the old C string version
-     *
-    for (int i = 0; string[i] != 0; ++i) {
-        Sprite* currSprite = spriteMap[string[i]];
+void FontRenderer::drawText(const char* text, float x, float y) {
+    if (!text[0]) return;
+
+    for (int i = 0; text[i] != 0; ++i) {
+        Sprite* currSprite = spriteMap[text[i]];
         shd->batchQueue(*currSprite, x, y);
         x += (float) currSprite->getWidth();
     }
     shd->batchDraw();
-    */
 
+    /*
+     * Changing back to C strings (so Lua works)
+     *
     if (text.size() == 0) return;
 
     for (auto it = text.begin(); it != text.end(); ++it) {
@@ -65,6 +65,7 @@ void FontRenderer::drawText(std::string text, float x, float y) {
         x += (float) currSprite->getWidth();
     }
     shd->batchDraw();
+    */
 }
 
 void FontRenderer::drawGlyph(char glyph, float x, float y) {

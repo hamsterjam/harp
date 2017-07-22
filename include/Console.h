@@ -30,6 +30,7 @@ class Console {
         static Console* instance;
 
         bool open;
+        FontRenderer* font;
 
         std::string inputBuffer;
         std::string logBuffer[logLines];

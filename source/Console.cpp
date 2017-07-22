@@ -21,7 +21,8 @@ extern "C" {
 Console* Console::instance = 0;
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
-    open = false;
+    this->open = false;
+    this->font = &font;
 
     inputBuffer = "";
 
@@ -50,13 +51,13 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 
     inputID = harp.createEntity();
     harp.setParent(inputID, id);
-    auto inputTextSpec = getTextSpec(inputBuffer, 3, 3-2, font);
+    auto inputTextSpec = getTextSpec(inputBuffer.c_str(), 3, 3-2, font);
     harp.setComponent(inputID, comp_visual, &inputTextSpec);
 
     for (int i = 0; i < logLines; ++i) {
         logLineID[i] = harp.createEntity();
         harp.setParent(logLineID[i], id);
-        auto spec = getTextSpec(logBuffer[i], 3, 16 + 12*i, font);
+        auto spec = getTextSpec(logBuffer[i].c_str(), 3, 16 + 12*i, font);
         harp.setComponent(logLineID[i], comp_visual, &spec);
     }
 
@@ -109,15 +110,25 @@ void Console::update() {
 }
 
 void Console::log(std::string message) {
-    for (int i = logLines-2; i>= 0; --i) {
+    for (int i = logLines-2; i >= 0; --i) {
         logBuffer[i+1] = logBuffer[i];
+
+        VisualSpec spec = getTextSpec(logBuffer[i+1].c_str(), 3, 16 + 12*(i+1), *font);
+        harp.setComponent(logLineID[i+1], comp_visual, &spec);
     }
 
     logBuffer[0] = message;
+
+    VisualSpec spec = getTextSpec(logBuffer[0].c_str(), 3, 16, *font);
+    harp.setComponent(logLineID[0], comp_visual, &spec);
 }
 
 void Console::appendToInput(std::string text) {
     inputBuffer += text;
+
+    // This could (read: will) invalidate the pointer in ECS
+    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, *font);
+    harp.setComponent(inputID, comp_visual, &spec);
 }
 
 void Console::backspace() {
@@ -130,6 +141,10 @@ void Console::process() {
     int error;
     error = luaL_loadstring(L, inputBuffer.c_str()) || lua_pcall(L, 0, 0, 0);
     inputBuffer = "";
+
+    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, *font);
+    harp.setComponent(inputID, comp_visual, &spec);
+
     if (error) {
         const char* errorMessage = lua_tostring(L, -1);
         log(std::string(errorMessage));

@@ -37,7 +37,7 @@ class FontRenderer {
 
         ~FontRenderer();
 
-        void drawText(std::string text, float x, float y);
+        void drawText(const char* text, float x, float y);
         void drawGlyph(char glyph, float x, float y);
 };
 
