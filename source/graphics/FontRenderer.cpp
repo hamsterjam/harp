@@ -39,7 +39,8 @@ FontRenderer::FontRenderer(TextureAtlas& atlas, const char* charDef, Shader& shd
 
 FontRenderer::~FontRenderer() {
     for (auto item : spriteMap) {
-        free(item.second);
+        Sprite* spr = item.second;
+        delete spr;
     }
 }
 

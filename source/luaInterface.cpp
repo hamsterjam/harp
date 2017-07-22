@@ -215,7 +215,7 @@ static int l_FontRenderer(lua_State* L) {
     int tileH = luaL_checkinteger(L, 3);
 
     TextureAtlas fontAtlas(filename, tileW, tileH, 0, 0);
-    FontRenderer* font = * (FontRenderer**) lua_newuserdata(L, sizeof(FontRenderer));
+    FontRenderer** font = (FontRenderer**) lua_newuserdata(L, sizeof(FontRenderer));
     luaL_getmetatable(L, "harp.fontrenderer");
     lua_setmetatable(L, -2);
 
@@ -226,11 +226,11 @@ static int l_FontRenderer(lua_State* L) {
         char firstChar = luaL_checkstring(L, 4)[0];
         char lastChar  = luaL_checkstring(L, 5)[0];
 
-        font = new FontRenderer(fontAtlas, firstChar, lastChar);
+        *font = new FontRenderer(fontAtlas, firstChar, lastChar);
     }
     else {
         const char* charDef = luaL_checkstring(L, 4);
-        font = new FontRenderer(fontAtlas, charDef);
+        *font = new FontRenderer(fontAtlas, charDef);
     }
 
     return 1;
@@ -456,32 +456,32 @@ static int l_exit(lua_State* L) {
 
 static int l_callSpriteDestructor(lua_State* L) {
     luaL_checkudata(L, 1, "harp.sprite");
-    auto spr = (Sprite**) lua_touserdata(L, 1);
-    delete *spr;
+    auto spr = * (Sprite**) lua_touserdata(L, 1);
+    delete spr;
 
     return 0;
 }
 
 static int l_callShaderDestructor(lua_State* L) {
     luaL_checkudata(L, 1, "harp.shader");
-    auto shd = (Shader**) lua_touserdata(L, 1);
-    delete *shd;
+    auto shd = * (Shader**) lua_touserdata(L, 1);
+    delete shd;
 
     return 0;
 }
 
 static int l_callPrimitiveRendererDestructor(lua_State* L) {
     luaL_checkudata(L, 1, "harp.primitiverenderer");
-    auto prim = (PrimitiveRenderer**) lua_touserdata(L, 1);
-    delete *prim;
+    auto prim = * (PrimitiveRenderer**) lua_touserdata(L, 1);
+    delete prim;
 
     return 0;
 }
 
 static int l_callFontRendererDestructor(lua_State* L) {
     luaL_checkudata(L, 1, "harp.fontrenderer");
-    auto font = (FontRenderer**) lua_touserdata(L, 1);
-    delete *font;
+    auto font = * (FontRenderer**) lua_touserdata(L, 1);
+    delete font;
 
     return 0;
 }
