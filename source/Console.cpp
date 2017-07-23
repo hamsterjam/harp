@@ -18,7 +18,7 @@ extern "C" {
 #include <luaInterface.h>
 #include <globals.h>
 
-const float layer = 1.0;
+const int layer = 200;
 
 Console* Console::instance = 0;
 
@@ -53,13 +53,13 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
 
     inputID = harp.createEntity();
     harp.setParent(inputID, id);
-    auto inputTextSpec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer, font);
+    auto inputTextSpec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer+1, font);
     harp.setComponent(inputID, comp_visual, &inputTextSpec);
 
     for (int i = 0; i < logLines; ++i) {
         logLineID[i] = harp.createEntity();
         harp.setParent(logLineID[i], id);
-        auto spec = getTextSpec(logBuffer[i].c_str(), 3, 16 + 12*i, layer, font);
+        auto spec = getTextSpec(logBuffer[i].c_str(), 3, 16 + 12*i, layer+1, font);
         harp.setComponent(logLineID[i], comp_visual, &spec);
     }
 
@@ -115,13 +115,13 @@ void Console::log(std::string message) {
     for (int i = logLines-2; i >= 0; --i) {
         logBuffer[i+1] = logBuffer[i];
 
-        VisualSpec spec = getTextSpec(logBuffer[i+1].c_str(), 3, 16 + 12*(i+1), layer, *font);
+        VisualSpec spec = getTextSpec(logBuffer[i+1].c_str(), 3, 16 + 12*(i+1), layer+1, *font);
         harp.setComponent(logLineID[i+1], comp_visual, &spec);
     }
 
     logBuffer[0] = message;
 
-    VisualSpec spec = getTextSpec(logBuffer[0].c_str(), 3, 16, layer, *font);
+    VisualSpec spec = getTextSpec(logBuffer[0].c_str(), 3, 16, layer+1, *font);
     harp.setComponent(logLineID[0], comp_visual, &spec);
 }
 
@@ -129,7 +129,7 @@ void Console::appendToInput(std::string text) {
     inputBuffer += text;
 
     // This could (read: will) invalidate the pointer in ECS
-    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer, *font);
+    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer+1, *font);
     harp.setComponent(inputID, comp_visual, &spec);
 }
 
@@ -144,7 +144,7 @@ void Console::process() {
     error = luaL_loadstring(L, inputBuffer.c_str()) || lua_pcall(L, 0, 0, 0);
     inputBuffer = "";
 
-    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer, *font);
+    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer+1, *font);
     harp.setComponent(inputID, comp_visual, &spec);
 
     if (error) {

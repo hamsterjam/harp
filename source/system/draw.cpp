@@ -19,6 +19,9 @@ struct SpecWrapper {
 };
 
 bool operator<(const SpecWrapper& lhs, const SpecWrapper& rhs) {
+    // Define it to be >= instead of a < meaning the thing with the lowest
+    // layer will get drawn first
+
     return *(lhs.spec) < *(rhs.spec);
 }
 
