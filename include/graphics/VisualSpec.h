@@ -63,6 +63,8 @@ struct VisualSpec {
     };
 };
 
+bool operator<(const VisualSpec& lhs, const VisualSpec& rhs);
+
 VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, float layer, Shader& shd);
 
 VisualSpec getRectangleFillSpec(float dx, float dy, float w, float h, Color color, float layer, PrimitiveRenderer& prim);

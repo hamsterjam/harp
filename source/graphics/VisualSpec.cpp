@@ -5,6 +5,11 @@
 
 // These are the most general form of the shape in question
 
+bool operator<(const VisualSpec& lhs, const VisualSpec& rhs) {
+    // This means that the thing with the LOWEST layer is ordered HIGHER
+    return lhs.layer > rhs.layer;
+}
+
 VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, float layer, Shader& shd) {
     VisualSpec spec;
 

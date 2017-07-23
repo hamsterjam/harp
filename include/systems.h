@@ -16,7 +16,9 @@ class ECS;
 
 /*
  * This is a function that draws things to the screen. It will not perform any
- * action with an Entity with flag_hidden set to true.
+ * action with an Entity with flag_hidden set to true. The funciton system_draw
+ * orders everything into a priority queue, confirmDraw will actually draw the
+ * things.
  *
  * Operates on any Entity with:
  *
@@ -28,6 +30,7 @@ class ECS;
  *
  */
 void system_draw(ECS& ecs);
+void confirmDraw();
 
 /*
  * This is a function that performs very simple kinematics, that is, it moves
