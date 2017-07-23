@@ -55,7 +55,7 @@ struct TextSpec {
 
 struct VisualSpec {
     DrawType type;
-    float layer;
+    int layer;
     union {
         PrimitiveSpec prim;
         SpriteSpec sprite;
