@@ -18,6 +18,9 @@ extern "C" {
 #include <luaInterface.h>
 #include <globals.h>
 
+static int consoleLayer = 200;
+static int textLayer = 201;
+
 Console* Console::instance = 0;
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
@@ -42,23 +45,27 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     auto histColor = rgbaToColor(0.06, 0.06, 0.04, 0.9);
     auto histSpec  = getRectangleFillSpec(0, 16, SCREEN_WIDTH, logLines*12 + 2, histColor, prim);
     harp.setComponent(id, comp_visual, &histSpec);
+    harp.setComponent(id, comp_layer,  &consoleLayer);
 
     inputBoxID = harp.createEntity();
     harp.setParent(inputBoxID, id);
     auto inputColor = rgbaToColor(0.10, 0.10, 0.15, 0.9);
     auto inputSpec  = getRectangleFillSpec(0, 0, SCREEN_WIDTH, 16, inputColor, prim);
     harp.setComponent(inputBoxID, comp_visual, &inputSpec);
+    harp.setComponent(inputBoxID, comp_layer,  &consoleLayer);
 
     inputID = harp.createEntity();
     harp.setParent(inputID, id);
     auto inputTextSpec = getTextSpec(inputBuffer.c_str(), 3, 3-2, font);
     harp.setComponent(inputID, comp_visual, &inputTextSpec);
+    harp.setComponent(inputID, comp_layer,  &textLayer);
 
     for (int i = 0; i < logLines; ++i) {
         logLineID[i] = harp.createEntity();
         harp.setParent(logLineID[i], id);
         auto spec = getTextSpec(logBuffer[i].c_str(), 3, 16 + 12*i, font);
         harp.setComponent(logLineID[i], comp_visual, &spec);
+        harp.setComponent(logLineID[i], comp_layer,  &textLayer);
     }
 
     harp.setFlag(id, flag_hidden, true);

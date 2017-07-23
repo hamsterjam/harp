@@ -34,6 +34,7 @@ init = (function()
 
         setComponent(e, comp.position, pos)
         setComponent(e, comp.visual, vis)
+        setComponent(e, comp.layer, 300)
 
         return e
     end

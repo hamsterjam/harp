@@ -56,10 +56,19 @@ static int l_setComponent(lua_State* L) {
     luaL_checkudata(L, 2, "harp.component");
     Component& comp = * (Component*) lua_touserdata(L, 2);
 
-    luaL_checkudata(L, 3, "harp.blob");
-    void* data = lua_touserdata(L, 3);
-
-    harp.setComponent(ent, comp, data);
+    if (lua_isuserdata(L, 3)) {
+        luaL_checkudata(L, 3, "harp.blob");
+        void* data = lua_touserdata(L, 3);
+        harp.setComponent(ent, comp, data);
+    }
+    else if (lua_isinteger(L, 3)) {
+        int data = lua_tointeger(L, 3);
+        harp.setComponent(ent, comp, &data);
+    }
+    else if (lua_isnumber(L, 3)) {
+        double data = lua_tonumber(L, 3);
+        harp.setComponent(ent, comp, &data);
+    }
 
     return 0;
 }
@@ -679,6 +688,7 @@ void luaopen_harp(lua_State* L) {
     setComponentGlobal(L, "velocity",     comp_velocity);
     setComponentGlobal(L, "acceleration", comp_acceleration);
     setComponentGlobal(L, "visual",       comp_visual);
+    setComponentGlobal(L, "layer",        comp_layer);
 
     lua_newtable(L);
     lua_setglobal(L, "flag");

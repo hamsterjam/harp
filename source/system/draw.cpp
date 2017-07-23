@@ -1,6 +1,7 @@
 #include <systems.h>
 
 #include <cassert>
+#include <queue>
 
 #include <ECS.h>
 #include <harpMath.h>
@@ -12,8 +13,20 @@
 #include <graphics/PrimitiveRenderer.h>
 #include <graphics/FontRenderer.h>
 
+struct DrawSpec {
+    VisualSpec* spec;
+    Vec<2, double>* pos;
+    int layer;
+};
+
+bool operator>(const DrawSpec& lhs, const DrawSpec& rhs) {
+    return lhs.layer > rhs.layer;
+}
+
 void system_draw(ECS& ecs) {
-    for (auto it = ecs.beginParented({comp_position, comp_visual}); it != ecs.end(); ++it) {
+    std::priority_queue<DrawSpec, std::vector<DrawSpec>, std::greater<DrawSpec> > drawQueue;
+
+    for (auto it = ecs.beginParented({comp_visual, comp_position}); it != ecs.end(); ++it) {
         Entity e = *it;
 
         // If it is hidden, do nothing
@@ -23,9 +36,26 @@ void system_draw(ECS& ecs) {
         void* s = ecs.getChildComponent(e, comp_visual);
         if (!s) continue;
 
-        auto& spec = * (VisualSpec*) s;
+        // If we have a layer component, use that, otherwise use 0
+        int* l = (int*) ecs.getChildComponent(e, comp_layer);
+        if (!l) l = (int*) ecs.getComponent(e, comp_layer);
 
-        auto& pos  = * (Vec<2, double>*) ecs.getComponent(e, comp_position);
+        DrawSpec newWrap;
+
+        newWrap.spec  = (VisualSpec*) s;
+        newWrap.pos   = (Vec<2, double>*) ecs.getComponent(e, comp_position);
+        newWrap.layer = l ? *l : 0;
+
+        drawQueue.push(newWrap);
+    }
+
+    while (!drawQueue.empty()) {
+
+        auto next = drawQueue.top();
+        drawQueue.pop();
+
+        auto& spec = * next.spec;
+        auto& pos  = * next.pos;
 
         switch (spec.type) {
             case (DrawType::SPRITE): {
