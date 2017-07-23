@@ -30,7 +30,6 @@ class ECS;
  *
  */
 void system_draw(ECS& ecs);
-void confirmDraw();
 
 /*
  * This is a function that performs very simple kinematics, that is, it moves
