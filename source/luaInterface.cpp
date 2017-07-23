@@ -259,7 +259,7 @@ static int l_SpriteSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *ret = getSpriteSpec(*spr, dx, dy, *shd);
+    *ret = getSpriteSpec(*spr, dx, dy, 0, *shd);
 
     return 1;
 }
@@ -291,7 +291,7 @@ static int l_RectangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getRectangleSpec(x, y, w, h, lineW, color, *prim);
+    *spec = getRectangleSpec(x, y, w, h, lineW, color, 0, *prim);
 
     return 1;
 }
@@ -324,7 +324,7 @@ static int l_RoundedRectangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getRoundedRectangleSpec(x, y, w, h, r, lineW, color, *prim);
+    *spec = getRoundedRectangleSpec(x, y, w, h, r, lineW, color, 0, *prim);
 
     return 1;
 }
@@ -360,7 +360,7 @@ static int l_ElipseArcSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getElipseArcSpec(x, y, rx, ry, theta1, theta2, lineW, color, *prim);
+    *spec = getElipseArcSpec(x, y, rx, ry, theta1, theta2, lineW, color, 0, *prim);
 
     return 1;
 }
@@ -396,7 +396,7 @@ static int l_TriangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getTriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, *prim);
+    *spec = getTriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, 0, *prim);
 
     return 1;
 }
@@ -430,7 +430,7 @@ static int l_LineSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getLineSpec(x1, y1, x2, y2, lineW, color, *prim);
+    *spec = getLineSpec(x1, y1, x2, y2, lineW, color, 0, *prim);
 
     return 1;
 }
@@ -450,7 +450,7 @@ static int l_GlyphSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getGlyphSpec(glyph, x, y, *font);
+    *spec = getGlyphSpec(glyph, x, y, 0, *font);
 
     return 1;
 }
@@ -470,7 +470,7 @@ static int l_TextSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getTextSpec(text, x, y, *font);
+    *spec = getTextSpec(text, x, y, 0, *font);
 
     return 1;
 }

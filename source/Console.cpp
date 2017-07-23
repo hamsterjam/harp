@@ -18,6 +18,8 @@ extern "C" {
 #include <luaInterface.h>
 #include <globals.h>
 
+const float layer = 1.0;
+
 Console* Console::instance = 0;
 
 Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
@@ -40,24 +42,24 @@ Console::Console(PrimitiveRenderer& prim, FontRenderer& font) {
     harp.setComponent(id, comp_velocity, &vel);
 
     auto histColor = rgbaToColor(0.06, 0.06, 0.04, 0.9);
-    auto histSpec  = getRectangleFillSpec(0, 16, SCREEN_WIDTH, logLines*12 + 2, histColor, prim);
+    auto histSpec  = getRectangleFillSpec(0, 16, SCREEN_WIDTH, logLines*12 + 2, histColor, layer, prim);
     harp.setComponent(id, comp_visual, &histSpec);
 
     inputBoxID = harp.createEntity();
     harp.setParent(inputBoxID, id);
     auto inputColor = rgbaToColor(0.10, 0.10, 0.15, 0.9);
-    auto inputSpec  = getRectangleFillSpec(0, 0, SCREEN_WIDTH, 16, inputColor, prim);
+    auto inputSpec  = getRectangleFillSpec(0, 0, SCREEN_WIDTH, 16, inputColor, layer, prim);
     harp.setComponent(inputBoxID, comp_visual, &inputSpec);
 
     inputID = harp.createEntity();
     harp.setParent(inputID, id);
-    auto inputTextSpec = getTextSpec(inputBuffer.c_str(), 3, 3-2, font);
+    auto inputTextSpec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer, font);
     harp.setComponent(inputID, comp_visual, &inputTextSpec);
 
     for (int i = 0; i < logLines; ++i) {
         logLineID[i] = harp.createEntity();
         harp.setParent(logLineID[i], id);
-        auto spec = getTextSpec(logBuffer[i].c_str(), 3, 16 + 12*i, font);
+        auto spec = getTextSpec(logBuffer[i].c_str(), 3, 16 + 12*i, layer, font);
         harp.setComponent(logLineID[i], comp_visual, &spec);
     }
 
@@ -113,13 +115,13 @@ void Console::log(std::string message) {
     for (int i = logLines-2; i >= 0; --i) {
         logBuffer[i+1] = logBuffer[i];
 
-        VisualSpec spec = getTextSpec(logBuffer[i+1].c_str(), 3, 16 + 12*(i+1), *font);
+        VisualSpec spec = getTextSpec(logBuffer[i+1].c_str(), 3, 16 + 12*(i+1), layer, *font);
         harp.setComponent(logLineID[i+1], comp_visual, &spec);
     }
 
     logBuffer[0] = message;
 
-    VisualSpec spec = getTextSpec(logBuffer[0].c_str(), 3, 16, *font);
+    VisualSpec spec = getTextSpec(logBuffer[0].c_str(), 3, 16, layer, *font);
     harp.setComponent(logLineID[0], comp_visual, &spec);
 }
 
@@ -127,7 +129,7 @@ void Console::appendToInput(std::string text) {
     inputBuffer += text;
 
     // This could (read: will) invalidate the pointer in ECS
-    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, *font);
+    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer, *font);
     harp.setComponent(inputID, comp_visual, &spec);
 }
 
@@ -142,7 +144,7 @@ void Console::process() {
     error = luaL_loadstring(L, inputBuffer.c_str()) || lua_pcall(L, 0, 0, 0);
     inputBuffer = "";
 
-    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, *font);
+    VisualSpec spec = getTextSpec(inputBuffer.c_str(), 3, 3-2, layer, *font);
     harp.setComponent(inputID, comp_visual, &spec);
 
     if (error) {

@@ -5,10 +5,11 @@
 
 // These are the most general form of the shape in question
 
-VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, Shader& shd) {
+VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, float layer, Shader& shd) {
     VisualSpec spec;
 
-    spec.type = DrawType::SPRITE;
+    spec.type  = DrawType::SPRITE;
+    spec.layer = layer;
 
     spec.sprite.x   = dx;
     spec.sprite.y   = dy;
@@ -18,10 +19,11 @@ VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, Shader& shd) {
     return spec;
 }
 
-VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidth, Color color, PrimitiveRenderer& prim) {
+VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
     VisualSpec spec;
 
-    spec.type = DrawType::RECTANGLE;
+    spec.type  = DrawType::RECTANGLE;
+    spec.layer = layer;
 
     spec.prim.p1    = dx;
     spec.prim.p2    = dy;
@@ -34,10 +36,11 @@ VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidt
     return spec;
 }
 
-VisualSpec getRoundedRectangleSpec(float dx, float dy, float w, float h, float r, float lineWidth, Color color, PrimitiveRenderer& prim) {
+VisualSpec getRoundedRectangleSpec(float dx, float dy, float w, float h, float r, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
     VisualSpec spec;
 
-    spec.type = DrawType::ROUNDED_RECTANGLE;
+    spec.type  = DrawType::ROUNDED_RECTANGLE;
+    spec.layer = layer;
 
     spec.prim.p1    = dx;
     spec.prim.p2    = dy;
@@ -51,10 +54,11 @@ VisualSpec getRoundedRectangleSpec(float dx, float dy, float w, float h, float r
     return spec;
 }
 
-VisualSpec getElipseArcSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, PrimitiveRenderer& prim) {
+VisualSpec getElipseArcSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
     VisualSpec spec;
 
-    spec.type = DrawType::ELIPSE;
+    spec.type  = DrawType::ELIPSE;
+    spec.layer = layer;
 
     spec.prim.p1    = dx;
     spec.prim.p2    = dy;
@@ -69,10 +73,11 @@ VisualSpec getElipseArcSpec(float dx, float dy, float rx, float ry, float theta1
     return spec;
 }
 
-VisualSpec getTriangleSpec(float x1, float y1, float x2, float y2, float x3, float y3, float lineWidth, Color color, PrimitiveRenderer& prim) {
+VisualSpec getTriangleSpec(float x1, float y1, float x2, float y2, float x3, float y3, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
     VisualSpec spec;
 
-    spec.type = DrawType::TRIANGLE;
+    spec.type  = DrawType::TRIANGLE;
+    spec.layer = layer;
 
     spec.prim.p1    = x1;
     spec.prim.p2    = y1;
@@ -87,10 +92,11 @@ VisualSpec getTriangleSpec(float x1, float y1, float x2, float y2, float x3, flo
     return spec;
 }
 
-VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, Color color, PrimitiveRenderer& prim) {
+VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
     VisualSpec spec;
 
-    spec.type = DrawType::LINE;
+    spec.type  = DrawType::LINE;
+    spec.layer = layer;
 
     spec.prim.p1    = x1;
     spec.prim.p2    = y1;
@@ -103,10 +109,11 @@ VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, 
     return spec;
 }
 
-VisualSpec getGlyphSpec(char glyph, float dx, float dy, FontRenderer& font) {
+VisualSpec getGlyphSpec(char glyph, float dx, float dy, float layer, FontRenderer& font) {
     VisualSpec spec;
 
-    spec.type = DrawType::GLYPH;
+    spec.type  = DrawType::GLYPH;
+    spec.layer = layer;
 
     spec.text.x     = dx;
     spec.text.y     = dy;
@@ -116,10 +123,11 @@ VisualSpec getGlyphSpec(char glyph, float dx, float dy, FontRenderer& font) {
     return spec;
 }
 
-VisualSpec getTextSpec(const char* text, float dx, float dy, FontRenderer& font) {
+VisualSpec getTextSpec(const char* text, float dx, float dy, float layer, FontRenderer& font) {
     VisualSpec spec;
 
-    spec.type = DrawType::TEXT;
+    spec.type  = DrawType::TEXT;
+    spec.layer = layer;
 
     spec.text.x    = dx;
     spec.text.y    = dy;
@@ -132,39 +140,39 @@ VisualSpec getTextSpec(const char* text, float dx, float dy, FontRenderer& font)
 // These functions that call the more general versions
 
 // Rectangles
-VisualSpec getRectangleFillSpec(float dx, float dy, float w, float h, Color color, PrimitiveRenderer& prim) {
-    return getRectangleSpec(dx, dy, w, h, 0, color, prim);
+VisualSpec getRectangleFillSpec(float dx, float dy, float w, float h, Color color, float layer, PrimitiveRenderer& prim) {
+    return getRectangleSpec(dx, dy, w, h, 0, color, layer, prim);
 }
-VisualSpec getRoundedRectangleFillSpec(float dx, float dy, float w, float h, float r, Color color, PrimitiveRenderer& prim) {
-    return getRoundedRectangleSpec(dx, dy, w, h, r, 0, color, prim);
+VisualSpec getRoundedRectangleFillSpec(float dx, float dy, float w, float h, float r, Color color, float layer, PrimitiveRenderer& prim) {
+    return getRoundedRectangleSpec(dx, dy, w, h, r, 0, color, layer, prim);
 }
 
 // Circles
-VisualSpec getCircleFillSpec(float dx, float dy, float r, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, r, r, 0, 360, 0, color, prim);
+VisualSpec getCircleFillSpec(float dx, float dy, float r, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, r, r, 0, 360, 0, color, layer, prim);
 }
-VisualSpec getCircleSpec(float dx, float dy, float r, float lineWidth, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, r, r, 0, 360, lineWidth, color, prim);
+VisualSpec getCircleSpec(float dx, float dy, float r, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, r, r, 0, 360, lineWidth, color, layer, prim);
 }
-VisualSpec getSegmentSpec(float dx, float dy, float r, float theta1, float theta2, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, r, r, theta1, theta2, 0, color, prim);
+VisualSpec getSegmentSpec(float dx, float dy, float r, float theta1, float theta2, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, r, r, theta1, theta2, 0, color, layer, prim);
 }
-VisualSpec getArcSpec(float dx, float dy, float r, float theta1, float theta2, float lineWidth, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, r, r, theta1, theta2, lineWidth, color, prim);
+VisualSpec getArcSpec(float dx, float dy, float r, float theta1, float theta2, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, r, r, theta1, theta2, lineWidth, color, layer, prim);
 }
 
 // Elipses
-VisualSpec getElipseFillSpec(float dx, float dy, float rx, float ry, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, rx, ry, 0, 360, 0, color, prim);
+VisualSpec getElipseFillSpec(float dx, float dy, float rx, float ry, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, rx, ry, 0, 360, 0, color, layer, prim);
 }
-VisualSpec getElipseSpec(float dx, float dy, float rx, float ry, float lineWidth, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, rx, ry, 0, 360, lineWidth, color, prim);
+VisualSpec getElipseSpec(float dx, float dy, float rx, float ry, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, rx, ry, 0, 360, lineWidth, color, layer, prim);
 }
-VisualSpec getElipseSegmentSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, PrimitiveRenderer& prim) {
-    return getElipseArcSpec(dx, dy, rx, ry, theta1, theta2, 0, color, prim);
+VisualSpec getElipseSegmentSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, float layer, PrimitiveRenderer& prim) {
+    return getElipseArcSpec(dx, dy, rx, ry, theta1, theta2, 0, color, layer, prim);
 }
 
 // Triangles
-VisualSpec getTriangleFillSpec(float x1, float y1, float x2, float y2, float x3, float y3, Color color, PrimitiveRenderer& prim) {
-    return getTriangleSpec(x1, y1, x2, y2, x3, y3, 0, color, prim);
+VisualSpec getTriangleFillSpec(float x1, float y1, float x2, float y2, float x3, float y3, Color color, float layer, PrimitiveRenderer& prim) {
+    return getTriangleSpec(x1, y1, x2, y2, x3, y3, 0, color, layer, prim);
 }
