@@ -55,7 +55,6 @@ struct TextSpec {
 
 struct VisualSpec {
     DrawType type;
-    int layer;
     union {
         PrimitiveSpec prim;
         SpriteSpec sprite;
@@ -63,31 +62,29 @@ struct VisualSpec {
     };
 };
 
-bool operator<(const VisualSpec& lhs, const VisualSpec& rhs);
+VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, Shader& shd);
 
-VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, int layer, Shader& shd);
+VisualSpec getRectangleFillSpec(float dx, float dy, float w, float h, Color color, PrimitiveRenderer& prim);
+VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidth, Color color, PrimitiveRenderer& prim);
+VisualSpec getRoundedRectangleFillSpec(float dx, float dy, float w, float h, float r, Color color, PrimitiveRenderer& prim);
+VisualSpec getRoundedRectangleSpec(float dx, float dy, float w, float h, float r, float lineWidth, Color color, PrimitiveRenderer& prim);
 
-VisualSpec getRectangleFillSpec(float dx, float dy, float w, float h, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getRoundedRectangleFillSpec(float dx, float dy, float w, float h, float r, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getRoundedRectangleSpec(float dx, float dy, float w, float h, float r, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
+VisualSpec getCircleFillSpec(float dx, float dy, float r, Color color, PrimitiveRenderer& prim);
+VisualSpec getCircleSpec(float dx, float dy, float r, float lineWidth, Color color, PrimitiveRenderer& prim);
+VisualSpec getSegmentSpec(float dx, float dy, float r, float theta1, float theta2, Color color, PrimitiveRenderer& prim);
+VisualSpec getArcSpec(float dx, float dy, float r, float theta1, float theta2, float lineWidth, Color color, PrimitiveRenderer& prim);
 
-VisualSpec getCircleFillSpec(float dx, float dy, float r, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getCircleSpec(float dx, float dy, float r, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getSegmentSpec(float dx, float dy, float r, float theta1, float theta2, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getArcSpec(float dx, float dy, float r, float theta1, float theta2, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
+VisualSpec getElipseFillSpec(float dx, float dy, float rx, float ry, Color color, PrimitiveRenderer& prim);
+VisualSpec getElipseSpec(float dx, float dy, float rx, float ry, float lineWidth, Color color, PrimitiveRenderer& prim);
+VisualSpec getElipseSegmentSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, PrimitiveRenderer& prim);
+VisualSpec getElipseArcSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, PrimitiveRenderer& prim);
 
-VisualSpec getElipseFillSpec(float dx, float dy, float rx, float ry, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getElipseSpec(float dx, float dy, float rx, float ry, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getElipseSegmentSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getElipseArcSpec(float dx, float dy, float rx, float ry, float theta1, float theta2, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
+VisualSpec getTriangleFillSpec(float x1, float y1, float x2, float y2, float x3, float y3, Color color, PrimitiveRenderer& prim);
+VisualSpec getTriangleSpec(float x1, float y1, float x2, float y2, float x3, float y3, float lineWidth, Color color, PrimitiveRenderer& prim);
 
-VisualSpec getTriangleFillSpec(float x1, float y1, float x2, float y2, float x3, float y3, Color color, int layer, PrimitiveRenderer& prim);
-VisualSpec getTriangleSpec(float x1, float y1, float x2, float y2, float x3, float y3, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
+VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, Color color, PrimitiveRenderer& prim);
 
-VisualSpec getLineSpec(float x1, float y1, float x2, float y2, float lineWidth, Color color, int layer, PrimitiveRenderer& prim);
-
-VisualSpec getGlyphSpec(char glyph, float dx, float dy, int layer, FontRenderer& font);
-VisualSpec getTextSpec(const char* text, float dx, float dy, int layer, FontRenderer& font);
+VisualSpec getGlyphSpec(char glyph, float dx, float dy, FontRenderer& font);
+VisualSpec getTextSpec(const char* text, float dx, float dy, FontRenderer& font);
 
 #endif

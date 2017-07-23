@@ -238,7 +238,6 @@ static int l_FontRenderer(lua_State* L) {
 
 static int l_SpriteSpec(lua_State* L) {
     Shader* shd = defaultShader;
-    int layer = 0;
     Sprite* spr;
     float dx, dy;
 
@@ -246,20 +245,9 @@ static int l_SpriteSpec(lua_State* L) {
     if (numArgs < 3) {
         luaL_error(L, "SpriteSpec takes at least 3 arguments, found %d", numArgs);
     }
-
-    bool hasLayer  = numArgs >= 4 && lua_isinteger(L, 4);
-    bool hasSprite = numArgs >= 5 || (!hasLayer && numArgs >= 4);
-    if (hasLayer && hasSprite) {
-        luaL_checkudata(L, 5, "harp.shader");
-        layer = lua_tointeger(L, 4);
-        spr = (Sprite*) lua_touserdata(L, 5);
-    }
-    else if (hasLayer && !hasSprite) {
-        layer = lua_tointeger(L, 4);
-    }
-    else if (!hasLayer && hasSprite) {
+    if (numArgs >= 4) {
         luaL_checkudata(L, 4, "harp.shader");
-        spr = (Sprite*) lua_touserdata(L, 4);
+        shd = * (Shader**) lua_touserdata(L, 1);
     }
 
     luaL_checkudata(L, 1, "harp.sprite");
@@ -267,18 +255,17 @@ static int l_SpriteSpec(lua_State* L) {
     dx = (float) luaL_checknumber(L, 2);
     dy = (float) luaL_checknumber(L, 3);
 
-    VisualSpec* spec = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    VisualSpec* ret = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getSpriteSpec(*spr, dx, dy, layer, *shd);
+    *ret = getSpriteSpec(*spr, dx, dy, *shd);
 
     return 1;
 }
 
 static int l_RectangleSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
-    int layer = 0;
     float x, y, w, h, lineW;
     Color color;
 
@@ -286,20 +273,9 @@ static int l_RectangleSpec(lua_State* L) {
     if (numArgs < 6) {
         luaL_error(L, "RectangleSpec takes at least 6 arguments, found %d.", numArgs);
     }
-
-    bool hasLayer = numArgs >= 7 && lua_isinteger(L, 7);
-    bool hasPrim  = numArgs >= 8 || (!hasLayer && numArgs >= 7);
-    if (hasLayer && hasPrim) {
-        luaL_checkudata(L, 8, "harp.primitiverenderer");
-        layer = lua_tointeger(L, 7);
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 8);
-    }
-    else if (hasLayer && !hasPrim) {
-        layer = lua_tointeger(L, 7);
-    }
-    else if (!hasLayer && hasPrim) {
+    if (numArgs == 7) {
         luaL_checkudata(L, 7, "harp.primitiverenderer");
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 7);
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 7);
     }
 
     x     = (float) luaL_checknumber(L, 1);
@@ -315,14 +291,13 @@ static int l_RectangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getRectangleSpec(x, y, w, h, lineW, color, layer, *prim);
+    *spec = getRectangleSpec(x, y, w, h, lineW, color, *prim);
 
     return 1;
 }
 
 static int l_RoundedRectangleSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
-    int layer = 0;
     float x, y, w, h, r, lineW;
     Color color;
 
@@ -330,20 +305,9 @@ static int l_RoundedRectangleSpec(lua_State* L) {
     if (numArgs < 7) {
         luaL_error(L, "RoundedRectangleSpec takes at least 7 arguments, found %d.", numArgs);
     }
-
-    bool hasLayer = numArgs >= 8 && lua_isinteger(L, 8);
-    bool hasPrim  = numArgs >= 9 || (!hasLayer && numArgs >= 8);
-    if (hasLayer && hasPrim) {
-        luaL_checkudata(L, 9, "harp.primitiverenderer");
-        layer = lua_tointeger(L, 8);
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 9);
-    }
-    else if (hasLayer && !hasPrim) {
-        layer = lua_tointeger(L, 8);
-    }
-    else if (!hasLayer && hasPrim) {
+    if (numArgs == 8) {
         luaL_checkudata(L, 8, "harp.primitiverenderer");
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 8);
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 8);
     }
 
     x     = (float) luaL_checknumber(L, 1);
@@ -360,14 +324,13 @@ static int l_RoundedRectangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getRoundedRectangleSpec(x, y, w, h, r, lineW, color, layer, *prim);
+    *spec = getRoundedRectangleSpec(x, y, w, h, r, lineW, color, *prim);
 
     return 1;
 }
 
 static int l_ElipseArcSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
-    int layer = 0;
     float x, y, rx, ry, theta1, theta2, lineW;
     Color color;
 
@@ -375,20 +338,11 @@ static int l_ElipseArcSpec(lua_State* L) {
     if (numArgs < 8) {
         luaL_error(L, "ElipseArcSpec takes at least 8 arguments, found %d.", numArgs);
     }
-
-    bool hasLayer = numArgs >= 9 && lua_isinteger(L, 9);
-    bool hasPrim  = numArgs >= 10 || (!hasLayer && numArgs >= 9);
-    if (hasLayer && hasPrim) {
-        luaL_checkudata(L, 10, "harp.primitiverenderer");
-        layer = lua_tointeger(L, 9);
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 10);
-    }
-    else if (hasLayer && !hasPrim) {
-        layer = lua_tointeger(L, 9);
-    }
-    else if (!hasLayer && hasPrim) {
+    if (numArgs == 9) {
         luaL_checkudata(L, 9, "harp.primitiverenderer");
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 9);
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 9);
+
+        lua_remove(L, 1);
     }
 
     x      = (float) luaL_checknumber(L, 1);
@@ -406,14 +360,13 @@ static int l_ElipseArcSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getElipseArcSpec(x, y, rx, ry, theta1, theta2, lineW, color, layer, *prim);
+    *spec = getElipseArcSpec(x, y, rx, ry, theta1, theta2, lineW, color, *prim);
 
     return 1;
 }
 
 static int l_TriangleSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
-    int layer = 0;
     float x1, y1, x2, y2, x3, y3, lineW;
     Color color;
 
@@ -421,20 +374,11 @@ static int l_TriangleSpec(lua_State* L) {
     if (numArgs < 8) {
         luaL_error(L, "TriangleSpec takes at least 8 arguments, found %d.", numArgs);
     }
-
-    bool hasLayer = numArgs >= 9 && lua_isinteger(L, 9);
-    bool hasPrim  = numArgs >= 10 || (!hasLayer && numArgs >= 9);
-    if (hasLayer && hasPrim) {
-        luaL_checkudata(L, 10, "harp.primitiverenderer");
-        layer = lua_tointeger(L, 9);
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 10);
-    }
-    else if (hasLayer && !hasPrim) {
-        layer = lua_tointeger(L, 9);
-    }
-    else if (!hasLayer && hasPrim) {
+    if (numArgs == 9) {
         luaL_checkudata(L, 9, "harp.primitiverenderer");
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 9);
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 9);
+
+        lua_remove(L, 1);
     }
 
     x1    = (float) luaL_checknumber(L, 1);
@@ -452,35 +396,25 @@ static int l_TriangleSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getTriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, layer, *prim);
+    *spec = getTriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, *prim);
 
     return 1;
 }
 
 static int l_LineSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
-    int layer = 0;
     float x1, y1, x2, y2, lineW;
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (numArgs < 6) {
+    if (numArgs == 6) {
         luaL_error(L, "LineSpec takes at least 6 arguments, found %d.", numArgs);
     }
-
-    bool hasLayer = numArgs >= 7 && lua_isinteger(L, 7);
-    bool hasPrim  = numArgs >= 8 || (!hasLayer && numArgs >= 7);
-    if (hasLayer && hasPrim) {
-        luaL_checkudata(L, 8, "harp.primitiverenderer");
-        layer = lua_tointeger(L, 7);
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 8);
-    }
-    else if (hasLayer && !hasPrim) {
-        layer = lua_tointeger(L, 7);
-    }
-    else if (!hasLayer && hasPrim) {
+    if (numArgs == 7) {
         luaL_checkudata(L, 7, "harp.primitiverenderer");
-        prim = (PrimitiveRenderer*) lua_touserdata(L, 7);
+        prim = * (PrimitiveRenderer**) lua_touserdata(L, 7);
+
+        lua_remove(L, 1);
     }
 
     x1    = (float) luaL_checknumber(L, 1);
@@ -496,7 +430,7 @@ static int l_LineSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getLineSpec(x1, y1, x2, y2, lineW, color, layer, *prim);
+    *spec = getLineSpec(x1, y1, x2, y2, lineW, color, *prim);
 
     return 1;
 }
@@ -516,7 +450,7 @@ static int l_GlyphSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getGlyphSpec(glyph, x, y, 0, *font);
+    *spec = getGlyphSpec(glyph, x, y, *font);
 
     return 1;
 }
@@ -536,7 +470,7 @@ static int l_TextSpec(lua_State* L) {
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
 
-    *spec = getTextSpec(text, x, y, 0, *font);
+    *spec = getTextSpec(text, x, y, *font);
 
     return 1;
 }

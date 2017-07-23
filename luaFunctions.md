@@ -55,35 +55,27 @@ Returns a new FontRenderer as a userdata.
 
 `spec SpriteSpec(spr, dx, dy, shd)`
 
-Returns a userdata representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position. The last two arguments may be omited in which case the layer default to 0 and prim will be set to the default Shader.
+Returns a userdata representing a VisualSpec for drawing a Sprite spr with Shader shd. The two numbers dx and dy represent offsets from the position. The last argument may be omited in which case the default Shader will be used.
 
 `spec RectangleSpec(dx, dy, w, h, lineW, color, prim)`
 
-Returns a userdata representing a VisualSpec for drawing a rectangle. The last two arguments may be omited in which case the layer default to 0 and prim will default to the be set PrimitiveRenderer.
+Returns a userdata representing a VisualSpec for drawing a rectangle. The last argument may be omited in which case the default PrimitiveRenderer will be used.
 
 `spec RoundedRectangleSpec(dx, dy, w, h, r, lineW, color, prim)`
 
-Returns a userdata representing a VisualSpec for drawing a rounded rectangle. The last two arguments may be omited in which case the layer default to 0 and prim will be set to the default PrimitiveRenderer.
+Returns a userdata representing a VisualSpec for drawing a rounded rectangle. The last argument may be omited in which case the default PrimitiveRenderer will be used.
 
 `spec ElipseArcSpec(dx, dy, rx, ry, theta1, theta2, lineW, color, prim)`
 
-Returns a userdata representing a VisualSpec for drawing an eliptical arc. The last two arguments may be omited in which case the layer default to 0 and prim will be set to the default PrimitiveRenderer.
+Returns a userdata representing a VisualSpec for drawing an eliptical arc. The last argument may be omited in which case the default PrimitiveRenderer will be used.
 
 `spec TriangleSpec(x1, y1, x2, y2, x3, y3, lineW, color, prim)`
 
-Returns a userdata representing a VisualSpec for drawing a triangle. The last two arguments may be omited in which case the layer default to 0 and prim will be set to the default PrimitiveRenderer.
+Returns a userdata representing a VisualSpec for drawing a triangle. The last argument may be omited in which case the default PrimitiveRenderer will be used.
 
 `spec LineSpec(x1, y1, x2, y2, lineW, color, prim)`
 
-Returns a userdata representing a VisualSpec for drawing a line. The last two arguments may be omited in which case the layer default to 0 and prim will be set to the default PrimitiveRenderer.
-
-`spec GlyphSpec(glyph, dx, dy, font)`
-
-Returns a userdata representing a VisualSpec for drawing a glyph.
-
-`spec TextSpec(text, dx, dy, font)`
-
-Returns a userdata representing a VisualSpec for drawing text. Special care should be taken when when passing the text parameter in. It will draw the string that the Lua state has stored in the variable text, if that string is garbage collected, it will potentially attempt to draw uninitialised memory.
+Returns a userdata representing a VisualSpec for drawing a line. The last argument may be omited in which case the default PrimitiveRenderer will be used.
 
 Auxillary
 ---------
