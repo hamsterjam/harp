@@ -18,16 +18,13 @@ struct SpecWrapper {
     Vec<2, double>* pos;
 };
 
-bool operator<(const SpecWrapper& lhs, const SpecWrapper& rhs) {
-    // Define it to be >= instead of a < meaning the thing with the lowest
-    // layer will get drawn first
-
-    return *(lhs.spec) < *(rhs.spec);
+bool operator>=(const SpecWrapper& lhs, const SpecWrapper& rhs) {
+    return !(*(lhs.spec) < *(rhs.spec));
 }
 
 
 void system_draw(ECS& ecs) {
-    std::priority_queue<SpecWrapper> drawQueue;
+    std::priority_queue<SpecWrapper, std::vector<SpecWrapper>, std::greater_equal<SpecWrapper> > drawQueue;
 
     for (auto it = ecs.beginParented({comp_visual, comp_position}); it != ecs.end(); ++it) {
         Entity e = *it;
