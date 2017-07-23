@@ -416,7 +416,7 @@ static int l_LineSpec(lua_State* L) {
     Color color;
 
     int numArgs = lua_gettop(L);
-    if (numArgs == 6) {
+    if (numArgs < 6) {
         luaL_error(L, "LineSpec takes at least 6 arguments, found %d.", numArgs);
     }
     if (numArgs == 7) {
@@ -633,8 +633,12 @@ void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.fontrenderer");
 
     luaL_getmetatable(L, "harp.entity");
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
     lua_pushcfunction(L, l_deleteEntity);
     lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_setComponent);
+    lua_setfield(L, -2, "set");
 
     luaL_getmetatable(L, "harp.sprite");
     lua_pushcfunction(L, l_callSpriteDestructor);
