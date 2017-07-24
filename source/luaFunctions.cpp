@@ -7,9 +7,13 @@ extern "C" {
 #include <lauxlib.h>
 }
 
+#include <luaInterface.h>
+
 #include <globals.h>
 #include <Console.h>
 #include <harpMath.h>
+#include <FunctionWrapper.h>
+
 #include <graphics/Shader.h>
 #include <graphics/Texture.h>
 #include <graphics/TextureAtlas.h>
@@ -105,6 +109,13 @@ int l_setComponent(lua_State* L) {
     else if (lua_isnumber(L, 3)) {
         double data = lua_tonumber(L, 3);
         harp.setComponent(ent, comp, &data);
+    }
+    else if (lua_isfunction(L, 3)) {
+        FunctionWrapper func;
+        func.isLua = true;
+        func.luaFunc = weakLuaRef(L);
+
+        harp.setComponent(ent, comp, &func);
     }
 
     return 0;

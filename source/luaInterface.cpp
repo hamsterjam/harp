@@ -137,6 +137,32 @@ void luaopen_harp(lua_State* L) {
     setFlagGlobal(L, "frozen", flag_frozen);
 }
 
+static int weakRefTable;
+static bool weakRefTableDefined = false;
+
+int weakLuaRef(lua_State* L) {
+    if (!weakRefTableDefined) {
+        lua_newtable(L);
+        lua_pushstring(L, "v");
+        lua_setfield(L, -2, "__mode");
+        weakRefTable = luaL_ref(L, LUA_REGISTRYINDEX);
+
+        weakRefTableDefined = true;
+    }
+    lua_rawgeti(L, LUA_REGISTRYINDEX, weakRefTable);
+    lua_insert(L, -2);
+
+    int ret = luaL_ref(L, -2);
+    lua_pop(L, 1);
+    return ret;
+}
+
+void getWeakLuaRef(lua_State* L, int key) {
+    lua_rawgeti(L, LUA_REGISTRYINDEX, weakRefTable);
+    lua_rawgeti(L, -1, key);
+    lua_remove(L, -2);
+}
+
 int getGlobalInt(lua_State* L, const char* global) {
     lua_getglobal(L, global);
     if (!lua_isinteger(L, -1)) {
