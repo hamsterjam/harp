@@ -145,7 +145,7 @@ int l_setParent(lua_State* L) {
     return 0;
 }
 
-int l_Vec2Double(lua_State* L) {
+int l_Vec2(lua_State* L) {
     double val1 = luaL_checknumber(L, 1);
     double val2 = luaL_checknumber(L, 2);
     auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
@@ -321,7 +321,7 @@ int l_SpriteSpec(lua_State* L) {
     return 1;
 }
 
-int l_RectangleSpec(lua_State* L) {
+int l_RectSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
     float x, y, w, h, lineW;
     Color color;
@@ -353,7 +353,7 @@ int l_RectangleSpec(lua_State* L) {
     return 1;
 }
 
-int l_RoundedRectangleSpec(lua_State* L) {
+int l_RoundedRectSpec(lua_State* L) {
     PrimitiveRenderer* prim = defaultPrim;
     float x, y, w, h, r, lineW;
     Color color;

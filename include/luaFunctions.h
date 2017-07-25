@@ -11,14 +11,14 @@ int l_setComponent(lua_State* L);
 int l_setFlag(lua_State* L);
 int l_setParent(lua_State* L);
 
-int l_Vec2Double(lua_State* L);
+int l_Vec2(lua_State* L);
 int l_Sprite(lua_State* L);
 int l_Shader(lua_State* L);
 int l_FontRenderer(lua_State* L);
 
 int l_SpriteSpec(lua_State* L);
-int l_RectangleSpec(lua_State* L);
-int l_RoundedRectangleSpec(lua_State* L);
+int l_RectSpec(lua_State* L);
+int l_RoundedRectSpec(lua_State* L);
 int l_ElipseArcSpec(lua_State* L);
 int l_TriangleSpec(lua_State* L);
 int l_LineSpec(lua_State* L);

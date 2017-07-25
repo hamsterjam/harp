@@ -102,19 +102,19 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_setFlag);      lua_setglobal(L, "setFlag");
     lua_pushcfunction(L, l_setParent);    lua_setglobal(L, "setParent");
 
-    lua_pushcfunction(L, l_Vec2Double);   lua_setglobal(L, "Vec2Double");
+    lua_pushcfunction(L, l_Vec2);         lua_setglobal(L, "Vec2");
     lua_pushcfunction(L, l_Sprite);       lua_setglobal(L, "Sprite");
     lua_pushcfunction(L, l_Shader);       lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_FontRenderer); lua_setglobal(L, "FontRenderer");
 
-    lua_pushcfunction(L, l_SpriteSpec);           lua_setglobal(L, "SpriteSpec");
-    lua_pushcfunction(L, l_RectangleSpec);        lua_setglobal(L, "RectangleSpec");
-    lua_pushcfunction(L, l_RoundedRectangleSpec); lua_setglobal(L, "RoundedRectangleSpec");
-    lua_pushcfunction(L, l_ElipseArcSpec);        lua_setglobal(L, "ElipseArcSpec");
-    lua_pushcfunction(L, l_TriangleSpec);         lua_setglobal(L, "TriangleSpec");
-    lua_pushcfunction(L, l_LineSpec);             lua_setglobal(L, "LineSpec");
-    lua_pushcfunction(L, l_GlyphSpec);            lua_setglobal(L, "GlyphSpec");
-    lua_pushcfunction(L, l_TextSpec);             lua_setglobal(L, "TextSpec");
+    lua_pushcfunction(L, l_SpriteSpec);      lua_setglobal(L, "SpriteSpec");
+    lua_pushcfunction(L, l_RectSpec);        lua_setglobal(L, "RectSpec");
+    lua_pushcfunction(L, l_RoundedRectSpec); lua_setglobal(L, "RoundedRectSpec");
+    lua_pushcfunction(L, l_ElipseArcSpec);   lua_setglobal(L, "ElipseArcSpec");
+    lua_pushcfunction(L, l_TriangleSpec);    lua_setglobal(L, "TriangleSpec");
+    lua_pushcfunction(L, l_LineSpec);        lua_setglobal(L, "LineSpec");
+    lua_pushcfunction(L, l_GlyphSpec);       lua_setglobal(L, "GlyphSpec");
+    lua_pushcfunction(L, l_TextSpec);        lua_setglobal(L, "TextSpec");
 
     lua_pushcfunction(L, l_print);  lua_setglobal(L, "print");
     lua_pushcfunction(L, l_exit);   lua_setglobal(L, "exit");
