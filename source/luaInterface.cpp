@@ -147,8 +147,10 @@ static bool weakRefTableDefined = false;
 int weakLuaRef(lua_State* L) {
     if (!weakRefTableDefined) {
         lua_newtable(L);
+        lua_newtable(L); // the metatable
         lua_pushstring(L, "v");
         lua_setfield(L, -2, "__mode");
+        lua_setmetatable(L, -2);
         weakRefTable = luaL_ref(L, LUA_REGISTRYINDEX);
 
         weakRefTableDefined = true;
