@@ -137,13 +137,93 @@ int l_setFlag(lua_State* L) {
 }
 
 int l_setParent(lua_State* L) {
-    Entity ent = luaL_checkinteger(L, 1);
-    Entity par = luaL_checkinteger(L, 2);
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.entity");
+
+    Entity ent = * (Entity*) lua_touserdata(L, 1);
+    Entity par = * (Entity*) lua_touserdata(L, 1);
 
     harp.setParent(ent, par);
 
     return 0;
 }
+
+//
+// Getters
+//
+
+int l_getAsNumber(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
+    Component comp = * (Component*) lua_touserdata(L, 2);
+
+    double* val = (double*) harp.getComponent(ent, comp);
+
+    if (val) lua_pushnumber(L, *val);
+    else     lua_pushnil(L);
+
+    return 1;
+}
+
+int l_getAsInteger(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
+    Component comp = * (Component*) lua_touserdata(L, 2);
+
+    int* val = (int*) harp.getComponent(ent, comp);
+
+    if (val) lua_pushinteger(L, *val);
+    else     lua_pushnil(L);
+
+    return 1;
+}
+
+int l_getAsFunction(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
+    Component comp = * (Component*) lua_touserdata(L, 2);
+
+    FunctionWrapper* val = (FunctionWrapper*) harp.getComponent(ent, comp);
+
+    if (!val || !val->isLua) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    getWeakLuaRef(L, val->luaFunc);
+    return 1;
+}
+
+int l_getAsVec2(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
+    Component comp = * (Component*) lua_touserdata(L, 2);
+
+    Vec<2, double>* val = (Vec<2, double>*) harp.getComponent(ent, comp);
+
+    if (val) {
+        lua_newtable(L);
+        lua_pushnumber(L, val->data[0]); lua_seti(L, -2, 0);
+        lua_pushnumber(L, val->data[1]); lua_seti(L, -2, 1);
+    }
+    else {
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
+//
+// Type functions
+//
 
 int l_Vec2(lua_State* L) {
     double val1 = luaL_checknumber(L, 1);

@@ -12,7 +12,9 @@ extern "C" {
 #include <ECS.h>
 #include <Console.h>
 #include <harpMath.h>
+#include <FunctionWrapper.h>
 #include <luaInterface.h>
+
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
 #include <graphics/TextureAtlas.h>
@@ -93,6 +95,7 @@ Component comp_velocity     = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_acceleration = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_visual       = harp.createComponentType(sizeof(VisualSpec));
 Component comp_layer        = harp.createComponentType(sizeof(int));
+Component comp_funcTest     = harp.createComponentType(sizeof(FunctionWrapper));
 
 Component flag_hidden = harp.createFlagType();
 Component flag_frozen = harp.createFlagType();

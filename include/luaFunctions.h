@@ -11,6 +11,11 @@ int l_setComponent(lua_State* L);
 int l_setFlag(lua_State* L);
 int l_setParent(lua_State* L);
 
+int l_getAsNumber(lua_State* L);
+int l_getAsInteger(lua_State* L);
+int l_getAsFunction(lua_State* L);
+int l_getAsVec2(lua_State* L);
+
 int l_Vec2(lua_State* L);
 int l_Sprite(lua_State* L);
 int l_Shader(lua_State* L);

@@ -71,26 +71,24 @@ void luaopen_harp(lua_State* L) {
     luaL_getmetatable(L, "harp.entity");
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
-    lua_pushcfunction(L, l_deleteEntity);
-    lua_setfield(L, -2, "__gc");
-    lua_pushcfunction(L, l_setComponent);
-    lua_setfield(L, -2, "set");
+    lua_pushcfunction(L, l_deleteEntity);  lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_setComponent);  lua_setfield(L, -2, "set");
+    lua_pushcfunction(L, l_getAsNumber);   lua_setfield(L, -2, "getAsNumber");
+    lua_pushcfunction(L, l_getAsInteger);  lua_setfield(L, -2, "getAsInteger");
+    lua_pushcfunction(L, l_getAsFunction); lua_setfield(L, -2, "getAsFunction");
+    lua_pushcfunction(L, l_getAsVec2);     lua_setfield(L, -2, "getAsVec2");
 
     luaL_getmetatable(L, "harp.sprite");
-    lua_pushcfunction(L, l_callSpriteDestructor);
-    lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_callSpriteDestructor); lua_setfield(L, -2, "__gc");
 
     luaL_getmetatable(L, "harp.shader");
-    lua_pushcfunction(L, l_callShaderDestructor);
-    lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_callShaderDestructor); lua_setfield(L, -2, "__gc");
 
     luaL_getmetatable(L, "harp.primitiverenderer");
-    lua_pushcfunction(L, l_callPrimitiveRendererDestructor);
-    lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_callPrimitiveRendererDestructor); lua_setfield(L, -2, "__gc");
 
     luaL_getmetatable(L, "harp.fontrenderer");
-    lua_pushcfunction(L, l_callFontRendererDestructor);
-    lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_callFontRendererDestructor); lua_setfield(L, -2, "__gc");
 
     lua_pop(L, 5);
 
@@ -106,6 +104,11 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_Sprite);       lua_setglobal(L, "Sprite");
     lua_pushcfunction(L, l_Shader);       lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_FontRenderer); lua_setglobal(L, "FontRenderer");
+
+    lua_pushcfunction(L, l_getAsNumber);   lua_setglobal(L, "getComponentAsNumber");
+    lua_pushcfunction(L, l_getAsInteger);  lua_setglobal(L, "getComponentAsInteger");
+    lua_pushcfunction(L, l_getAsFunction); lua_setglobal(L, "getComponentAsFunction");
+    lua_pushcfunction(L, l_getAsVec2);     lua_setglobal(L, "getComponentAsVec2");
 
     lua_pushcfunction(L, l_SpriteSpec);      lua_setglobal(L, "SpriteSpec");
     lua_pushcfunction(L, l_RectSpec);        lua_setglobal(L, "RectSpec");
@@ -129,6 +132,7 @@ void luaopen_harp(lua_State* L) {
     setComponentGlobal(L, "acceleration", comp_acceleration);
     setComponentGlobal(L, "visual",       comp_visual);
     setComponentGlobal(L, "layer",        comp_layer);
+    setComponentGlobal(L, "funcTest",     comp_funcTest);
 
     lua_newtable(L);
     lua_setglobal(L, "flag");
