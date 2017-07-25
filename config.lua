@@ -29,7 +29,7 @@ init = (function()
 
     local function makeMiku(x, y)
         local e = createEntity()
-        local pos = Vec2(x, y)
+        local pos = Vec2({x, y})
         local vis = SpriteSpec(sprMiku, 0, 0)
 
         setComponent(e, comp.position, pos)

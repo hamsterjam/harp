@@ -226,8 +226,16 @@ int l_getAsVec2(lua_State* L) {
 //
 
 int l_Vec2(lua_State* L) {
-    double val1 = luaL_checknumber(L, 1);
-    double val2 = luaL_checknumber(L, 2);
+    luaL_checktype(L, 1, LUA_TTABLE);
+
+    lua_geti(L, 1, 1);
+    lua_geti(L, 1, 2);
+
+    double val1 = lua_tonumber(L, -2);
+    double val2 = lua_tonumber(L, -1);
+
+    lua_pop(L, 2);
+
     auto ret = (Vec<2, double>*) lua_newuserdata(L, sizeof(Vec<2, double>));
     luaL_getmetatable(L, "harp.blob");
     lua_setmetatable(L, -2);
