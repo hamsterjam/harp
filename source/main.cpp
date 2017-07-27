@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -9,18 +10,33 @@
 #include <globals.h>
 #include <graphics/Texture.h>
 
+#include <systems.h>
+#include <Console.h>
+
 using namespace std;
 
+enum GameMode {
+    GAME,
+    CONSOLE,
+};
+
 const unsigned int FRAME_RATE = 60;
+
+static GameMode mode = GAME;
 
 static SDL_Window *window = NULL;
 static SDL_GLContext gl_context;
 
 void init() {
     initGlobals();
+    harp.updateComponents();
 }
 
 void update(unsigned int deltaT) {
+    Console::getInstance().update();
+    system_kinematics(harp, deltaT);
+
+    harp.updateComponents();
 }
 
 void draw() {
@@ -28,6 +44,8 @@ void draw() {
 
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    system_draw(harp);
 
     SDL_GL_SwapWindow(window);
 }
@@ -37,7 +55,79 @@ void cleanup() {
     cleanupGlobals();
 }
 
+void gameModeEvent(SDL_Event e);
+void consoleModeEvent(SDL_Event e);
+
+void handleEvent(SDL_Event e) {
+    if (e.type == SDL_QUIT) {
+        shouldExit = true;
+        return;
+    }
+
+    switch (mode) {
+        case GAME:
+            gameModeEvent(e);
+            break;
+
+        case CONSOLE:
+            consoleModeEvent(e);
+            break;
+    }
+}
+
+void gameModeEvent(SDL_Event e) {
+    switch (e.type) {
+        case SDL_QUIT:
+            shouldExit = true;
+            break;
+
+        case SDL_KEYDOWN:
+            switch (e.key.keysym.sym) {
+
+                case SDLK_CARET:
+                    Console::getInstance().toggle();
+                    SDL_StartTextInput();
+                    mode = CONSOLE;
+                    break;
+
+                case SDLK_ESCAPE:
+                    shouldExit = true;
+                    break;
+            }
+            break;
+    }
+}
+
+void consoleModeEvent(SDL_Event e) {
+    Console& console = Console::getInstance();
+    switch (e.type) {
+        case SDL_KEYDOWN:
+            switch (e.key.keysym.sym) {
+                case SDLK_CARET:
+                    console.toggle();
+                    SDL_StopTextInput();
+                    mode = GAME;
+                    break;
+
+                case SDLK_BACKSPACE:
+                    console.backspace();
+                    break;
+
+                case SDLK_RETURN:
+                    console.process();
+                    break;
+            }
+            break;
+
+        case SDL_TEXTINPUT:
+            console.appendToInput(e.text.text);
+            break;
+    }
+}
+
 int main(int argc, char** argv) {
+    readConfig();
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -50,6 +140,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    // Apparently SDL inits with text input active, We don't want that
+    SDL_StopTextInput();
     window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 
     gl_context = SDL_GL_CreateContext(window);
@@ -75,11 +167,7 @@ int main(int argc, char** argv) {
 
     while(!shouldExit) {
         SDL_Event e;
-        while(SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                shouldExit = true;
-            }
-        }
+        while(SDL_PollEvent(&e)) handleEvent(e);
 
         unsigned int currTime = SDL_GetTicks();
         if (prevTime == 0) {
