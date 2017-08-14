@@ -211,8 +211,8 @@ int l_getAsVec2(lua_State* L) {
 
     if (val) {
         lua_newtable(L);
-        lua_pushnumber(L, val->data[0]); lua_seti(L, -2, 0);
-        lua_pushnumber(L, val->data[1]); lua_seti(L, -2, 1);
+        lua_pushnumber(L, val->data[0]); lua_seti(L, -2, 1);
+        lua_pushnumber(L, val->data[1]); lua_seti(L, -2, 2);
     }
     else {
         lua_pushnil(L);
