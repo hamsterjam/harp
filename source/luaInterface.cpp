@@ -73,6 +73,7 @@ void luaopen_harp(lua_State* L) {
     lua_setfield(L, -2, "__index");
     lua_pushcfunction(L, l_deleteEntity);  lua_setfield(L, -2, "__gc");
     lua_pushcfunction(L, l_setComponent);  lua_setfield(L, -2, "set");
+    lua_pushcfunction(L, l_setFlag);       lua_setfield(L, -2, "setFlag");
     lua_pushcfunction(L, l_getAsNumber);   lua_setfield(L, -2, "getAsNumber");
     lua_pushcfunction(L, l_getAsInteger);  lua_setfield(L, -2, "getAsInteger");
     lua_pushcfunction(L, l_getAsFunction); lua_setfield(L, -2, "getAsFunction");
