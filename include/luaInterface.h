@@ -19,7 +19,7 @@ extern "C" {
 
 void luaopen_harp(lua_State* L);
 
-int weakLuaRef(lua_State* L);
+int  weakLuaRef(lua_State* L);
 void getWeakLuaRef(lua_State* L, int key);
 
 int         getGlobalInt   (lua_State* L, const char* global);
