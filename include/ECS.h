@@ -83,6 +83,8 @@ class ECS {
 
         Component createComponentType(std::size_t size);
 
+        std::size_t sizeOfComponent(Component comp);
+
         void  setComponent(Entity ent, Component comp, void* val);
         void* getComponent(Entity ent, Component comp);
         void  removeComponent(Entity ent, Component comp);

@@ -141,88 +141,47 @@ int l_setParent(lua_State* L) {
     luaL_checkudata(L, 2, "harp.entity");
 
     Entity ent = * (Entity*) lua_touserdata(L, 1);
-    Entity par = * (Entity*) lua_touserdata(L, 1);
+    Entity par = * (Entity*) lua_touserdata(L, 2);
 
     harp.setParent(ent, par);
 
     return 0;
 }
 
-//
-// Getters
-//
-
-int l_getAsNumber(lua_State* L) {
+int l_getComponent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     luaL_checkudata(L, 2, "harp.component");
 
     Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
     Component comp = * (Component*) lua_touserdata(L, 2);
 
-    double* val = (double*) harp.getComponent(ent, comp);
+    void* val        = harp.getComponent(ent, comp);
+    std::size_t size = harp.sizeOfComponent(comp);
 
-    if (val) lua_pushnumber(L, *val);
-    else     lua_pushnil(L);
+    void* ret = lua_newuserdata(L, size);
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    memcpy(ret, val, size);
 
     return 1;
 }
 
-int l_getAsInteger(lua_State* L) {
+int l_getFlag(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
-    luaL_checkudata(L, 2, "harp.component");
+    luaL_checkudata(L, 2, "harp.flag");
 
     Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
-    Component comp = * (Component*) lua_touserdata(L, 2);
+    Component flag = * (Component*) lua_touserdata(L, 2);
 
-    int* val = (int*) harp.getComponent(ent, comp);
+    bool val = harp.getFlag(ent, flag);
 
-    if (val) lua_pushinteger(L, *val);
-    else     lua_pushnil(L);
-
-    return 1;
-}
-
-int l_getAsFunction(lua_State* L) {
-    luaL_checkudata(L, 1, "harp.entity");
-    luaL_checkudata(L, 2, "harp.component");
-
-    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
-    Component comp = * (Component*) lua_touserdata(L, 2);
-
-    FunctionWrapper* val = (FunctionWrapper*) harp.getComponent(ent, comp);
-
-    if (!val || !val->isLua) {
-        lua_pushnil(L);
-        return 1;
-    }
-
-    getWeakLuaRef(L, val->luaFunc);
-    return 1;
-}
-
-int l_getAsVec2(lua_State* L) {
-    luaL_checkudata(L, 1, "harp.entity");
-    luaL_checkudata(L, 2, "harp.component");
-
-    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
-    Component comp = * (Component*) lua_touserdata(L, 2);
-
-    Vec<2, double>* val = (Vec<2, double>*) harp.getComponent(ent, comp);
-
-    if (val) {
-        lua_newtable(L);
-        lua_pushnumber(L, val->data[0]); lua_seti(L, -2, 1);
-        lua_pushnumber(L, val->data[1]); lua_seti(L, -2, 2);
-    }
-    else {
-        lua_pushnil(L);
-    }
-
+    lua_pushboolean(L, val);
     return 1;
 }
 
 //
-// Type functions
+// Conversion (Lua -> C)
 //
 
 int l_Vec2(lua_State* L) {
@@ -380,6 +339,59 @@ int l_FontRenderer(lua_State* L) {
 
     return 1;
 }
+
+//
+// Conversion (C -> Lua)
+//
+
+int l_asNumber(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.blob");
+
+    double val = * (double*) lua_touserdata(L, 1);
+
+    lua_pushnumber(L, val);
+    return 1;
+}
+
+int l_asInteger(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.blob");
+
+    int val = * (int*) lua_touserdata(L, 1);
+
+    lua_pushinteger(L, val);
+    return 1;
+}
+
+int l_asFunction(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.blob");
+
+    FunctionWrapper val = * (FunctionWrapper*) lua_touserdata(L, 1);
+
+    if (!val.isLua) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    getWeakLuaRef(L, val.luaFunc);
+    return 1;
+}
+
+int l_asVec2(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.blob");
+
+    Vec<2, double> val = * (Vec<2, double>*) lua_touserdata(L, 1);
+
+    // Remember Lua indexes from one!!
+    lua_newtable(L);
+    lua_pushnumber(L, val[0]); lua_seti(L, -2, 1);
+    lua_pushnumber(L, val[1]); lua_seti(L, -2, 2);
+
+    return 1;
+}
+
+//
+// Visual Specs
+//
 
 int l_SpriteSpec(lua_State* L) {
     Shader* shd = defaultShader;

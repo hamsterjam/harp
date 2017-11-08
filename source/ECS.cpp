@@ -129,6 +129,10 @@ Component ECS::createComponentType(size_t size) {
     return nextComp++;
 }
 
+size_t ECS::sizeOfComponent(Component comp) {
+    return compSize[comp];
+}
+
 void ECS::setComponent(Entity ent, Component comp, void* val) {
     // We need to allocate new memory for the data so we have ownership
 
