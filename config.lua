@@ -32,8 +32,8 @@ init = (function()
         local pos = Vec2({x, y})
         local vis = SpriteSpec(sprMiku, 0, 0)
 
-        setComponent(e, comp.position, pos)
-        setComponent(e, comp.visual, vis)
+        e:set(comp.position, pos)
+        e:set(comp.visual, vis)
 
         return e
     end
