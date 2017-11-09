@@ -203,6 +203,27 @@ int l_Vec2(lua_State* L) {
     return 1;
 }
 
+int l_Mat3(lua_State* L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+
+    auto ret = (Matrix<3, 3, double>*) lua_newuserdata(L, sizeof(Matrix<3, 3, double>));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    for (int i = 0; i < 3; ++i) {
+        lua_geti(L, 1, i+1); // Remember, Lua is 1 indexed.
+        luaL_checktype(L, -1, LUA_TTABLE);
+        for (int j = 0; j < 3; ++j) {
+            lua_geti(L, -1, j+1);
+            (*ret)[i][j] = lua_tonumber(L, -1);
+            lua_pop(L, 1);
+        }
+        lua_pop(L, 1);
+    }
+
+    return 1;
+}
+
 int l_Sprite(lua_State* L) {
 
     Sprite* spr = new Sprite();
@@ -385,6 +406,24 @@ int l_asVec2(lua_State* L) {
     lua_newtable(L);
     lua_pushnumber(L, val[0]); lua_seti(L, -2, 1);
     lua_pushnumber(L, val[1]); lua_seti(L, -2, 2);
+
+    return 1;
+}
+
+int l_asMat3(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.blob");
+
+    Matrix<3, 3, double> val = * (Matrix<3, 3, double>*) lua_touserdata(L, 1);
+
+    lua_newtable(L);
+    for (int i = 0; i < 3; ++i) {
+        lua_newtable(L);
+        for (int j = 0; j < 3; ++j) {
+            lua_pushnumber(L, val[i][j]);
+            lua_seti(L, -2, j+1);
+        }
+        lua_seti(L, -2, i+1);
+    }
 
     return 1;
 }

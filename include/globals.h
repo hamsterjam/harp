@@ -35,6 +35,7 @@ extern Component comp_position;
 extern Component comp_velocity;
 extern Component comp_acceleration;
 extern Component comp_visual;
+extern Component comp_transformation;
 extern Component comp_layer;
 extern Component comp_funcTest;
 

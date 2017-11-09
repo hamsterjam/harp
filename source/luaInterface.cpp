@@ -102,6 +102,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_getFlag);            lua_setglobal(L, "getFlag");
 
     lua_pushcfunction(L, l_Vec2);               lua_setglobal(L, "Vec2");
+    lua_pushcfunction(L, l_Mat3);               lua_setglobal(L, "Mat3");
     lua_pushcfunction(L, l_Sprite);             lua_setglobal(L, "Sprite");
     lua_pushcfunction(L, l_Shader);             lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_FontRenderer);       lua_setglobal(L, "FontRenderer");
@@ -110,6 +111,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_asInteger);          lua_setglobal(L, "asInteger");
     lua_pushcfunction(L, l_asFunction);         lua_setglobal(L, "asFunction");
     lua_pushcfunction(L, l_asVec2);             lua_setglobal(L, "asVec2");
+    lua_pushcfunction(L, l_asMat3);             lua_setglobal(L, "asMat3");
 
     lua_pushcfunction(L, l_SpriteSpec);         lua_setglobal(L, "SpriteSpec");
     lua_pushcfunction(L, l_RectSpec);           lua_setglobal(L, "RectSpec");

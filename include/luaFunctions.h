@@ -14,6 +14,7 @@ int l_getComponent(lua_State* L);
 int l_getFlag(lua_State* L);
 
 int l_Vec2(lua_State* L);
+int l_Mat3(lua_State* L);
 int l_Sprite(lua_State* L);
 int l_Shader(lua_State* L);
 int l_FontRenderer(lua_State* L);
@@ -22,6 +23,7 @@ int l_asNumber(lua_State* L);
 int l_asInteger(lua_State* L);
 int l_asFunction(lua_State* L);
 int l_asVec2(lua_State* L);
+int l_asMat3(lua_State* L);
 
 int l_SpriteSpec(lua_State* L);
 int l_RectSpec(lua_State* L);
