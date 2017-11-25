@@ -94,9 +94,7 @@ Component comp_position       = harp.createComponentType(sizeof(Vec<2, double>))
 Component comp_velocity       = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_acceleration   = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_visual         = harp.createComponentType(sizeof(VisualSpec));
-Component comp_transformation = harp.createComponentType(sizeof(Matrix<3, 3, double>));
 Component comp_layer          = harp.createComponentType(sizeof(int));
-Component comp_funcTest       = harp.createComponentType(sizeof(FunctionWrapper));
 
 Component flag_hidden = harp.createFlagType();
 Component flag_frozen = harp.createFlagType();
