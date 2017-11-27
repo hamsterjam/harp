@@ -172,6 +172,15 @@ void getWeakLuaRef(lua_State* L, int key) {
     lua_remove(L, -2);
 }
 
+void lua_pushEntity(lua_State* L, Entity ent) {
+    auto& ret = * (LuaEntityWrapper*) lua_newuserdata(L, sizeof(LuaEntityWrapper));
+    luaL_getmetatable(L, "harp.entity");
+    lua_setmetatable(L, -2);
+
+    ret.e = ent;
+    ret.shouldGC = false;
+}
+
 int getGlobalInt(lua_State* L, const char* global) {
     lua_getglobal(L, global);
     if (!lua_isinteger(L, -1)) {

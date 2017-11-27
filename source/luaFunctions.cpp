@@ -72,50 +72,53 @@ static Color getColor(lua_State* L, int index) {
 //
 
 int l_createEntity(lua_State* L) {
-    Entity& ent = * (Entity*) lua_newuserdata(L, sizeof(Entity));
+    auto& ent = * (LuaEntityWrapper*) lua_newuserdata(L, sizeof(LuaEntityWrapper));
     luaL_getmetatable(L, "harp.entity");
     lua_setmetatable(L, -2);
 
-    ent = harp.createEntity();
+    ent.e = harp.createEntity();
+    ent.shouldGC = true;
 
     return 1;
 }
 
 int l_deleteEntity(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
-    Entity& ent = * (Entity*) lua_touserdata(L, 1);
+    auto ent = * (LuaEntityWrapper*) lua_touserdata(L, 1);
 
-    harp.deleteEntity(ent);
+    if (ent.shouldGC) {
+        harp.deleteEntity(ent.e);
+    }
 
     return 0;
 }
 
 int l_setComponent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
-    Entity& ent = * (Entity*) lua_touserdata(L, 1);
+    auto ent = * (LuaEntityWrapper*) lua_touserdata(L, 1);
 
     luaL_checkudata(L, 2, "harp.component");
-    Component& comp = * (Component*) lua_touserdata(L, 2);
+    auto comp = * (Component*) lua_touserdata(L, 2);
 
     if (lua_isuserdata(L, 3)) {
         luaL_checkudata(L, 3, "harp.blob");
         void* data = lua_touserdata(L, 3);
-        harp.setComponent(ent, comp, data);
+        harp.setComponent(ent.e, comp, data);
     }
     else if (lua_isinteger(L, 3)) {
         int data = lua_tointeger(L, 3);
-        harp.setComponent(ent, comp, &data);
+        harp.setComponent(ent.e, comp, &data);
     }
     else if (lua_isnumber(L, 3)) {
         double data = lua_tonumber(L, 3);
-        harp.setComponent(ent, comp, &data);
+        harp.setComponent(ent.e, comp, &data);
     }
     else if (lua_isfunction(L, 3)) {
         FunctionWrapper func;
         func.isLua = true;
         func.luaFunc = weakLuaRef(L);
 
-        harp.setComponent(ent, comp, &func);
+        harp.setComponent(ent.e, comp, &func);
     }
 
     return 0;
@@ -123,15 +126,15 @@ int l_setComponent(lua_State* L) {
 
 int l_setFlag(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
-    Entity& ent = * (Entity*) lua_touserdata(L, 1);
+    auto ent = * (LuaEntityWrapper*) lua_touserdata(L, 1);
 
     luaL_checkudata(L, 2, "harp.flag");
-    Component& comp = * (Component*) lua_touserdata(L, 2);
+    auto comp = * (Component*) lua_touserdata(L, 2);
 
     luaL_checktype(L, 3, LUA_TBOOLEAN);
     bool val = lua_toboolean(L, 3);
 
-    harp.setFlag(ent, comp, val);
+    harp.setFlag(ent.e, comp, val);
 
     return 0;
 }
@@ -140,10 +143,10 @@ int l_setParent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     luaL_checkudata(L, 2, "harp.entity");
 
-    Entity ent = * (Entity*) lua_touserdata(L, 1);
-    Entity par = * (Entity*) lua_touserdata(L, 2);
+    auto ent = * (LuaEntityWrapper*) lua_touserdata(L, 1);
+    auto par = * (LuaEntityWrapper*) lua_touserdata(L, 2);
 
-    harp.setParent(ent, par);
+    harp.setParent(ent.e, par.e);
 
     return 0;
 }
@@ -152,10 +155,10 @@ int l_getComponent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     luaL_checkudata(L, 2, "harp.component");
 
-    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
-    Component comp = * (Component*) lua_touserdata(L, 2);
+    auto ent  = * (LuaEntityWrapper*) lua_touserdata(L, 1);
+    auto comp = * (Component*)        lua_touserdata(L, 2);
 
-    void* val        = harp.getComponent(ent, comp);
+    void* val        = harp.getComponent(ent.e, comp);
     std::size_t size = harp.sizeOfComponent(comp);
 
     void* ret = lua_newuserdata(L, size);
@@ -171,10 +174,10 @@ int l_getFlag(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     luaL_checkudata(L, 2, "harp.flag");
 
-    Entity    ent  = * (Entity*)    lua_touserdata(L, 1);
-    Component flag = * (Component*) lua_touserdata(L, 2);
+    auto ent  = * (LuaEntityWrapper*) lua_touserdata(L, 1);
+    auto flag = * (Component*)        lua_touserdata(L, 2);
 
-    bool val = harp.getFlag(ent, flag);
+    bool val = harp.getFlag(ent.e, flag);
 
     lua_pushboolean(L, val);
     return 1;

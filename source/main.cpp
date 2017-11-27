@@ -34,6 +34,7 @@ void init() {
 
 void update(unsigned int deltaT) {
     Console::getInstance().update();
+    system_input(harp);
     system_kinematics(harp, deltaT);
 
     harp.updateComponents();

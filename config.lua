@@ -20,6 +20,10 @@ primShader = {
 
 -- This is the kind of thing that you should do in external files...
 -- It's probably best to keep the config file as "value, pair" as possible
+function moveMiku(e)
+    e:set(comp.acceleration, Vec2{10, 0})
+end
+
 init = (function()
     local sprMiku = {
         {
@@ -33,6 +37,8 @@ init = (function()
         local vis = SpriteSpec(sprMiku, 0, 0)
 
         e:set(comp.position, pos)
+        e:set(comp.velocity, Vec2{0, 0})
+        e:set(comp.inputFunc, moveMiku)
         e:set(comp.visual, vis)
 
         return e

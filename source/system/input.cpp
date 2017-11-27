@@ -13,7 +13,8 @@ void system_input(ECS& ecs) {
 
         if (inputFunc.isLua) {
             getWeakLuaRef(L, inputFunc.luaFunc);
-            if (lua_pcall(L, 0, 0, 0)) {
+            lua_pushEntity(L, e);
+            if (lua_pcall(L, 1, 0, 0)) {
                 // Something bad happened
                 const char* errorMessage = lua_tostring(L, -1);
                 Console::getInstance().log("EE " + std::string(errorMessage));
@@ -21,8 +22,8 @@ void system_input(ECS& ecs) {
             }
         }
         else {
-            auto func = (void(*)()) inputFunc.cFunc;
-            func();
+            auto func = (void(*)(Entity)) inputFunc.cFunc;
+            func(e);
         }
     }
 }
