@@ -14,6 +14,8 @@
 
 class ECS;
 
+void system_input(ECS& ecs);
+
 /*
  * This is a function that draws things to the screen. It will not perform any
  * action with an Entity with flag_hidden set to true.

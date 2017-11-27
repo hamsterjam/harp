@@ -9,7 +9,7 @@ struct FunctionWrapper {
     bool isLua;
     union {
         int luaFunc;
-        void* cFunc;
+        void (*cFunc)();
     };
 };
 

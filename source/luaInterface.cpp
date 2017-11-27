@@ -135,6 +135,7 @@ void luaopen_harp(lua_State* L) {
     setComponentGlobal(L, "acceleration", comp_acceleration);
     setComponentGlobal(L, "visual",       comp_visual);
     setComponentGlobal(L, "layer",        comp_layer);
+    setComponentGlobal(L, "inputFunc",    comp_inputFunc);
 
     lua_newtable(L);
     lua_setglobal(L, "flag");
