@@ -13,7 +13,9 @@ void system_input(ECS& ecs) {
 
         if (inputFunc.isLua) {
             getWeakLuaRef(L, inputFunc.luaFunc);
-            lua_pushEntity(L, e);
+            auto luaref = * (int*) ecs.getComponent(e, meta_luaRef);
+            getWeakLuaRef(L, luaref);
+
             if (lua_pcall(L, 1, 0, 0)) {
                 // Something bad happened
                 const char* errorMessage = lua_tostring(L, -1);

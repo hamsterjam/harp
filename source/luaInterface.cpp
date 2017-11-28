@@ -158,6 +158,7 @@ int weakLuaRef(lua_State* L) {
 
         weakRefTableDefined = true;
     }
+    lua_pushvalue(L, -1); // luaL_ref will eat the thing if we dont do this
     lua_rawgeti(L, LUA_REGISTRYINDEX, weakRefTable);
     lua_insert(L, -2);
 
@@ -170,15 +171,6 @@ void getWeakLuaRef(lua_State* L, int key) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, weakRefTable);
     lua_rawgeti(L, -1, key);
     lua_remove(L, -2);
-}
-
-void lua_pushEntity(lua_State* L, Entity ent) {
-    auto& ret = * (LuaEntityWrapper*) lua_newuserdata(L, sizeof(LuaEntityWrapper));
-    luaL_getmetatable(L, "harp.entity");
-    lua_setmetatable(L, -2);
-
-    ret.e = ent;
-    ret.shouldGC = false;
 }
 
 int getGlobalInt(lua_State* L, const char* global) {

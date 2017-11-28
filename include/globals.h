@@ -41,6 +41,8 @@ extern Component comp_inputFunc;
 extern Component flag_hidden;
 extern Component flag_frozen;
 
+extern Component meta_luaRef;
+
 extern Shader* defaultShader;
 extern Shader* defaultPrimitiveShader;
 

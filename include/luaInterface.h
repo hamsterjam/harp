@@ -13,23 +13,14 @@
 #ifndef HARP_LUA_INTERFACE_H
 #define HARP_LUA_INTERFACE_H
 
-#include <ECS.h>
-
 extern "C" {
 #include <lua.h>
 }
-
-struct LuaEntityWrapper {
-    Entity e;
-    bool shouldGC;
-};
 
 void luaopen_harp(lua_State* L);
 
 int  weakLuaRef(lua_State* L);
 void getWeakLuaRef(lua_State* L, int key);
-
-void lua_pushEntity(lua_State* L, Entity ent);
 
 int         getGlobalInt   (lua_State* L, const char* global);
 double      getGlobalFloat (lua_State* L, const char* global);
