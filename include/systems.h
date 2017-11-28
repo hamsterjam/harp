@@ -14,7 +14,7 @@
 
 class ECS;
 
-void system_input(ECS& ecs);
+void system_input(ECS& ecs, bool acceptingInput);
 
 /*
  * This is a function that draws things to the screen. It will not perform any

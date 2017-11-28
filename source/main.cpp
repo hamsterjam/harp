@@ -34,10 +34,8 @@ void init() {
 
 void update(unsigned int deltaT) {
     Console::getInstance().update();
-    if (mode == GAME) {
-        system_input(harp);
-        harp.updateComponents();
-    }
+    system_input(harp, mode == GAME);
+    harp.updateComponents();
     system_kinematics(harp, deltaT);
 
     harp.updateComponents();

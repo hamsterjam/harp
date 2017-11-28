@@ -17,14 +17,18 @@ const SDL_Scancode DOWN_KEY  = SDL_SCANCODE_S;
 const SDL_Scancode LEFT_KEY  = SDL_SCANCODE_A;
 const SDL_Scancode RIGHT_KEY = SDL_SCANCODE_D;
 
-void system_input(ECS& ecs) {
+void system_input(ECS& ecs, bool acceptingInput) {
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
     lua_newtable(L);
-    lua_pushboolean(L, keyState[UP_KEY]);    lua_setfield(L, -2, "up");
-    lua_pushboolean(L, keyState[DOWN_KEY]);  lua_setfield(L, -2, "down");
-    lua_pushboolean(L, keyState[LEFT_KEY]);  lua_setfield(L, -2, "left");
-    lua_pushboolean(L, keyState[RIGHT_KEY]); lua_setfield(L, -2, "right");
+
+    if (acceptingInput) {
+        lua_pushboolean(L, keyState[UP_KEY]);    lua_setfield(L, -2, "up");
+        lua_pushboolean(L, keyState[DOWN_KEY]);  lua_setfield(L, -2, "down");
+        lua_pushboolean(L, keyState[LEFT_KEY]);  lua_setfield(L, -2, "left");
+        lua_pushboolean(L, keyState[RIGHT_KEY]); lua_setfield(L, -2, "right");
+    }
+    // Else, all this will have a value of nil which tests as if it were false
 
     for (auto it = ecs.begin({comp_inputFunc}); it != ecs.end(); ++it) {
         Entity e = *it;
