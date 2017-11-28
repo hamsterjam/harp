@@ -124,6 +124,37 @@ int l_setComponent(lua_State* L) {
     return 0;
 }
 
+int l_getComponent(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    auto ent  = * (Entity*)    lua_touserdata(L, 1);
+    auto comp = * (Component*) lua_touserdata(L, 2);
+
+    void* val        = harp.getComponent(ent, comp);
+    std::size_t size = harp.sizeOfComponent(comp);
+
+    void* ret = lua_newuserdata(L, size);
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    memcpy(ret, val, size);
+
+    return 1;
+}
+
+int l_removeComponent(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    auto ent  = * (Entity*)    lua_touserdata(L, 1);
+    auto comp = * (Component*) lua_touserdata(L, 2);
+
+    harp.removeComponent(ent, comp);
+
+    return 0;
+}
+
 int l_setFlag(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     auto ent = * (Entity*) lua_touserdata(L, 1);
@@ -139,6 +170,19 @@ int l_setFlag(lua_State* L) {
     return 0;
 }
 
+int l_getFlag(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.flag");
+
+    auto ent  = * (Entity*) lua_touserdata(L, 1);
+    auto flag = * (Component*)        lua_touserdata(L, 2);
+
+    bool val = harp.getFlag(ent, flag);
+
+    lua_pushboolean(L, val);
+    return 1;
+}
+
 int l_setParent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     luaL_checkudata(L, 2, "harp.entity");
@@ -151,35 +195,12 @@ int l_setParent(lua_State* L) {
     return 0;
 }
 
-int l_getComponent(lua_State* L) {
+int l_removeParent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
-    luaL_checkudata(L, 2, "harp.component");
 
-    auto ent  = * (Entity*) lua_touserdata(L, 1);
-    auto comp = * (Component*)        lua_touserdata(L, 2);
+    auto ent = * (Entity*) lua_touserdata(L, 1);
+    harp.removeParent(ent);
 
-    void* val        = harp.getComponent(ent, comp);
-    std::size_t size = harp.sizeOfComponent(comp);
-
-    void* ret = lua_newuserdata(L, size);
-    luaL_getmetatable(L, "harp.blob");
-    lua_setmetatable(L, -2);
-
-    memcpy(ret, val, size);
-
-    return 1;
-}
-
-int l_getFlag(lua_State* L) {
-    luaL_checkudata(L, 1, "harp.entity");
-    luaL_checkudata(L, 2, "harp.flag");
-
-    auto ent  = * (Entity*) lua_touserdata(L, 1);
-    auto flag = * (Component*)        lua_touserdata(L, 2);
-
-    bool val = harp.getFlag(ent, flag);
-
-    lua_pushboolean(L, val);
     return 1;
 }
 
