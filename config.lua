@@ -20,8 +20,15 @@ primShader = {
 
 -- This is the kind of thing that you should do in external files...
 -- It's probably best to keep the config file as "value, pair" as possible
-function moveMiku(e)
-    e:set(comp.acceleration, Vec2{10, 0})
+function moveMiku(e, input)
+    local newAcc = {0, 0};
+
+    if input.up    then newAcc[2] = newAcc[2] + 20 end
+    if input.down  then newAcc[2] = newAcc[2] - 20 end
+    if input.left  then newAcc[1] = newAcc[1] - 20 end
+    if input.right then newAcc[1] = newAcc[1] + 20 end
+
+    e:set(comp.acceleration, Vec2(newAcc))
 end
 
 init = (function()
