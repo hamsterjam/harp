@@ -70,7 +70,7 @@ void luaopen_harp(lua_State* L) {
 
     luaL_getmetatable(L, "harp.entity");
     lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
+    lua_setfield(L, -2, "__index"); // What does this even accomplish?
     lua_pushcfunction(L, l_deleteEntity);  lua_setfield(L, -2, "__gc");
     lua_pushcfunction(L, l_setComponent);  lua_setfield(L, -2, "set");
     lua_pushcfunction(L, l_setFlag);       lua_setfield(L, -2, "setFlag");

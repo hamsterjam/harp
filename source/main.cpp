@@ -34,7 +34,10 @@ void init() {
 
 void update(unsigned int deltaT) {
     Console::getInstance().update();
-    system_input(harp);
+    if (mode == GAME) {
+        system_input(harp);
+        harp.updateComponents();
+    }
     system_kinematics(harp, deltaT);
 
     harp.updateComponents();
@@ -86,9 +89,11 @@ void gameModeEvent(SDL_Event e) {
             switch (e.key.keysym.sym) {
 
                 case SDLK_CARET:
-                    Console::getInstance().toggle();
-                    SDL_StartTextInput();
-                    mode = CONSOLE;
+                    if (SDL_GetModState() & KMOD_SHIFT) { // Bitwise and is intenitonal
+                        Console::getInstance().toggle();
+                        SDL_StartTextInput();
+                        mode = CONSOLE;
+                    }
                     break;
 
                 case SDLK_ESCAPE:
@@ -105,9 +110,11 @@ void consoleModeEvent(SDL_Event e) {
         case SDL_KEYDOWN:
             switch (e.key.keysym.sym) {
                 case SDLK_CARET:
-                    console.toggle();
-                    SDL_StopTextInput();
-                    mode = GAME;
+                    if (SDL_GetModState() & KMOD_SHIFT) { // Bitwise and is intentional
+                        console.toggle();
+                        SDL_StopTextInput();
+                        mode = GAME;
+                    }
                     break;
 
                 case SDLK_BACKSPACE:
