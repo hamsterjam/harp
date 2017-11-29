@@ -64,7 +64,7 @@ init = (function()
 
         e:set(comp.position, pos)
         e:set(comp.velocity, Vec2{0, 0})
-        e:set(comp.inputFunc, moveMiku)
+        e:set(comp.inputFunction, moveMiku)
         e:set(comp.visual, vis)
 
         return e

@@ -30,13 +30,13 @@ void system_input(ECS& ecs, bool acceptingInput) {
     }
     // Else, all this will have a value of nil which tests as if it were false
 
-    for (auto it = ecs.begin({comp_inputFunc}); it != ecs.end(); ++it) {
+    for (auto it = ecs.begin({comp_inputFunction}); it != ecs.end(); ++it) {
         Entity e = *it;
-        auto inputFunc = * (FunctionWrapper *) ecs.getComponent(e, comp_inputFunc);
+        auto inputFunction = * (FunctionWrapper *) ecs.getComponent(e, comp_inputFunction);
 
 
-        if (inputFunc.isLua) {
-            getWeakLuaRef(L, inputFunc.luaFunc);
+        if (inputFunction.isLua) {
+            getWeakLuaRef(L, inputFunction.luaFunc);
             auto luaref = * (int*) ecs.getComponent(e, meta_luaRef);
             getWeakLuaRef(L, luaref);
 
@@ -50,7 +50,7 @@ void system_input(ECS& ecs, bool acceptingInput) {
             }
         }
         else {
-            auto func = (void(*)(Entity)) inputFunc.cFunc;
+            auto func = (void(*)(Entity)) inputFunction.cFunc;
             func(e);
         }
     }
