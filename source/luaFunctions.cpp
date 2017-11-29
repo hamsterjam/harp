@@ -143,6 +143,18 @@ int l_getComponent(lua_State* L) {
     return 1;
 }
 
+int l_hasComponent(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.entity");
+    luaL_checkudata(L, 2, "harp.component");
+
+    auto ent  = * (Entity*)    lua_touserdata(L, 1);
+    auto comp = * (Component*) lua_touserdata(L, 2);
+
+    lua_pushboolean(L, (bool) harp.getComponent(ent, comp));
+
+    return 1;
+}
+
 int l_removeComponent(lua_State* L) {
     luaL_checkudata(L, 1, "harp.entity");
     luaL_checkudata(L, 2, "harp.component");

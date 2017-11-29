@@ -28,7 +28,12 @@ function moveMiku(e, input)
     if input.left  then tarVel[1] = tarVel[1] - 100 end
     if input.right then tarVel[1] = tarVel[1] + 100 end
 
-    local curVel = asVec2(e:get(comp.velocity))
+    local curVel
+    if e:has(comp.velocity) then
+        curVel = asVec2(e:get(comp.velocity))
+    else
+        curVel = {0, 0}
+    end
 
     local acc = {0, 0}
     for i = 1, 2 do

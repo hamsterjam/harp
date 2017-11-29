@@ -9,6 +9,7 @@ int l_createEntity(lua_State* L);
 int l_deleteEntity(lua_State* L);
 int l_setComponent(lua_State* L);
 int l_getComponent(lua_State* L);
+int l_hasComponent(lua_State* L);
 int l_removeComponent(lua_State* L);
 int l_setFlag(lua_State* L);
 int l_getFlag(lua_State* L);

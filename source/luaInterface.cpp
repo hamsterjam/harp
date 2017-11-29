@@ -71,11 +71,15 @@ void luaopen_harp(lua_State* L) {
     luaL_getmetatable(L, "harp.entity");
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index"); // What does this even accomplish?
-    lua_pushcfunction(L, l_deleteEntity);  lua_setfield(L, -2, "__gc");
-    lua_pushcfunction(L, l_setComponent);  lua_setfield(L, -2, "set");
-    lua_pushcfunction(L, l_setFlag);       lua_setfield(L, -2, "setFlag");
-    lua_pushcfunction(L, l_getComponent);  lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, l_getFlag);       lua_setfield(L, -2, "getFlag");
+    lua_pushcfunction(L, l_deleteEntity);    lua_setfield(L, -2, "__gc");
+    lua_pushcfunction(L, l_setComponent);    lua_setfield(L, -2, "set");
+    lua_pushcfunction(L, l_getComponent);    lua_setfield(L, -2, "get");
+    lua_pushcfunction(L, l_hasComponent);    lua_setfield(L, -2, "has");
+    lua_pushcfunction(L, l_removeComponent); lua_setfield(L, -2, "remove");
+    lua_pushcfunction(L, l_setFlag);         lua_setfield(L, -2, "setFlag");
+    lua_pushcfunction(L, l_getFlag);         lua_setfield(L, -2, "getFlag");
+    lua_pushcfunction(L, l_setParent);       lua_setfield(L, -2, "setParent");
+    lua_pushcfunction(L, l_removeParent);    lua_setfield(L, -2, "removeParent");
 
     luaL_getmetatable(L, "harp.sprite");
     lua_pushcfunction(L, l_callSpriteDestructor); lua_setfield(L, -2, "__gc");
@@ -97,6 +101,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_deleteEntity);       lua_setglobal(L, "deleteEntity");
     lua_pushcfunction(L, l_setComponent);       lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_getComponent);       lua_setglobal(L, "getComponent");
+    lua_pushcfunction(L, l_hasComponent);       lua_setglobal(L, "hasComponent");
     lua_pushcfunction(L, l_removeComponent);    lua_setglobal(L, "removeComponent");
     lua_pushcfunction(L, l_setFlag);            lua_setglobal(L, "setFlag");
     lua_pushcfunction(L, l_getFlag);            lua_setglobal(L, "getFlag");
