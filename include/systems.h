@@ -14,6 +14,19 @@
 
 class ECS;
 
+/*
+ * Passes keyboard input stuff to a function that decides on how it wants to
+ * to ahndle the movement. If acceptingInput is set to true, it will read
+ * keyboard input, otherwise it will act as if no keys are pressed.
+ *
+ * Operates on any Enitty with:
+ *
+ *      comp_inputFunction
+ *
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
 void system_input(ECS& ecs, bool acceptingInput);
 
 /*

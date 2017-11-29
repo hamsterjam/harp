@@ -20,35 +20,41 @@ primShader = {
 
 -- This is the kind of thing that you should do in external files...
 -- It's probably best to keep the config file as "value, pair" as possible
-function moveMiku(e, input)
-    local tarVel = {0, 0};
+moveMiku = (function()
+    local maxSpeed     = 100
+    local acceleration = 200
+    local omega        = 0.01
 
-    if input.up    then tarVel[2] = tarVel[2] + 100 end
-    if input.down  then tarVel[2] = tarVel[2] - 100 end
-    if input.left  then tarVel[1] = tarVel[1] - 100 end
-    if input.right then tarVel[1] = tarVel[1] + 100 end
+    return function(e, input)
+        local tarVel = {0, 0};
 
-    local curVel
-    if e:has(comp.velocity) then
-        curVel = asVec2(e:get(comp.velocity))
-    else
-        curVel = {0, 0}
-    end
+        if input.up    then tarVel[2] = tarVel[2] + maxSpeed end
+        if input.down  then tarVel[2] = tarVel[2] - maxSpeed end
+        if input.left  then tarVel[1] = tarVel[1] - maxSpeed end
+        if input.right then tarVel[1] = tarVel[1] + maxSpeed end
 
-    local acc = {0, 0}
-    for i = 1, 2 do
-        if math.abs(curVel[i] - tarVel[i]) < 0.0001 then
-            curVel[i] = tarVel[i]
-        elseif tarVel[i] > curVel[i] then
-            acc[i] =  200
-        elseif tarVel[i] < curVel[i] then
-            acc[i] = -200
+        local curVel
+        if e:has(comp.velocity) then
+            curVel = asVec2(e:get(comp.velocity))
+        else
+            curVel = {0, 0}
         end
-    end
 
-    e:set(comp.velocity, Vec2(curVel))
-    e:set(comp.acceleration, Vec2(acc))
-end
+        local acc = {0, 0}
+        for i = 1, 2 do
+            if math.abs(curVel[i] - tarVel[i]) < omega then
+                curVel[i] = tarVel[i]
+            elseif tarVel[i] > curVel[i] then
+                acc[i] =  acceleration
+            elseif tarVel[i] < curVel[i] then
+                acc[i] = -acceleration
+            end
+        end
+
+        e:set(comp.velocity, Vec2(curVel))
+        e:set(comp.acceleration, Vec2(acc))
+    end
+end)()
 
 init = (function()
     local sprMiku = {
