@@ -45,6 +45,20 @@ void system_input(ECS& ecs, bool acceptingInput);
 void system_draw(ECS& ecs);
 
 /*
+ * One half of a physics simulation (the other being kinematics). The purpose
+ * of this function is essentially to calculate and apply forces.
+ *
+ * Operates on any Entity with:
+ *
+ *      comp_acceleration
+ *
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+void system_dynamics(ECS& ecs);
+
+/*
  * This is a function that performs very simple kinematics, that is, it moves
  * each Entity around based on its velocity and acceleration.
  *
@@ -59,9 +73,23 @@ void system_draw(ECS& ecs);
  *     comp_acceleration
  *
  *
- * - Callum Nicholsons (hamsterjam)
+ * - Callum Nicholson (hamsterjam)
  *
  */
 void system_kinematics(ECS& ecs, unsigned int deltaT);
+
+/*
+ * Fudges components to give them exact values if it's something that should be
+ * able to be exact but wont be for precision reasons
+ *
+ * Operates on any Entity with
+ *
+ *      comp_velocity
+ *
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+void system_fudge(ECS& ecs);
 
 #endif

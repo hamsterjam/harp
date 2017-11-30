@@ -20,41 +20,18 @@ primShader = {
 
 -- This is the kind of thing that you should do in external files...
 -- It's probably best to keep the config file as "value, pair" as possible
-moveMiku = (function()
-    local maxSpeed     = 100
-    local acceleration = 200
-    local omega        = 0.01
 
-    return function(e, input)
-        local tarVel = {0, 0};
+function moveMiku(e, input)
+    local magnitude = 200
+    local acc = {0, 0}
 
-        if input.up    then tarVel[2] = tarVel[2] + maxSpeed end
-        if input.down  then tarVel[2] = tarVel[2] - maxSpeed end
-        if input.left  then tarVel[1] = tarVel[1] - maxSpeed end
-        if input.right then tarVel[1] = tarVel[1] + maxSpeed end
+    if input.up    then acc[2] =  magnitude end
+    if input.down  then acc[2] = -magnitude end
+    if input.left  then acc[1] = -magnitude end
+    if input.right then acc[1] =  magnitude end
 
-        local curVel
-        if e:has(comp.velocity) then
-            curVel = asVec2(e:get(comp.velocity))
-        else
-            curVel = {0, 0}
-        end
-
-        local acc = {0, 0}
-        for i = 1, 2 do
-            if math.abs(curVel[i] - tarVel[i]) < omega then
-                curVel[i] = tarVel[i]
-            elseif tarVel[i] > curVel[i] then
-                acc[i] =  acceleration
-            elseif tarVel[i] < curVel[i] then
-                acc[i] = -acceleration
-            end
-        end
-
-        e:set(comp.velocity, Vec2(curVel))
-        e:set(comp.acceleration, Vec2(acc))
-    end
-end)()
+    e:set(comp.acceleration, Vec2(acc))
+end
 
 init = (function()
     local sprMiku = {
