@@ -44,6 +44,9 @@ void update(unsigned int deltaT) {
     system_kinematics(harp, deltaT);
     harp.updateComponents();
 
+    system_collision(harp);
+    harp.updateComponents();
+
     system_fudge(harp);
     harp.updateComponents();
 }

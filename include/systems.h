@@ -79,6 +79,16 @@ void system_dynamics(ECS& ecs);
 void system_kinematics(ECS& ecs, unsigned int deltaT);
 
 /*
+ * Detects and rectifies collisions, for now this just means that it stops
+ * everything from going off the bottom of the screen, I'll do something more
+ * elaborate later
+ *
+ * - Callum Nicholson (hamsterjam)
+ *
+ */
+void system_collision(ECS& ecs);
+
+/*
  * Fudges components to give them exact values if it's something that should be
  * able to be exact but wont be for precision reasons
  *
