@@ -99,14 +99,15 @@ void luaopen_harp(lua_State* L) {
 
     lua_pushcfunction(L, l_createEntity);       lua_setglobal(L, "createEntity");
     lua_pushcfunction(L, l_deleteEntity);       lua_setglobal(L, "deleteEntity");
+    lua_pushcfunction(L, l_setParent);          lua_setglobal(L, "setParent");
+    lua_pushcfunction(L, l_removeParent);       lua_setglobal(L, "removeParent");
+
     lua_pushcfunction(L, l_setComponent);       lua_setglobal(L, "setComponent");
     lua_pushcfunction(L, l_getComponent);       lua_setglobal(L, "getComponent");
     lua_pushcfunction(L, l_hasComponent);       lua_setglobal(L, "hasComponent");
     lua_pushcfunction(L, l_removeComponent);    lua_setglobal(L, "removeComponent");
     lua_pushcfunction(L, l_setFlag);            lua_setglobal(L, "setFlag");
     lua_pushcfunction(L, l_getFlag);            lua_setglobal(L, "getFlag");
-    lua_pushcfunction(L, l_setParent);          lua_setglobal(L, "setParent");
-    lua_pushcfunction(L, l_removeParent);       lua_setglobal(L, "removeParent");
 
     lua_pushcfunction(L, l_Vec2);               lua_setglobal(L, "Vec2");
     lua_pushcfunction(L, l_Mat3);               lua_setglobal(L, "Mat3");

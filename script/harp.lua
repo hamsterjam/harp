@@ -135,7 +135,7 @@ end)()
 
 -- Print
 function print(msg)
-    if type(msg) == "table" then
+    if type(msg) == "table" and #msg ~= 0 then
         local out = "["
         for i = 1, #msg do
             out = out .. msg[i] .. ", "
