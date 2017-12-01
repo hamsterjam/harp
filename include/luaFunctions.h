@@ -37,7 +37,7 @@ int l_LineSpec(lua_State* L);
 int l_GlyphSpec(lua_State* L);
 int l_TextSpec(lua_State* L);
 
-int l_print(lua_State* L);
+int l_printRaw(lua_State* L);
 int l_exit(lua_State* L);
 
 int l_callSpriteDestructor(lua_State* L);

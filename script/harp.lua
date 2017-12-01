@@ -132,3 +132,18 @@ end
     end
 
 end)()
+
+-- Print
+function print(msg)
+    if type(msg) == "table" then
+        local out = "["
+        for i = 1, #msg do
+            out = out .. msg[i] .. ", "
+        end
+        out = string.sub(out, 1, -3) -- Remove last 2 characters ", "
+        out = out .. "]"
+        printRaw(out)
+    else
+        printRaw(msg)
+    end
+end

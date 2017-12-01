@@ -1,6 +1,7 @@
 #include <luaFunctions.h>
 
 #include <iostream>
+#include <string>
 
 extern "C" {
 #include <lua.h>
@@ -711,9 +712,39 @@ int l_TextSpec(lua_State* L) {
 // Auxiliary
 //
 
-int l_print(lua_State* L) {
-    const char* message = luaL_checkstring(L, 1);
-    Console::getInstance().log("<- " + std::string(message));
+int l_printRaw(lua_State* L) {
+    std::string message;
+    if (lua_isstring(L, 1)) {
+        message = std::string(lua_tostring(L, 1));
+    }
+    else if (lua_isboolean(L, 1)) {
+        bool value = lua_toboolean(L, 1);
+        message = (value) ? "true" : "false";
+    }
+    else if (lua_isnil(L, 1)) {
+        message = "nil";
+    }
+    else if (lua_isuserdata(L, 1)) {
+        if (luaL_testudata(L, 1, "harp.entity")) {
+            auto id = * (Entity*) lua_touserdata(L, 1);
+            message = "Entity: " + std::to_string(id);
+        }
+        else if (luaL_testudata(L, 1, "harp.component")) {
+            auto id = * (Component*) lua_touserdata(L, 1);
+            message = "Component: " + std::to_string(id);
+        }
+        else if (luaL_testudata(L, 1, "harp.flag")) {
+            auto id = * (Component*) lua_touserdata(L, 1);
+            message = "Flag: " + std::to_string(id);
+        }
+        else {
+            luaL_error(L, "Attempted to print non-printable type");
+        }
+    }
+    else {
+        luaL_error(L, "Attempted to print non-printable type");
+    }
+    Console::getInstance().log("<- " + message);
     return 0;
 }
 

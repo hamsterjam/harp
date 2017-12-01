@@ -129,7 +129,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_GlyphSpec);          lua_setglobal(L, "GlyphSpec");
     lua_pushcfunction(L, l_TextSpec);           lua_setglobal(L, "TextSpec");
 
-    lua_pushcfunction(L, l_print);              lua_setglobal(L, "print");
+    lua_pushcfunction(L, l_printRaw);           lua_setglobal(L, "printRaw");
     lua_pushcfunction(L, l_exit);               lua_setglobal(L, "exit");
 
     // Components
