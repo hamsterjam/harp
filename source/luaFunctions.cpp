@@ -1,6 +1,5 @@
 #include <luaFunctions.h>
 
-#include <iostream>
 #include <string>
 
 extern "C" {
