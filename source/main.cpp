@@ -49,6 +49,7 @@ void update(unsigned int deltaT) {
 
     system_fudge(harp);
     harp.updateComponents();
+
 }
 
 void draw() {

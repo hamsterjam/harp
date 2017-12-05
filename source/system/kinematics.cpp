@@ -22,7 +22,10 @@ void system_kinematics(ECS& ecs, unsigned int deltaT) {
 
         pos += (sDeltaT * vel) + (0.5 * sDeltaT2 * acc);
 
-        ecs.setComponent(e, comp_position, &pos);
+        // Setting nextPosition so the collision system knows both where we
+        // are going, and where we came from so we can do better collisions
+        // than standard clipping collisions
+        ecs.setComponent(e, comp_nextPosition, &pos);
     }
 
     // Update the velocity based on acceleration

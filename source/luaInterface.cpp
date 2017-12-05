@@ -139,6 +139,7 @@ void luaopen_harp(lua_State* L) {
     lua_setglobal(L, "comp");
 
     setComponentGlobal(L, "position",      comp_position);
+    setComponentGlobal(L, "nextPosition",  comp_nextPosition);
     setComponentGlobal(L, "velocity",      comp_velocity);
     setComponentGlobal(L, "acceleration",  comp_acceleration);
     setComponentGlobal(L, "visual",        comp_visual);
