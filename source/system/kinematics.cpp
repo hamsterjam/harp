@@ -11,7 +11,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT) {
     // Update the position based on velocity
     for (auto it = ecs.begin({comp_position, comp_velocity}); it != ecs.end(); ++it) {
         Entity e = *it;
-        if (ecs.getFlag(e, flag_frozen)) continue;
+        if (ecs.getFlag(e, flag_static)) continue;
         auto pos = * (Vec<2, double>*) ecs.getComponent(e, comp_position);
         auto vel = * (Vec<2, double>*) ecs.getComponent(e, comp_velocity);
         auto acc = zeroVec<2, double>();
@@ -28,7 +28,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT) {
     // Update the velocity based on acceleration
     for (auto it = ecs.begin({comp_velocity, comp_acceleration}); it != ecs.end(); ++it) {
         Entity e = *it;
-        if (ecs.getFlag(e, flag_frozen)) continue;
+        if (ecs.getFlag(e, flag_static)) continue;
         auto vel = * (Vec<2, double>*) ecs.getComponent(e, comp_velocity);
         auto acc = * (Vec<2, double>*) ecs.getComponent(e, comp_acceleration);
 

@@ -98,7 +98,7 @@ Component comp_layer          = harp.createComponentType(sizeof(int));
 Component comp_inputFunction  = harp.createComponentType(sizeof(FunctionWrapper));
 
 Component flag_hidden = harp.createFlagType();
-Component flag_frozen = harp.createFlagType();
+Component flag_static = harp.createFlagType();
 
 Component meta_luaRef = harp.createComponentType(sizeof(int));
 

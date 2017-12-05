@@ -39,7 +39,7 @@ extern Component comp_layer;
 extern Component comp_inputFunction;
 
 extern Component flag_hidden;
-extern Component flag_frozen;
+extern Component flag_static;
 
 extern Component meta_luaRef;
 
