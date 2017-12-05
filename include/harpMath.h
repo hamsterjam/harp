@@ -35,6 +35,7 @@
 
 #include <cmath>
 #include <cstring> // memcpy
+#include <limits>  // NaN
 
 template <unsigned int N, typename T>
 class Vec {
@@ -296,6 +297,40 @@ Vec<N, T> normalize(Vec<N, T> op) {
 template<unsigned int N, typename T>
 Vec<N, T> proj(Vec<N, T> lhs, Vec<N, T> rhs) {
     return dot(lhs,rhs)*normalize(rhs);
+}
+
+template<typename T>
+bool lineSegmentsIntersect(Vec<2, T> p1, Vec<2, T> p2, Vec<2, T> q1, Vec<2, T> q2, T& s, T& t) {
+    Matrix<2, 2, T> A;
+    A[0] = p2 - p1;
+    A[1] = q1 - q2;
+
+    if (dot(perp(A[0]), A[1]) == 0) {
+        s = std::numeric_limits<T>::quiet_NaN();
+        t = std::numeric_limits<T>::quiet_NaN();
+        return false;
+    }
+
+    Vec<2, T> st = inverse(A) * (q1 - p1);
+    s = st[0];
+    t = st[1];
+
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+        return true;
+    }
+    return false;
+}
+
+template<typename T>
+bool lineSegmentsIntersect(Vec<2, T> p1, Vec<2, T> p2, Vec<2, T> q1, Vec<2, T> q2) {
+    T temp1, temp2;
+    return lineSegmentsIntersect<T>(p1, p2, q1, q2, temp1, temp2);
+}
+
+template<typename T>
+bool lineSegmentsIntersect(Vec<2, T> p1, Vec<2, T> p2, Vec<2, T> q1, Vec<2, T> q2, T& t) {
+    T temp;
+    return lineSegmentsIntersect<T>(p1, p2, q1, q2, t, temp);
 }
 
 /********************
