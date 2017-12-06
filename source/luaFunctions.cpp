@@ -12,6 +12,7 @@ extern "C" {
 #include <globals.h>
 #include <Console.h>
 #include <harpMath.h>
+#include <Collider.h>
 #include <FunctionWrapper.h>
 
 #include <graphics/Shader.h>
@@ -265,6 +266,48 @@ int l_Mat3(lua_State* L) {
         }
         lua_pop(L, 1);
     }
+
+    return 1;
+}
+
+int l_LineCollider(lua_State* L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+
+    lua_geti(L, 1, 1);
+    lua_geti(L, 1, 2);
+
+    double val1 = lua_tonumber(L, -2);
+    double val2 = lua_tonumber(L, -1);
+
+    lua_pop(L, 2);
+
+    auto ret = (Collider*) lua_newuserdata(L, sizeof(Collider));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+    ret->type = LINE_COLLIDER;
+    ret->delta[0] = val1;
+    ret->delta[1] = val2;
+
+    return 1;
+}
+
+int l_BoxCollider(lua_State* L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+
+    lua_geti(L, 1, 1);
+    lua_geti(L, 1, 2);
+
+    double val1 = lua_tonumber(L, -2);
+    double val2 = lua_tonumber(L, -1);
+
+    lua_pop(L, 2);
+
+    auto ret = (Collider*) lua_newuserdata(L, sizeof(Collider));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+    ret->type = BOX_COLLIDER;
+    ret->delta[0] = val1;
+    ret->delta[1] = val2;
 
     return 1;
 }

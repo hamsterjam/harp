@@ -13,6 +13,7 @@ extern "C" {
 #include <Console.h>
 #include <harpMath.h>
 #include <FunctionWrapper.h>
+#include <Collider.h>
 #include <luaInterface.h>
 
 #include <graphics/Shader.h>
@@ -94,6 +95,7 @@ Component comp_position       = harp.createComponentType(sizeof(Vec<2, double>))
 Component comp_nextPosition   = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_velocity       = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_acceleration   = harp.createComponentType(sizeof(Vec<2, double>));
+Component comp_collider       = harp.createComponentType(sizeof(Collider));
 Component comp_visual         = harp.createComponentType(sizeof(VisualSpec));
 Component comp_layer          = harp.createComponentType(sizeof(int));
 Component comp_inputFunction  = harp.createComponentType(sizeof(FunctionWrapper));

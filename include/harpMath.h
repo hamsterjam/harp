@@ -87,6 +87,7 @@ class Vec {
         }
 };
 
+// For future reference, this is stored in ROW major order
 template<unsigned int M, unsigned int N, typename T>
 class Matrix : public Vec<M, Vec<N, T> > {
     public:
@@ -311,7 +312,7 @@ bool lineSegmentsIntersect(Vec<2, T> p1, Vec<2, T> p2, Vec<2, T> q1, Vec<2, T> q
         return false;
     }
 
-    Vec<2, T> st = inverse(A) * (q1 - p1);
+    Vec<2, T> st = inverse(trans(A)) * (q1 - p1);
     s = st[0];
     t = st[1];
 
@@ -483,6 +484,21 @@ Matrix<N, N, T> inverse(Matrix<N, N, T> op) {
     Matrix<N, N, T> id = identityMatrix<N, T>();
     // This is row reduction, the rule is, whatever we do to op, we do to id
     for (int r = 0; r < N; ++r) {
+        // Find a row with non-zero rth member for the pivot
+        for (int rr = r; rr < N; ++rr) {
+            if (op[rr][r] != 0) {
+                // Swap row rr and r so that op[r][r] is the pivot
+                auto temp = op[rr];
+                op[rr] = op[r];
+                op[r]  = temp;
+
+                temp   = id[rr];
+                id[rr] = id[r];
+                id[r]  = temp;
+                break;
+            }
+        }
+
         // Keep track of the value on the diagonal, we are going to pretend
         // to divide every value on the row by this (but do it later)
         T pivot = op[r][r];

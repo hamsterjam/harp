@@ -22,6 +22,8 @@ int l_getFlag(lua_State* L);
 // Conversion (Lua -> C)
 int l_Vec2(lua_State* L);
 int l_Mat3(lua_State* L);
+int l_LineCollider(lua_State* L);
+int l_BoxCollider(lua_State* L);
 int l_Sprite(lua_State* L);
 int l_Shader(lua_State* L);
 int l_FontRenderer(lua_State* L);

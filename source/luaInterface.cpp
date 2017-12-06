@@ -111,6 +111,8 @@ void luaopen_harp(lua_State* L) {
 
     lua_pushcfunction(L, l_Vec2);               lua_setglobal(L, "Vec2");
     lua_pushcfunction(L, l_Mat3);               lua_setglobal(L, "Mat3");
+    lua_pushcfunction(L, l_LineCollider);       lua_setglobal(L, "LineCollider");
+    lua_pushcfunction(L, l_BoxCollider);        lua_setglobal(L, "BoxCollider");
     lua_pushcfunction(L, l_Sprite);             lua_setglobal(L, "Sprite");
     lua_pushcfunction(L, l_Shader);             lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_FontRenderer);       lua_setglobal(L, "FontRenderer");
@@ -142,6 +144,7 @@ void luaopen_harp(lua_State* L) {
     setComponentGlobal(L, "nextPosition",  comp_nextPosition);
     setComponentGlobal(L, "velocity",      comp_velocity);
     setComponentGlobal(L, "acceleration",  comp_acceleration);
+    setComponentGlobal(L, "collider",      comp_collider);
     setComponentGlobal(L, "visual",        comp_visual);
     setComponentGlobal(L, "layer",         comp_layer);
     setComponentGlobal(L, "inputFunction", comp_inputFunction);

@@ -20,6 +20,13 @@ int main(int argc, char** argv) {
     assert(s == 0.5);
     assert(t == 0.5);
 
+    s = 1;
+
+    assert(lineSegmentsIntersect(p0, p1, q0, q1, s));
+    assert(s == 0.5);
+
+    assert(lineSegmentsIntersect(p0, p1, q0, q1));
+
     cout << "All systems nominal!" << endl;
     return 0;
 }

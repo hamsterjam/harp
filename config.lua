@@ -47,6 +47,7 @@ init = (function()
 
         e:set(comp.position, pos)
         e:set(comp.velocity, Vec2{0, 0})
+        e:set(comp.collider, BoxCollider{256, 256});
         e:set(comp.inputFunction, moveMiku)
         e:set(comp.visual, vis)
 
@@ -57,5 +58,13 @@ init = (function()
         sprMiku = Sprite(sprMiku)
 
         miku = makeMiku(200, 200)
+        border = createEntity();
+        border:setParent(miku);
+        border:set(comp.visual, RectSpec(0, 0, 256, 256, 1, rgbToColor(0, 0, 0)))
+        floor = createEntity();
+        floor:setFlag(flag.static, true);
+        floor:set(comp.position, Vec2{0, 0})
+        floor:set(comp.collider, LineCollider{screenWidth, 100})
+        floor:set(comp.visual, LineSpec(0, 0, screenWidth, 100, 1, rgbToColor(0, 0, 0)))
     end
 end)()
