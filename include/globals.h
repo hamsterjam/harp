@@ -41,6 +41,7 @@ extern Component comp_inputFunction;
 
 extern Component comp_nextPosition;
 extern Component comp_partialStep;
+extern Component comp_onSurface;
 
 extern Component flag_hidden;
 extern Component flag_static;

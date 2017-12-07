@@ -32,8 +32,14 @@ void system_input(ECS& ecs, bool acceptingInput) {
 
     for (auto it = ecs.begin({comp_inputFunction}); it != ecs.end(); ++it) {
         Entity e = *it;
-        auto inputFunction = * (FunctionWrapper *) ecs.getComponent(e, comp_inputFunction);
 
+        // Check if this ent is done processing
+        if (ecs.getComponent(e, comp_partialStep)) {
+            auto partialStep = * (double *) ecs.getComponent(e, comp_partialStep);
+            if (partialStep == 0) continue;
+        }
+
+        auto inputFunction = * (FunctionWrapper *) ecs.getComponent(e, comp_inputFunction);
 
         if (inputFunction.isLua) {
             getWeakLuaRef(L, inputFunction.luaFunc);

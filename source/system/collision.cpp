@@ -86,14 +86,26 @@ double collisionTimeBoxLine(Vec2 b, Vec2 db, Vec2 l, Vec2 dl, Vec2 v) {
     return t;
 }
 
-bool system_collision(ECS& ecs) {
-    bool didCollide = false;
+void system_collision(ECS& ecs) {
+    // First we need to remove ALL the onSurface components
+    for (auto it = ecs.begin({comp_onSurface}); it != ecs.end(); ++it) {
+        Entity e = *it;
+        ecs.removeComponent(e, comp_onSurface);
+    }
+    // Shouldn't need to update components just yet
+
     for (auto it = ecs.begin({comp_position, comp_nextPosition, comp_collider}); it != ecs.end(); ++it) {
         Entity ent = *it;
 
         // Skip if it is static, you can still collide WITH static things, but
         // a static thing itself can't itself collide
         if (ecs.getFlag(ent, flag_static)) continue;
+
+        // Also skip if processing is done
+        {
+            auto partialStep = * (double *) ecs.getComponent(ent, comp_partialStep);
+            if (partialStep == 0) continue;
+        }
 
         auto entPos = * (Vec2*) ecs.getComponent(ent, comp_position);
         auto entVel = (* (Vec2*) ecs.getComponent(ent, comp_nextPosition)) - entPos;
@@ -164,42 +176,27 @@ bool system_collision(ECS& ecs) {
         // Regardless of if there is a collision or not, we need to set the
         // position to the same thing
         if (colTime < 1) {
-            // Fudge it very slightly so we are never actually on the surface
+            // Collision occured
+            ecs.setComponent(ent, comp_onSurface, &surfNorm);
+
+            // Fudge colTime a little to prevent phasing through stuff
             colTime -= 0.01;
-
-            // We also need to remove all the velocity perpindicular to the surface
-            // or bad things will happen (same for acceleration)
-            auto vel = * (Vec2 *) ecs.getComponent(ent, comp_velocity);
-            auto acc = * (Vec2 *) ecs.getComponent(ent, comp_acceleration);
-            vel -= proj(vel, surfNorm);
-            acc -= proj(acc, surfNorm);
-
-            double partialStep;
-            if (ecs.getComponent(ent, comp_partialStep)) {
-                partialStep = * (double*) ecs.getComponent(ent, comp_partialStep);
-            }
-            else {
-                partialStep = 1;
-            }
-
-            partialStep *= 1 - colTime;
-
-            ecs.setComponent(ent, comp_velocity, &vel);
-            ecs.setComponent(ent, comp_acceleration, &acc);
-            ecs.setComponent(ent, comp_partialStep, &partialStep);
-
-            didCollide = true;
         }
+        double partialStep = * (double*) ecs.getComponent(ent, comp_partialStep);
+        partialStep *= 1 - colTime;
+        ecs.setComponent(ent, comp_partialStep, &partialStep);
+
+
         auto newPos = entPos + (colTime * entVel);
-        ecs.setComponent(ent, comp_position, &newPos);
+        ecs.setComponent(ent, comp_nextPosition, &newPos);
     }
 
-    // If something has no collider, we also need to update its position anyway
-    for (auto it = ecs.begin({comp_position, comp_nextPosition}); it != ecs.end(); ++it) {
-        Entity ent = *it;
-        if (ecs.getComponent(ent, comp_collider)) continue;
-        ecs.setComponent(ent, comp_position, ecs.getComponent(ent, comp_nextPosition));
-    }
+    // If it has no collider, then it uses the entire partialStep
+    for (auto it = ecs.begin({comp_partialStep}); it != ecs.end(); ++it) {
+        Entity e = *it;
+        if (ecs.getComponent(e, comp_collider)) continue;
 
-    return didCollide;
+        double zero = 0;
+        ecs.setComponent(e, comp_partialStep, &zero);
+    }
 }

@@ -101,6 +101,7 @@ Component comp_inputFunction  = harp.createComponentType(sizeof(FunctionWrapper)
 
 Component comp_nextPosition   = harp.createComponentType(sizeof(Vec<2, double>));
 Component comp_partialStep    = harp.createComponentType(sizeof(double));
+Component comp_onSurface      = harp.createComponentType(sizeof(Vec<2, double>));
 
 Component flag_hidden = harp.createFlagType();
 Component flag_static = harp.createFlagType();

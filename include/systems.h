@@ -76,7 +76,8 @@ void system_dynamics(ECS& ecs);
  * - Callum Nicholson (hamsterjam)
  *
  */
-void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep);
+void system_proposeKinematics(ECS& ecs, unsigned int deltaT);
+void system_resolveKinematics(ECS& ecs);
 
 /*
  * Detects and rectifies collisions, for now this just means that it stops
@@ -86,7 +87,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep);
  * - Callum Nicholson (hamsterjam)
  *
  */
-bool system_collision(ECS& ecs);
+void system_collision(ECS& ecs);
 
 /*
  * Fudges components to give them exact values if it's something that should be

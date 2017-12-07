@@ -38,31 +38,40 @@ void update(unsigned int deltaT) {
     system_input(harp, mode == GAME);
     harp.updateComponents();
 
-    system_dynamics(harp);
-    harp.updateComponents();
+    bool allFinished = false;
+    while (!allFinished) {
 
-    system_kinematics(harp, deltaT, false);
-    harp.updateComponents();
-
-    while(system_collision(harp)) {
+        system_dynamics(harp);
         harp.updateComponents();
 
-        system_kinematics(harp, deltaT, true);
+        system_proposeKinematics(harp, deltaT);
         harp.updateComponents();
+
+        system_collision(harp);
+        harp.updateComponents();
+
+        system_resolveKinematics(harp);
+        harp.updateComponents();
+
+        system_fudge(harp);
+        harp.updateComponents();
+
+        allFinished = true;
+        for (auto it = harp.begin({comp_partialStep}); it != harp.end(); ++it) {
+            Entity e = *it;
+            auto partialStep = * (double *) harp.getComponent(e, comp_partialStep);
+            if (partialStep != 0) {
+                allFinished = false;
+                break;
+            }
+        }
     }
-    harp.updateComponents();
 
-    // Remove the partialStep component and perform the step
     for (auto it = harp.begin({comp_partialStep}); it != harp.end(); ++it) {
         Entity e = *it;
-        harp.setComponent(e, comp_position, harp.getComponent(e, comp_nextPosition));
         harp.removeComponent(e, comp_partialStep);
     }
     harp.updateComponents();
-
-    system_fudge(harp);
-    harp.updateComponents();
-
 }
 
 void draw() {
