@@ -76,7 +76,7 @@ void system_dynamics(ECS& ecs);
  * - Callum Nicholson (hamsterjam)
  *
  */
-void system_kinematics(ECS& ecs, unsigned int deltaT);
+void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep);
 
 /*
  * Detects and rectifies collisions, for now this just means that it stops

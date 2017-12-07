@@ -4,14 +4,21 @@
 #include <harpMath.h>
 #include <globals.h>
 
-void system_kinematics(ECS& ecs, unsigned int deltaT) {
+void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep) {
     double sDeltaT = (double) deltaT / 1000.0;
-    double sDeltaT2 = sDeltaT * sDeltaT;
 
     // Update the position based on velocity
     for (auto it = ecs.begin({comp_position, comp_velocity}); it != ecs.end(); ++it) {
         Entity e = *it;
         if (ecs.getFlag(e, flag_static)) continue;
+
+        double stepT = sDeltaT;
+
+        if (partialStep) {
+            if (!ecs.getComponent(e, comp_partialStep)) continue;
+            stepT *= 1 - * (double*) ecs.getComponent(e, comp_partialStep);
+        }
+
         auto pos = * (Vec<2, double>*) ecs.getComponent(e, comp_position);
         auto vel = * (Vec<2, double>*) ecs.getComponent(e, comp_velocity);
         auto acc = zeroVec<2, double>();
@@ -20,7 +27,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT) {
             acc = * (Vec<2, double>*) ecs.getComponent(e, comp_acceleration);
         }
 
-        pos += (sDeltaT * vel) + (0.5 * sDeltaT2 * acc);
+        pos += (stepT * vel) + (0.5 * stepT * stepT * acc);
 
         // Setting nextPosition so the collision system knows both where we
         // are going, and where we came from so we can do better collisions
@@ -32,10 +39,18 @@ void system_kinematics(ECS& ecs, unsigned int deltaT) {
     for (auto it = ecs.begin({comp_velocity, comp_acceleration}); it != ecs.end(); ++it) {
         Entity e = *it;
         if (ecs.getFlag(e, flag_static)) continue;
+
+        double stepT = sDeltaT;
+
+        if (partialStep) {
+            if (!ecs.getComponent(e, comp_partialStep)) continue;
+            stepT *= 1 - * (double*) ecs.getComponent(e, comp_partialStep);
+        }
+
         auto vel = * (Vec<2, double>*) ecs.getComponent(e, comp_velocity);
         auto acc = * (Vec<2, double>*) ecs.getComponent(e, comp_acceleration);
 
-        vel += sDeltaT * acc;
+        vel += stepT * acc;
 
         ecs.setComponent(e, comp_velocity, &vel);
     }

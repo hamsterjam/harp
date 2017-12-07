@@ -32,13 +32,15 @@ extern lua_State* L;
 extern ECS harp;
 
 extern Component comp_position;
-extern Component comp_nextPosition;
 extern Component comp_velocity;
 extern Component comp_acceleration;
 extern Component comp_collider;
 extern Component comp_visual;
 extern Component comp_layer;
 extern Component comp_inputFunction;
+
+extern Component comp_nextPosition;
+extern Component comp_partialStep;
 
 extern Component flag_hidden;
 extern Component flag_static;

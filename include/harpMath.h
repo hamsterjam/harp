@@ -297,7 +297,7 @@ Vec<N, T> normalize(Vec<N, T> op) {
 
 template<unsigned int N, typename T>
 Vec<N, T> proj(Vec<N, T> lhs, Vec<N, T> rhs) {
-    return dot(lhs,rhs)*normalize(rhs);
+    return dot(lhs,rhs)/dot(rhs, rhs) * rhs;
 }
 
 template<typename T>

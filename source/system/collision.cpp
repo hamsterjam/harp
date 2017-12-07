@@ -99,6 +99,7 @@ void system_collision(ECS& ecs) {
         auto entCol = * (Collider*) ecs.getComponent(ent, comp_collider);
 
         double colTime = 1;
+        Vec2   surfNorm;
 
         // We need to check all unordered pairs if they are both non-static
         for (auto it2 = it; it2 != ecs.end(); ++it2) {
@@ -119,6 +120,8 @@ void system_collision(ECS& ecs) {
             auto tarCol = * (Collider*) ecs.getComponent(tar, comp_collider);
             // Static Collisions
 
+            double testTime = 1;
+
             // The more collider types we provide, the more enormous this is
             // going to get, might want to factor it out a bit
             switch (tarCol.type) {
@@ -127,9 +130,9 @@ void system_collision(ECS& ecs) {
                         case BOX_COLLIDER:
                             break;
                         case LINE_COLLIDER:
-                            colTime = collisionTimeBoxLine(tarPos, tarCol.delta,
-                                                           entPos, entCol.delta,
-                                                          -entVel);
+                            testTime = collisionTimeBoxLine(tarPos, tarCol.delta,
+                                                            entPos, entCol.delta,
+                                                           -entVel);
                             break;
                         default:
                             assert(false);
@@ -138,9 +141,13 @@ void system_collision(ECS& ecs) {
                 case LINE_COLLIDER:
                     switch (entCol.type) {
                         case BOX_COLLIDER:
-                            colTime = collisionTimeBoxLine(entPos, entCol.delta,
-                                                           tarPos, tarCol.delta,
-                                                           entVel);
+                            testTime = collisionTimeBoxLine(entPos, entCol.delta,
+                                                            tarPos, tarCol.delta,
+                                                            entVel);
+                            if (testTime < colTime) {
+                                colTime = testTime;
+                                surfNorm = perp(tarCol.delta);
+                            }
                             break;
                         case LINE_COLLIDER:
                             break;
@@ -151,17 +158,27 @@ void system_collision(ECS& ecs) {
                 default:
                     assert(false);
             }
-
         }
 
         // Regardless of if there is a collision or not, we need to set the
         // position to the same thing
-        auto newPos = entPos + (colTime * entVel);
-        auto zero = zeroVec<2, double>();
-        ecs.setComponent(ent, comp_position, &newPos);
-        if (colTime != 1) {
-            ecs.setComponent(ent, comp_velocity, &zero);
+        if (colTime < 1) {
+            // Fudge it very slightly so we are never actually on the surface
+            colTime -= 0.01;
+
+            // We also need to remove all the velocity perpindicular to the surface
+            // or bad things will happen (same for acceleration)
+            auto vel = * (Vec2 *) ecs.getComponent(ent, comp_velocity);
+            auto acc = * (Vec2 *) ecs.getComponent(ent, comp_acceleration);
+            vel -= proj(vel, surfNorm);
+            acc -= proj(acc, surfNorm);
+
+            ecs.setComponent(ent, comp_velocity, &vel);
+            ecs.setComponent(ent, comp_acceleration, &acc);
+            ecs.setComponent(ent, comp_partialStep, &colTime);
         }
+        auto newPos = entPos + (colTime * entVel);
+        ecs.setComponent(ent, comp_position, &newPos);
     }
 
     // If something has no collider, we also need to update its position

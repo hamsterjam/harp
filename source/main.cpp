@@ -41,10 +41,21 @@ void update(unsigned int deltaT) {
     system_dynamics(harp);
     harp.updateComponents();
 
-    system_kinematics(harp, deltaT);
+    system_kinematics(harp, deltaT, false);
     harp.updateComponents();
 
     system_collision(harp);
+    harp.updateComponents();
+
+    system_kinematics(harp, deltaT, true);
+    harp.updateComponents();
+
+    // Remove the partialStep component and perform the step
+    for (auto it = harp.begin({comp_partialStep}); it != harp.end(); ++it) {
+        Entity e = *it;
+        harp.setComponent(e, comp_position, harp.getComponent(e, comp_nextPosition));
+        harp.removeComponent(e, comp_partialStep);
+    }
     harp.updateComponents();
 
     system_fudge(harp);
