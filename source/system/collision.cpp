@@ -174,9 +174,19 @@ bool system_collision(ECS& ecs) {
             vel -= proj(vel, surfNorm);
             acc -= proj(acc, surfNorm);
 
+            double partialStep;
+            if (ecs.getComponent(ent, comp_partialStep)) {
+                partialStep = * (double*) ecs.getComponent(ent, comp_partialStep);
+            }
+            else {
+                partialStep = 1;
+            }
+
+            partialStep *= 1 - colTime;
+
             ecs.setComponent(ent, comp_velocity, &vel);
             ecs.setComponent(ent, comp_acceleration, &acc);
-            ecs.setComponent(ent, comp_partialStep, &colTime);
+            ecs.setComponent(ent, comp_partialStep, &partialStep);
 
             didCollide = true;
         }

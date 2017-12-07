@@ -16,7 +16,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep) {
 
         if (partialStep) {
             if (!ecs.getComponent(e, comp_partialStep)) continue;
-            stepT *= 1 - * (double*) ecs.getComponent(e, comp_partialStep);
+            stepT *= * (double*) ecs.getComponent(e, comp_partialStep);
         }
 
         auto pos = * (Vec<2, double>*) ecs.getComponent(e, comp_position);
@@ -44,7 +44,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep) {
 
         if (partialStep) {
             if (!ecs.getComponent(e, comp_partialStep)) continue;
-            stepT *= 1 - * (double*) ecs.getComponent(e, comp_partialStep);
+            stepT *= * (double*) ecs.getComponent(e, comp_partialStep);
         }
 
         auto vel = * (Vec<2, double>*) ecs.getComponent(e, comp_velocity);
