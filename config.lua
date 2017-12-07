@@ -58,13 +58,21 @@ init = (function()
         sprMiku = Sprite(sprMiku)
 
         miku = makeMiku(200, 200)
-        border = createEntity();
-        border:setParent(miku);
+
+        border = createEntity()
+        border:setParent(miku)
         border:set(comp.visual, RectSpec(0, 0, 256, 256, 1, rgbToColor(0, 0, 0)))
-        floor = createEntity();
-        floor:setFlag(flag.static, true);
+
+        floor = createEntity()
+        floor:setFlag(flag.static, true)
         floor:set(comp.position, Vec2{0, 0})
         floor:set(comp.collider, LineCollider{screenWidth, 100})
         floor:set(comp.visual, LineSpec(0, 0, screenWidth, 100, 1, rgbToColor(0, 0, 0)))
+
+        wall = createEntity()
+        wall:setFlag(flag.static, true)
+        wall:set(comp.position, Vec2{50, screenHeight})
+        wall:set(comp.collider, LineCollider{50, -screenHeight})
+        wall:set(comp.visual, LineSpec(0, 0, 50, -screenHeight, 1, rgbToColor(0, 0, 0)))
     end
 end)()

@@ -86,7 +86,8 @@ double collisionTimeBoxLine(Vec2 b, Vec2 db, Vec2 l, Vec2 dl, Vec2 v) {
     return t;
 }
 
-void system_collision(ECS& ecs) {
+bool system_collision(ECS& ecs) {
+    bool didCollide = false;
     for (auto it = ecs.begin({comp_position, comp_nextPosition, comp_collider}); it != ecs.end(); ++it) {
         Entity ent = *it;
 
@@ -176,15 +177,19 @@ void system_collision(ECS& ecs) {
             ecs.setComponent(ent, comp_velocity, &vel);
             ecs.setComponent(ent, comp_acceleration, &acc);
             ecs.setComponent(ent, comp_partialStep, &colTime);
+
+            didCollide = true;
         }
         auto newPos = entPos + (colTime * entVel);
         ecs.setComponent(ent, comp_position, &newPos);
     }
 
-    // If something has no collider, we also need to update its position
+    // If something has no collider, we also need to update its position anyway
     for (auto it = ecs.begin({comp_position, comp_nextPosition}); it != ecs.end(); ++it) {
         Entity ent = *it;
         if (ecs.getComponent(ent, comp_collider)) continue;
         ecs.setComponent(ent, comp_position, ecs.getComponent(ent, comp_nextPosition));
     }
+
+    return didCollide;
 }

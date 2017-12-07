@@ -86,7 +86,7 @@ void system_kinematics(ECS& ecs, unsigned int deltaT, bool partialStep);
  * - Callum Nicholson (hamsterjam)
  *
  */
-void system_collision(ECS& ecs);
+bool system_collision(ECS& ecs);
 
 /*
  * Fudges components to give them exact values if it's something that should be

@@ -44,10 +44,12 @@ void update(unsigned int deltaT) {
     system_kinematics(harp, deltaT, false);
     harp.updateComponents();
 
-    system_collision(harp);
-    harp.updateComponents();
+    while(system_collision(harp)) {
+        harp.updateComponents();
 
-    system_kinematics(harp, deltaT, true);
+        system_kinematics(harp, deltaT, true);
+        harp.updateComponents();
+    }
     harp.updateComponents();
 
     // Remove the partialStep component and perform the step
