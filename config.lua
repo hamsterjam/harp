@@ -22,13 +22,30 @@ primShader = {
 -- It's probably best to keep the config file as "value, pair" as possible
 
 function moveMiku(e, input)
-    local magnitude = 200
+    local walkMag = 300
+    local jumpMag = 10000
     local acc = {0, 0}
 
-    if input.up    then acc[2] =  magnitude end
-    if input.down  then acc[2] = -magnitude end
-    if input.left  then acc[1] = -magnitude end
-    if input.right then acc[1] =  magnitude end
+    if e:has(comp.onSurface) then
+        -- Surface Input stuff
+        if input.up then acc[2] = jumpMag end
+    else
+        -- Air input stuff
+        if input.down  then acc[2] = -walkMag end
+        if input.left  then acc[1] = -walkMag end
+        if input.right then acc[1] =  walkMag end
+
+    end
+
+    local currAcc
+    if e:has(comp.acceleration) then
+        currAcc = asVec2(e:get(comp.acceleration))
+    else
+        currAcc = {0, 0}
+    end
+
+    acc[1] = acc[1] + currAcc[1]
+    acc[2] = acc[2] + currAcc[2]
 
     e:set(comp.acceleration, Vec2(acc))
 end
@@ -61,7 +78,8 @@ init = (function()
 
         border = createEntity()
         border:setParent(miku)
-        border:set(comp.visual, RectSpec(0, 0, 256, 256, 1, rgbToColor(0, 0, 0)))
+        border:set(comp.visual, RectFillSpec(0, 0, 256, 256, hsvaToColor(180, 1, 1, 0.2)))
+        border:set(comp.layer, 1)
 
         floor = createEntity()
         floor:setFlag(flag.static, true)

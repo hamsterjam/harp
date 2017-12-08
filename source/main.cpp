@@ -8,6 +8,7 @@
 #include <SDL_opengl.h>
 
 #include <globals.h>
+#include <harpMath.h>
 #include <graphics/Texture.h>
 
 #include <systems.h>
@@ -35,11 +36,18 @@ void init() {
 void update(unsigned int deltaT) {
     Console::getInstance().update();
 
-    system_input(harp, mode == GAME);
+    // Zero all accelerations
+    for (auto it = harp.begin({comp_acceleration}); it != harp.end(); ++it) {
+        Entity e = *it;
+        Vec<2, double> zero = zeroVec<2, double>();
+        harp.setComponent(e, comp_acceleration, &zero);
+    }
     harp.updateComponents();
 
     bool allFinished = false;
     while (!allFinished) {
+        system_input(harp, mode == GAME);
+        harp.updateComponents();
 
         system_dynamics(harp);
         harp.updateComponents();

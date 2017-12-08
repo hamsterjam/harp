@@ -149,6 +149,7 @@ void luaopen_harp(lua_State* L) {
     setComponentGlobal(L, "inputFunction", comp_inputFunction);
 
     setComponentGlobal(L, "nextPosition",  comp_nextPosition);
+    setComponentGlobal(L, "onSurface",     comp_onSurface);
     setComponentGlobal(L, "partialStep",   comp_partialStep);
 
     lua_newtable(L);

@@ -25,6 +25,12 @@ void system_dynamics(ECS& ecs) {
 
         if (ecs.getComponent(e, comp_onSurface)) {
             // On a surface
+
+            // Friction
+            if (ecs.getComponent(e, comp_velocity)) {
+                auto vel = * (Vec<2, double> *) ecs.getComponent(e, comp_velocity);
+                acc -= 2 * vel;
+            }
         }
         else {
             // Not on a surface
@@ -32,14 +38,14 @@ void system_dynamics(ECS& ecs) {
             // Gravity
             double gravData[] = {
                    0,
-                -100
+                -200
             };
             acc += Vec<2, double>(gravData);
 
             // Friction
             if (ecs.getComponent(e, comp_velocity)) {
                 auto vel = * (Vec<2, double> *) ecs.getComponent(e, comp_velocity);
-                acc -= vel;
+                acc -= 0.1 * vel;
             }
         }
 
