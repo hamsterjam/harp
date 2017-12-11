@@ -22,32 +22,18 @@ primShader = {
 -- It's probably best to keep the config file as "value, pair" as possible
 
 function moveMiku(e, input)
-    local walkMag = 300
-    local jumpMag = 10000
-    local acc = {0, 0}
-
     if e:has(comp.onSurface) then
         -- Surface Input stuff
-        if input.up then acc[2] = jumpMag end
+        if input.up then return action.jump end
     else
         -- Air input stuff
-        if input.down  then acc[2] = -walkMag end
-        if input.left  then acc[1] = -walkMag end
-        if input.right then acc[1] =  walkMag end
-
+        if input.down  then return action.fastdrop end
+        if input.left  then return action.walkleft end
+        if input.right then return action.walkright end
     end
 
-    local currAcc
-    if e:has(comp.acceleration) then
-        currAcc = asVec2(e:get(comp.acceleration))
-    else
-        currAcc = {0, 0}
-    end
-
-    acc[1] = acc[1] + currAcc[1]
-    acc[2] = acc[2] + currAcc[2]
-
-    e:set(comp.acceleration, Vec2(acc))
+    -- If we haveen't returned an action by now, return noaction
+    return action.noaction
 end
 
 init = (function()

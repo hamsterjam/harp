@@ -10,6 +10,7 @@ extern "C" {
 }
 
 #include <globals.h>
+#include <Action.h>
 #include <luaFunctions.h>
 
 //
@@ -52,6 +53,20 @@ static void setFlagGlobal(lua_State* L, const char* name, Component flag) {
     lua_pop(L, 1);
 }
 
+static void setActionGlobal(lua_State* L, const char* name, Action action) {
+    lua_getglobal(L, "action");
+    lua_pushstring(L, name);
+
+    Action& ret = * (Action *) lua_newuserdata(L, sizeof(Action));
+    luaL_getmetatable(L, "harp.action");
+    lua_setmetatable(L, -2);
+
+    ret = action;
+
+    lua_settable(L, -3);
+    lua_pop(L, 1);
+}
+
 //
 // Exported Functions
 //
@@ -67,6 +82,7 @@ void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.shader");
     luaL_newmetatable(L, "harp.primitiverenderer");
     luaL_newmetatable(L, "harp.fontrenderer");
+    luaL_newmetatable(L, "harp.action");
 
     luaL_getmetatable(L, "harp.entity");
     lua_pushvalue(L, -1);
@@ -157,6 +173,17 @@ void luaopen_harp(lua_State* L) {
 
     setFlagGlobal(L, "hidden", flag_hidden);
     setFlagGlobal(L, "static", flag_static);
+
+    // Actions
+
+    lua_newtable(L);
+    lua_setglobal(L, "action");
+
+    setActionGlobal(L, "noaction",  Action::NO_ACTION);
+    setActionGlobal(L, "jump",      Action::JUMP);
+    setActionGlobal(L, "walkleft",  Action::WALK_LEFT);
+    setActionGlobal(L, "walkright", Action::WALK_RIGHT);
+    setActionGlobal(L, "fastdrop",  Action::FAST_DROP);
 }
 
 static int weakRefTable;
