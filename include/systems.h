@@ -15,6 +15,14 @@
 class ECS;
 
 /*
+ * This is pretty simple, it just zeros the acceleration of all Entities (if
+ * they have an acceleration)
+ *
+ * - Callum Nicholson (hamsterjam)
+ */
+void system_zeroAcceleration(ECS& ecs);
+
+/*
  * Passes keyboard input stuff to a function that decides on how it wants to
  * to ahndle the movement. If acceptingInput is set to true, it will read
  * keyboard input, otherwise it will act as if no keys are pressed.

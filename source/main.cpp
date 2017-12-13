@@ -36,12 +36,7 @@ void init() {
 void update(unsigned int deltaT) {
     Console::getInstance().update();
 
-    // Zero all accelerations
-    for (auto it = harp.begin({comp_acceleration}); it != harp.end(); ++it) {
-        Entity e = *it;
-        Vec<2, double> zero = zeroVec<2, double>();
-        harp.setComponent(e, comp_acceleration, &zero);
-    }
+    system_zeroAcceleration(harp);
     harp.updateComponents();
 
     bool allFinished = false;
