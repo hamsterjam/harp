@@ -105,6 +105,17 @@ void system_input(ECS& ecs, bool acceptingInput) {
                 assert(false);
         }
 
+        // Remove acceleration that would take us back through a surface we are already on
+        if (ecs.getComponent(e, comp_onSurface)) {
+            auto surfNorm = * (Vec<2, double> *) ecs.getComponent(e, comp_onSurface);
+
+            auto accPerpToSurf = proj(acc, surfNorm);
+            if (dot(accPerpToSurf, surfNorm) < 0) {
+                // If this is negative, we are accelerating toward the surface
+                acc -= accPerpToSurf;
+            }
+        }
+
         ecs.setComponent(e, comp_acceleration, &acc);
     }
 
