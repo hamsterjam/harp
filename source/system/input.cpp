@@ -178,7 +178,7 @@ void system_input(ECS& ecs, bool acceptingInput) {
 
                 auto accPerpToSurf = proj(acc, surfNorm);
                 if (dot(accPerpToSurf, surfNorm) < 0) {
-                    // If this is negative, we are accelerationg toward the surface
+                    // If this is negative, we are accelerating toward the surface
                     acc -= accPerpToSurf;
                 }
 
