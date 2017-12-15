@@ -108,6 +108,9 @@ void* DynamicPoolAllocator::alloc(size_t size) {
 }
 
 void DynamicPoolAllocator::freeAll() {
+    // If the pool hasn't been used, do nothing
+    if (currentPoolAllocatedSize == 0 && filledPools == 0) return;
+
     // This is unreachable
     /*
     if (numPools == 1 && currentPoolAllocatedSize < poolSize/4) {
