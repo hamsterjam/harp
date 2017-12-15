@@ -9,6 +9,7 @@ extern "C" {
 #include <SDL.h>
 
 #include <ECS.h>
+#include <DynamicPoolAllocator.h>
 #include <FunctionWrapper.h>
 #include <luaInterface.h>
 #include <Console.h>
@@ -21,8 +22,26 @@ const SDL_Scancode DOWN_KEY  = SDL_SCANCODE_S;
 const SDL_Scancode LEFT_KEY  = SDL_SCANCODE_A;
 const SDL_Scancode RIGHT_KEY = SDL_SCANCODE_D;
 
+const std::size_t POOL_SIZE = 128;
 const double WALK_MAGNITUDE = 300;
 const double JUMP_MAGNITUDE = 10000;
+
+// This linked list is not a good solution for this
+
+struct SurfaceList {
+    Vec<2, double> surf;
+    SurfaceList* next;
+};
+
+struct SurfaceListList {
+    Entity ent;
+    SurfaceList* surfs;
+    SurfaceListList* next;
+};
+
+static DynamicPoolAllocator pool(POOL_SIZE);
+
+static SurfaceListList* surfsThisFrame = NULL;
 
 void system_input(ECS& ecs, bool acceptingInput) {
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
@@ -77,6 +96,44 @@ void system_input(ECS& ecs, bool acceptingInput) {
         // Now we have the inputed action, time to do something with it
         //
 
+        // Check if we are on a surface
+        if (ecs.getComponent(e, comp_onSurface)) {
+            auto surfNorm = * (Vec<2, double> *) ecs.getComponent(e, comp_onSurface);
+
+            // Add the current surface to the surface list for this entity if
+            // it exists, otherwise make a list for it
+            SurfaceListList** currList = &surfsThisFrame;
+            while (*currList) {
+                if ((*currList)->ent == e) break;
+                currList = &(*currList)->next;
+            }
+            if (!(*currList)) {
+                *currList = (SurfaceListList*) pool.alloc(sizeof(SurfaceListList));
+                (*currList)->ent = e;
+                (*currList)->surfs = NULL;
+                (*currList)->next = NULL;
+            }
+
+            // Traverse this list till we get to the end and add our new list
+            SurfaceList** currSurf = &(*currList)->surfs;
+            while (*currSurf) currSurf = &(*currSurf)->next;
+            *currSurf = (SurfaceList*) pool.alloc(sizeof(SurfaceList));
+            (*currSurf)->surf = surfNorm;
+            (*currSurf)->next = NULL;
+        }
+        // If we aren't on a surface, remove the list associated with that entity
+        else {
+            SurfaceListList** currList = &surfsThisFrame;
+            while (*currList) {
+                if ((*currList)->ent == e) break;
+                currList = &(*currList)->next;
+            }
+            if (*currList) *currList = (*currList)->next;
+
+            // P.S. we don't have to worry about deallocating stuff (for now)
+            // this is a pool allocator
+        }
+
         Vec<2, double> acc;
         if (ecs.getComponent(e, comp_acceleration)) {
             acc = * (Vec<2, double> *) ecs.getComponent(e, comp_acceleration);
@@ -105,19 +162,35 @@ void system_input(ECS& ecs, bool acceptingInput) {
                 assert(false);
         }
 
-        // Remove acceleration that would take us back through a surface we are already on
-        if (ecs.getComponent(e, comp_onSurface)) {
-            auto surfNorm = * (Vec<2, double> *) ecs.getComponent(e, comp_onSurface);
+        // Remove acceleration that would take us back through any of the
+        // surfaces we are already on.
+        {
+            SurfaceListList* currList = surfsThisFrame;
+            while (currList) {
+                if (currList->ent == e) break;
+                currList = currList->next;
+            }
 
-            auto accPerpToSurf = proj(acc, surfNorm);
-            if (dot(accPerpToSurf, surfNorm) < 0) {
-                // If this is negative, we are accelerating toward the surface
-                acc -= accPerpToSurf;
+            while (currList) {
+                SurfaceList* currSurf = currList->surfs;
+
+                Vec<2, double> surfNorm = currSurf->surf;
+
+                auto accPerpToSurf = proj(acc, surfNorm);
+                if (dot(accPerpToSurf, surfNorm) < 0) {
+                    // If this is negative, we are accelerationg toward the surface
+                    acc -= accPerpToSurf;
+                }
+
+                currList = currList->next;
             }
         }
 
         ecs.setComponent(e, comp_acceleration, &acc);
     }
+    // If the list of surface lists is empty, we can free the pool, this will
+    // always happen at least once per frame
+    if (!surfsThisFrame) pool.freeAll();
 
     lua_pop(L, 1);
 }
