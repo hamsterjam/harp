@@ -12,6 +12,8 @@
 #include <graphics/Texture.h>
 
 #include <systems.h>
+#include <graphics/VisualSpec.h>
+#include <graphics/AnimationManager.h>
 #include <Console.h>
 
 using namespace std;
@@ -75,6 +77,15 @@ void update(unsigned int deltaT) {
         harp.removeComponent(e, comp_partialStep);
     }
     harp.updateComponents();
+
+    // Update animations
+    for (auto it = harp.begin({comp_visual}); it != harp.end(); ++it) {
+        Entity e = *it;
+        auto& vis = * (VisualSpec*) harp.getComponent(e, comp_visual);
+        if (vis.type == DrawType::ANIMATION) {
+            vis.anim.man.update(e, deltaT);
+        }
+    }
 }
 
 void draw() {

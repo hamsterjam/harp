@@ -18,6 +18,19 @@ VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, Shader& shd) {
     return spec;
 }
 
+VisualSpec getAnimationSpec(AnimationManager& man, float dx, float dy, Shader& shd) {
+    VisualSpec spec;
+
+    spec.type = DrawType::ANIMATION;
+
+    spec.anim.x   = dx;
+    spec.anim.y   = dy;
+    spec.anim.shd = &shd;
+    spec.anim.man = man;
+
+    return spec;
+}
+
 VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidth, Color color, PrimitiveRenderer& prim) {
     VisualSpec spec;
 

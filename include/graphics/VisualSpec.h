@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <graphics/Color.h>
+#include <graphics/AnimationManager.h>
 
 class Shader;
 class Sprite;
@@ -23,6 +24,7 @@ class FontRenderer;
 
 enum class DrawType{
     SPRITE,
+    ANIMATION,
 
     RECTANGLE,
     ROUNDED_RECTANGLE,
@@ -34,16 +36,26 @@ enum class DrawType{
     TEXT
 };
 
-struct PrimitiveSpec {
-    PrimitiveRenderer* prim;
-    float p1, p2, p3, p4, p5, p6, p7;
-    Color color;
-};
-
 struct SpriteSpec {
     Shader* shd;
     Sprite* spr;
     float x, y;
+};
+
+struct AnimationSpec {
+    // Constructor and Destructor should do nothing
+    AnimationSpec() {}
+    ~AnimationSpec() {}
+
+    AnimationManager man;
+    Shader* shd;
+    float x, y;
+};
+
+struct PrimitiveSpec {
+    PrimitiveRenderer* prim;
+    float p1, p2, p3, p4, p5, p6, p7;
+    Color color;
 };
 
 struct TextSpec {
@@ -54,15 +66,21 @@ struct TextSpec {
 };
 
 struct VisualSpec {
+    // Constructor and Destructor should do nothing
+    VisualSpec() {}
+    ~VisualSpec() {}
+
     DrawType type;
     union {
+        SpriteSpec    sprite;
+        AnimationSpec anim;
         PrimitiveSpec prim;
-        SpriteSpec sprite;
-        TextSpec text;
+        TextSpec      text;
     };
 };
 
 VisualSpec getSpriteSpec(Sprite& spr, float dx, float dy, Shader& shd);
+VisualSpec getAnimationSpec(AnimationManager& man, float dx, float dy, Shader& shd);
 
 VisualSpec getRectangleFillSpec(float dx, float dy, float w, float h, Color color, PrimitiveRenderer& prim);
 VisualSpec getRectangleSpec(float dx, float dy, float w, float h, float lineWidth, Color color, PrimitiveRenderer& prim);

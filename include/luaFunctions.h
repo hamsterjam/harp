@@ -25,6 +25,7 @@ int l_Mat3(lua_State* L);
 int l_LineCollider(lua_State* L);
 int l_BoxCollider(lua_State* L);
 int l_Sprite(lua_State* L);
+int l_AnimationManager(lua_State* L);
 int l_Shader(lua_State* L);
 int l_FontRenderer(lua_State* L);
 
@@ -37,6 +38,7 @@ int l_asMat3(lua_State* L);
 
 // Visual Specs
 int l_SpriteSpec(lua_State* L);
+int l_AnimationSpec(lua_State* L);
 int l_RectSpec(lua_State* L);
 int l_RoundedRectSpec(lua_State* L);
 int l_ElipseArcSpec(lua_State* L);
@@ -51,6 +53,7 @@ int l_exit(lua_State* L);
 
 // Destructors
 int l_callSpriteDestructor(lua_State* L);
+int l_callAnimationManagerDestructor(lua_State* L);
 int l_callShaderDestructor(lua_State* L);
 int l_callPrimitiveRendererDestructor(lua_State* L);
 int l_callFontRendererDestructor(lua_State* L);

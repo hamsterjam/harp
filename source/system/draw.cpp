@@ -9,6 +9,7 @@
 #include <graphics/VisualSpec.h>
 #include <graphics/Shader.h>
 #include <graphics/Sprite.h>
+#include <graphics/AnimationManager.h>
 #include <graphics/Color.h>
 #include <graphics/PrimitiveRenderer.h>
 #include <graphics/FontRenderer.h>
@@ -63,6 +64,15 @@ void system_draw(ECS& ecs) {
                 Sprite& spr = *spec.sprite.spr;
                 float x = pos[0] + spec.sprite.x;
                 float y = pos[1] + spec.sprite.y;
+
+                shd.drawSprite(spr, x, y);
+                break;
+            }
+            case (DrawType::ANIMATION): {
+                Shader& shd = *spec.anim.shd;
+                Sprite& spr = spec.anim.man.getCurrentFrame();
+                float x = pos[0] + spec.anim.x;
+                float y = pos[1] + spec.anim.y;
 
                 shd.drawSprite(spr, x, y);
                 break;

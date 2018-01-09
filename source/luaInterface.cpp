@@ -79,6 +79,7 @@ void luaopen_harp(lua_State* L) {
     luaL_newmetatable(L, "harp.component");
     luaL_newmetatable(L, "harp.flag");
     luaL_newmetatable(L, "harp.sprite");
+    luaL_newmetatable(L, "harp.animationmanager");
     luaL_newmetatable(L, "harp.shader");
     luaL_newmetatable(L, "harp.primitiverenderer");
     luaL_newmetatable(L, "harp.fontrenderer");
@@ -100,6 +101,9 @@ void luaopen_harp(lua_State* L) {
     luaL_getmetatable(L, "harp.sprite");
     lua_pushcfunction(L, l_callSpriteDestructor); lua_setfield(L, -2, "__gc");
 
+    luaL_getmetatable(L, "harp.animationmanager");
+    lua_pushcfunction(L, l_callAnimationManagerDestructor); lua_setfield(L, -2, "__gc");
+
     luaL_getmetatable(L, "harp.shader");
     lua_pushcfunction(L, l_callShaderDestructor); lua_setfield(L, -2, "__gc");
 
@@ -109,7 +113,7 @@ void luaopen_harp(lua_State* L) {
     luaL_getmetatable(L, "harp.fontrenderer");
     lua_pushcfunction(L, l_callFontRendererDestructor); lua_setfield(L, -2, "__gc");
 
-    lua_pop(L, 5);
+    lua_pop(L, 6);
 
     // Functions
 
@@ -130,6 +134,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_LineCollider);       lua_setglobal(L, "LineCollider");
     lua_pushcfunction(L, l_BoxCollider);        lua_setglobal(L, "BoxCollider");
     lua_pushcfunction(L, l_Sprite);             lua_setglobal(L, "Sprite");
+    lua_pushcfunction(L, l_AnimationManager);   lua_setglobal(L, "AnimationManager");
     lua_pushcfunction(L, l_Shader);             lua_setglobal(L, "Shader");
     lua_pushcfunction(L, l_FontRenderer);       lua_setglobal(L, "FontRenderer");
 
@@ -140,6 +145,7 @@ void luaopen_harp(lua_State* L) {
     lua_pushcfunction(L, l_asMat3);             lua_setglobal(L, "asMat3");
 
     lua_pushcfunction(L, l_SpriteSpec);         lua_setglobal(L, "SpriteSpec");
+    lua_pushcfunction(L, l_AnimationSpec);      lua_setglobal(L, "AnimationSpec");
     lua_pushcfunction(L, l_RectSpec);           lua_setglobal(L, "RectSpec");
     lua_pushcfunction(L, l_RoundedRectSpec);    lua_setglobal(L, "RoundedRectSpec");
     lua_pushcfunction(L, l_ElipseArcSpec);      lua_setglobal(L, "ElipseArcSpec");

@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <cstdlib>
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -407,6 +409,33 @@ int l_Sprite(lua_State* L) {
     return 1;
 }
 
+int l_AnimationManager(lua_State* L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+    luaL_checktype(L, 2, LUA_TFUNCTION);
+
+    // I can't staticly allocate this... Which means it gets malloced twice...
+    int numFrames = luaL_len(L, 1);
+    auto frames = (Sprite**) malloc(sizeof(Sprite*) * numFrames);
+    for (int i = 0; i < numFrames; ++i) {
+        // Remember Lua is FUCKING ONE INDEXED
+        lua_geti(L, 1, i+1);
+        luaL_checkudata(L, -1, "harp.sprite");
+        frames[i] = * (Sprite**) lua_touserdata(L, -1);
+        lua_pop(L, 1);
+    }
+
+    int funcRef = weakLuaRef(L);
+
+    auto ret = (AnimationManager**) lua_newuserdata(L, sizeof(AnimationManager*));
+    luaL_getmetatable(L, "harp.animationmanager");
+    lua_setmetatable(L, -2);
+    *ret = new AnimationManager(frames, numFrames, funcRef);
+
+    free(frames);
+
+    return 1;
+}
+
 int l_Shader(lua_State* L) {
     const char* vertSrc = luaL_checkstring(L, 1);
     const char* fragSrc = luaL_checkstring(L, 2);
@@ -544,6 +573,32 @@ int l_SpriteSpec(lua_State* L) {
     lua_setmetatable(L, -2);
 
     *ret = getSpriteSpec(*spr, dx, dy, *shd);
+
+    return 1;
+}
+
+int l_AnimationSpec(lua_State* L) {
+    Shader* shd = defaultShader;
+
+    int numArgs = lua_gettop(L);
+    if (numArgs < 3) {
+        luaL_error(L, "AnimationSpec takes at least 3 arguments, found %d", numArgs);
+    }
+    if (numArgs >= 4) {
+        luaL_checkudata(L, 4, "harp.shader");
+        shd = * (Shader**) lua_touserdata(L, 1);
+    }
+
+    luaL_checkudata(L, 1, "harp.animationmanager");
+    auto man = * (AnimationManager**) lua_touserdata(L, 1);
+    auto  dx = (float) luaL_checknumber(L, 2);
+    auto  dy = (float) luaL_checknumber(L, 3);
+
+    auto ret = (VisualSpec*) lua_newuserdata(L, sizeof(VisualSpec));
+    luaL_getmetatable(L, "harp.blob");
+    lua_setmetatable(L, -2);
+
+    *ret = getAnimationSpec(*man, dx, dy, *shd);
 
     return 1;
 }
@@ -812,6 +867,14 @@ int l_callSpriteDestructor(lua_State* L) {
     luaL_checkudata(L, 1, "harp.sprite");
     auto spr = * (Sprite**) lua_touserdata(L, 1);
     delete spr;
+
+    return 0;
+}
+
+int l_callAnimationManagerDestructor(lua_State* L) {
+    luaL_checkudata(L, 1, "harp.animationmanager");
+    auto anim = * (AnimationManager**) lua_touserdata(L, 1);
+    delete anim;
 
     return 0;
 }
