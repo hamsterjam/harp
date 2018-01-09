@@ -5,12 +5,15 @@ using namespace std;
 
 PoolAllocator::PoolAllocator(size_t poolSize) {
     this->poolSize = poolSize;
-    pool = malloc(poolSize); //TODO// Check if this fails
+    pool = malloc(poolSize);
+    if (pool == NULL) {
+        this->poolSize = 0;
+    }
     allocatedSize = 0;
 }
 
 PoolAllocator::~PoolAllocator() {
-    free(pool);
+    if (pool) free(pool);
 }
 
 void* PoolAllocator::alloc(size_t size) {
@@ -34,4 +37,8 @@ void* PoolAllocator::alloc(size_t size) {
 
 void PoolAllocator::freeAll() {
     allocatedSize = 0;
+}
+
+bool PoolAllocator::failed() {
+    return !pool;
 }

@@ -29,6 +29,8 @@ class PoolAllocator {
 
         void* alloc(std::size_t size);
         void freeAll();
+
+        bool failed();
 };
 
 #endif
